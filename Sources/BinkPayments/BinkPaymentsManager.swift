@@ -7,15 +7,15 @@
 
 import Foundation
 
-class BinkPaymentsManager {
-    static let shared = BinkPaymentsManager()
+public class BinkPaymentsManager {
+    public static let shared = BinkPaymentsManager()
     
     private var token: String!
     private var environmentKey: String!
 
     private init() {}
     
-    func configure(token: String!, environmentKey: String!) {
+    public func configure(token: String!, environmentKey: String!) {
         assert(!token.isEmpty && !environmentKey.isEmpty, "Bink Payments SDK Error - Not Initialised due to missing token/environment key")
         
         self.token = token
