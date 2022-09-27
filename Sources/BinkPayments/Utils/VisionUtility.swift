@@ -205,7 +205,7 @@ public class VisionUtility: ObservableObject {
 
 
 public class PaymentCardCreateModel: Codable {
-    var fullPan: String?
+    public var fullPan: String?
     var nameOnCard: String?
     var month: Int?
     var year: Int?
@@ -228,7 +228,7 @@ public class PaymentCardCreateModel: Codable {
         self.cardType = PaymentCardType.type(from: pan)
     }
     
-    func formattedExpiryDate() -> String? {
+    public func formattedExpiryDate() -> String? {
         guard let month = month, let year = year else { return nil }
         return "\(month)/\(year)"
     }

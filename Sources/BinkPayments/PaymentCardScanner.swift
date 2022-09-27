@@ -10,6 +10,10 @@ import UIKit
 import AVFoundation
 import Vision
 
+public protocol PaymentCardScannerDelegate: AnyObject {
+    func dataCaptured(paymentCard: PaymentCardCreateModel)
+}
+
 @objc open class PaymentCardScanner: UIViewController {
     enum Constants {
         static let rectOfInterestInset: CGFloat = 25
@@ -26,43 +30,8 @@ import Vision
         static let timerInterval: TimeInterval = 5.0
         static let scanErrorThreshold: TimeInterval = 1.0
     }
-    
-     lazy var panLabel: UILabel = {
-        let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 24, weight: UIFont.Weight.heavy)
-        label.textColor = .white
-        label.backgroundColor = .blue
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.textAlignment = .center
-        label.alpha = 1
-        label.text = "panLabel"
-        return label
-    }()
-    
-     lazy var expiryLabel: UILabel = {
-        let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 24, weight: UIFont.Weight.heavy)
-        label.textColor = .white
-        label.backgroundColor = .red
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.textAlignment = .center
-        label.alpha = 1
-        label.text = "expiryLabel"
-        return label
-    }()
-    
-     lazy var nameOnCardLabel: UILabel = {
-        let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 24, weight: UIFont.Weight.heavy)
-        label.textColor = .white
-         label.backgroundColor = .green
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.textAlignment = .left
-        label.alpha = 1
-        label.text = "nameOnCardLabel"
-        return label
-    }()
 
+    public weak var delegate: PaymentCardScannerDelegate?
     private var session = AVCaptureSession()
     private var captureOutput: AVCaptureOutput?
     private var videoPreviewLayer: AVCaptureVideoPreviewLayer?
@@ -87,37 +56,22 @@ import Vision
         super.viewDidLoad()
         view.addSubview(previewView)
         
-        view.addSubview(panLabel)
-        view.addSubview(expiryLabel)
-        view.addSubview(nameOnCardLabel)
-        
-        NSLayoutConstraint.activate([
-            panLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            panLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            panLabel.widthAnchor.constraint(equalToConstant: 200),
-            panLabel.heightAnchor.constraint(equalToConstant: 50),
-            expiryLabel.topAnchor.constraint(equalTo: panLabel.bottomAnchor),
-            expiryLabel.centerXAnchor.constraint(equalTo: panLabel.centerXAnchor),
-            nameOnCardLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 25),
-            nameOnCardLabel.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -10)
-        ])
-        
         visionUtility.subject.sink { completion in
             switch completion {
             case .finished:
                 DispatchQueue.main.async {
                     self.stopScanning()
-                    self.nameOnCardLabel.text = self.visionUtility.paymentCard.nameOnCard ?? "Nothing"
-                    self.nameOnCardLabel.alpha = 1
+                    self.delegate?.dataCaptured(paymentCard: self.visionUtility.paymentCard)
+                    self.navigationController?.popViewController(animated: true)
                 }
             case .failure(let error):
                 print("Received error: \(error)")
             }
         } receiveValue: { paymentCard in
             DispatchQueue.main.async {
-                self.panLabel.text = paymentCard.fullPan ?? "Nothing"
                 if paymentCard.fullPan != nil {
-                    self.expiryLabel.text = paymentCard.formattedExpiryDate() ?? ""
+                    print(paymentCard.fullPan ?? "")
+                    print(paymentCard.formattedExpiryDate() ?? "")
                 }
             }
         }
@@ -223,7 +177,6 @@ import Vision
 
 extension PaymentCardScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
     public func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-        print("captureOutput called")
         guard let frame = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
 
         if let paymentCardRectangleObservation = self.paymentCardRectangleObservation {
