@@ -87,27 +87,27 @@ import Vision
         super.viewDidLoad()
         view.addSubview(previewView)
         
-                view.addSubview(panLabel)
-                view.addSubview(expiryLabel)
-                view.addSubview(nameOnCardLabel)
+        view.addSubview(panLabel)
+        view.addSubview(expiryLabel)
+        view.addSubview(nameOnCardLabel)
         
-                NSLayoutConstraint.activate([
-                    panLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-                    panLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-                    panLabel.widthAnchor.constraint(equalToConstant: 200),
-                    panLabel.heightAnchor.constraint(equalToConstant: 50),
-                    expiryLabel.topAnchor.constraint(equalTo: panLabel.bottomAnchor),
-                    expiryLabel.centerXAnchor.constraint(equalTo: panLabel.centerXAnchor),
-                    nameOnCardLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 25),
-                    nameOnCardLabel.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -10)
-                ])
+        NSLayoutConstraint.activate([
+            panLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            panLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            panLabel.widthAnchor.constraint(equalToConstant: 200),
+            panLabel.heightAnchor.constraint(equalToConstant: 50),
+            expiryLabel.topAnchor.constraint(equalTo: panLabel.bottomAnchor),
+            expiryLabel.centerXAnchor.constraint(equalTo: panLabel.centerXAnchor),
+            nameOnCardLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 25),
+            nameOnCardLabel.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -10)
+        ])
         
         visionUtility.subject.sink { completion in
             switch completion {
             case .finished:
                 DispatchQueue.main.async {
                     self.stopScanning()
-                    self.nameOnCardLabel.text = self.visionUtility.paymentCard.nameOnCard ?? ""
+                    self.nameOnCardLabel.text = self.visionUtility.paymentCard.nameOnCard ?? "Nothing"
                     self.nameOnCardLabel.alpha = 1
                 }
             case .failure(let error):
@@ -115,7 +115,7 @@ import Vision
             }
         } receiveValue: { paymentCard in
             DispatchQueue.main.async {
-                self.panLabel.text = paymentCard.fullPan
+                self.panLabel.text = paymentCard.fullPan ?? "Nothing"
                 if paymentCard.fullPan != nil {
                     self.expiryLabel.text = paymentCard.formattedExpiryDate() ?? ""
                 }
@@ -127,6 +127,11 @@ import Vision
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         startScanning()
+    }
+    
+    public override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        stopScanning()
     }
     
     public func startScanning() {
@@ -149,7 +154,7 @@ import Vision
         
         let videoOutput = AVCaptureVideoDataOutput()
         videoOutput.videoSettings = [(kCVPixelBufferPixelFormatTypeKey as NSString): NSNumber(value: kCVPixelFormatType_32BGRA)] as [String: Any]
-        videoOutput.setSampleBufferDelegate(self, queue: schemeScanningQueue) /// Change to global variable queue?
+        videoOutput.setSampleBufferDelegate(self, queue: DispatchQueue(label: "my.image.handling.queue"))
         
         if session.outputs.isEmpty {
             if session.canAddOutput(videoOutput) {
@@ -161,7 +166,9 @@ import Vision
         connection.videoOrientation = .portrait
 
         if !session.isRunning {
-            session.startRunning()
+            DispatchQueue.global(qos: .background).async { [weak self] in
+                self?.session.startRunning()
+            }
         }
         captureOutput = videoOutput
     }
@@ -216,32 +223,33 @@ import Vision
 
 extension PaymentCardScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
     public func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
+        print("captureOutput called")
         guard let frame = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
 
-//        if let paymentCardRectangleObservation = self.paymentCardRectangleObservation {
-//            DispatchQueue.main.async {
-//                self.visionUtility.recognizePaymentCard(frame: frame, rectangle: paymentCardRectangleObservation)
-//            }
-//        } else if let paymentCardRectangleObservation = self.visionUtility.detectPaymentCard(frame: frame) {
-//            self.paymentCardRectangleObservation = paymentCardRectangleObservation
-//        }
-        
         if let paymentCardRectangleObservation = self.paymentCardRectangleObservation {
-            if let trackedPaymentCardRectangle = self.visionUtility.trackPaymentCard(for: paymentCardRectangleObservation, in: frame) {
-                DispatchQueue.main.async {
-                    let paymentCardRectOnScreen = self.createRectangleDrawing(trackedPaymentCardRectangle)
-                    guard self.paymentCardIsFocused(paymentCardRectOnScreen) else {
-                        return
-                    }
-    
-                    DispatchQueue.global(qos: .userInitiated).async {
-                        self.visionUtility.recognizePaymentCard(frame: frame, rectangle: paymentCardRectangleObservation)
-                    }
-                }
-            } else {
-                self.paymentCardRectangleObservation = nil
+            DispatchQueue.main.async {
+                self.visionUtility.recognizePaymentCard(frame: frame, rectangle: paymentCardRectangleObservation)
             }
+        } else if let paymentCardRectangleObservation = self.visionUtility.detectPaymentCard(frame: frame) {
+            self.paymentCardRectangleObservation = paymentCardRectangleObservation
         }
+        
+//        if let paymentCardRectangleObservation = self.paymentCardRectangleObservation {
+//            if let trackedPaymentCardRectangle = self.visionUtility.trackPaymentCard(for: paymentCardRectangleObservation, in: frame) {
+//                DispatchQueue.main.async {
+//                    let paymentCardRectOnScreen = self.createRectangleDrawing(trackedPaymentCardRectangle)
+//                    guard self.paymentCardIsFocused(paymentCardRectOnScreen) else {
+//                        return
+//                    }
+//
+//                    DispatchQueue.global(qos: .userInitiated).async {
+//                        self.visionUtility.recognizePaymentCard(frame: frame, rectangle: paymentCardRectangleObservation)
+//                    }
+//                }
+//            } else {
+//                self.paymentCardRectangleObservation = nil
+//            }
+//        }
     }
     
     private func paymentCardIsFocused(_ rect: CGRect) -> Bool {
