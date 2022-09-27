@@ -9,7 +9,6 @@ import Foundation
 
 public class BinkPaymentsManager {
     public static let shared = BinkPaymentsManager()
-    
     private var token: String!
     private var environmentKey: String!
 
