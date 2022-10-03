@@ -30,7 +30,7 @@ public protocol PaymentCardScannerDelegate: AnyObject {
         static let timerInterval: TimeInterval = 5.0
         static let scanErrorThreshold: TimeInterval = 1.0
     }
-
+    
     public weak var delegate: PaymentCardScannerDelegate?
     private var session = AVCaptureSession()
     private var captureOutput: AVCaptureOutput?
@@ -108,7 +108,7 @@ public protocol PaymentCardScannerDelegate: AnyObject {
         
         let videoOutput = AVCaptureVideoDataOutput()
         videoOutput.videoSettings = [(kCVPixelBufferPixelFormatTypeKey as NSString): NSNumber(value: kCVPixelFormatType_32BGRA)] as [String: Any]
-        videoOutput.setSampleBufferDelegate(self, queue: DispatchQueue(label: "my.image.handling.queue"))
+        videoOutput.setSampleBufferDelegate(self, queue: schemeScanningQueue)
         
         if session.outputs.isEmpty {
             if session.canAddOutput(videoOutput) {
