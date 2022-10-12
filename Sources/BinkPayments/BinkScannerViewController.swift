@@ -58,15 +58,15 @@ extension BinkScannerViewControllerDelegate {
     }()
 
     private lazy var guideImageView: UIImageView = {
-        let image = UIImage(named: "Asset.scannerGuide.image")
+        let image = UIImage(named: "scanner_guide.png")
         let imageView = UIImageView(image: image)
-        imageView.tintColor = .white
+        imageView.tintColor = .systemPurple
         return imageView
     }()
     
     private lazy var panLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 14)
+        label.font = .systemFont(ofSize: 22, weight: .medium)
         label.textColor = .white
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .center
@@ -76,7 +76,7 @@ extension BinkScannerViewControllerDelegate {
     
     private lazy var expiryLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 12)
+        label.font = .systemFont(ofSize: 20)
         label.textColor = .white
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .center
@@ -86,7 +86,7 @@ extension BinkScannerViewControllerDelegate {
     
     private lazy var nameOnCardLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 12)
+        label.font = .systemFont(ofSize: 20)
         label.textColor = .white
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .left
@@ -146,6 +146,15 @@ extension BinkScannerViewControllerDelegate {
     
     private func configureUI() {
         view.addSubview(previewView)
+        
+        if let image = UIImage(named: "scanner_guide@") {
+            guideImageView.image = image
+        }
+        
+        if let image = UIImage(named: "scannerGuide") {
+            
+        }
+
 
         // BLUR AND MASK
         blurredView.frame = view.frame

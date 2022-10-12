@@ -11,6 +11,10 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
     public static let shared = BinkPaymentsManager()
     private var token: String!
     private var environmentKey: String!
+    
+    private var currentViewController: UIViewController? {
+        return UIViewController.topMostViewController()
+    }
 
     private override init() {}
     
@@ -25,8 +29,13 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
     public func launchScanner(delegate: BinkScannerViewControllerDelegate) {
         let binkScannerViewController = BinkScannerViewController()
         binkScannerViewController.delegate = delegate
-        let currentViewController = UIViewController.topMostViewController()
         currentViewController?.present(binkScannerViewController, animated: true)
+    }
+    
+    public func launchDebugScreen(paymentCard: PaymentCardCreateModel) {
+        let debugScreen = DebugViewController(paymentCard: paymentCard)
+        let navigationController = UINavigationController(rootViewController: debugScreen)
+        currentViewController?.present(navigationController, animated: true)
     }
 }
 
