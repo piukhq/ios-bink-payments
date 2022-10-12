@@ -41,7 +41,7 @@ public class DebugViewController: UIViewController {
         stackView.axis = .vertical
         stackView.spacing = 10
         stackView.backgroundColor = .darkGray
-        stackView.layer.borderColor = UIColor.systemPurple.cgColor
+        stackView.layer.borderColor = UIColor.systemPink.cgColor
         stackView.layer.borderWidth = 1
         stackView.layoutMargins = UIEdgeInsets(top: 30, left: 20, bottom: 20, right: 20)
         stackView.isLayoutMarginsRelativeArrangement = true

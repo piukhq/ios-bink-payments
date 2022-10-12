@@ -58,9 +58,9 @@ extension BinkScannerViewControllerDelegate {
     }()
 
     private lazy var guideImageView: UIImageView = {
-        let image = UIImage(named: "scanner_guide.png")
+        let image = UIImage(named: "scannerGuide", in: .module, with: nil)
         let imageView = UIImageView(image: image)
-        imageView.tintColor = .systemPurple
+        imageView.tintColor = .white
         return imageView
     }()
     
@@ -132,10 +132,6 @@ extension BinkScannerViewControllerDelegate {
         super.viewDidLoad()
         configureUI()
         configureSubscribers()
-    }
-
-    override public func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
         startScanning()
     }
     
@@ -146,15 +142,6 @@ extension BinkScannerViewControllerDelegate {
     
     private func configureUI() {
         view.addSubview(previewView)
-        
-        if let image = UIImage(named: "scanner_guide@") {
-            guideImageView.image = image
-        }
-        
-        if let image = UIImage(named: "scannerGuide") {
-            
-        }
-
 
         // BLUR AND MASK
         blurredView.frame = view.frame
@@ -273,7 +260,7 @@ extension BinkScannerViewControllerDelegate {
     private func performCaptureChecksForDevice(_ device: AVCaptureDevice) {
         do {
             try device.lockForConfiguration()
-        } catch let error {
+        } catch {
             // TODO: Handle error
         }
 
@@ -313,7 +300,7 @@ extension BinkScannerViewControllerDelegate {
                         self.stopScanning()
                         self.nameOnCardLabel.text = self.visionUtility.paymentCard.nameOnCard ?? ""
                         self.nameOnCardLabel.alpha = 1
-                        self.guideImageView.tintColor = .systemBlue
+                        self.guideImageView.tintColor = .systemPink
 //                        self.guideImageView.layer.addBinkAnimation(.shake)
                     } completion: { _ in
 //                        HapticFeedbackUtil.giveFeedback(forType: .notification(type: .success))
