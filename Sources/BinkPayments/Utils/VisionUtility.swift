@@ -32,7 +32,7 @@ public class VisionUtility: ObservableObject {
     
     let subject = PassthroughSubject<PaymentCardCreateModel, Error>()
     
-    public func recognizePaymentCard(frame: CVImageBuffer, rectangle: VNRectangleObservation) {
+    func recognizePaymentCard(frame: CVImageBuffer, rectangle: VNRectangleObservation) {
         performTextRecognition(frame: frame, rectangle: rectangle) { [weak self] observations in
             guard let observations = observations else { return }
             guard let self = self else { return }
@@ -65,7 +65,7 @@ public class VisionUtility: ObservableObject {
         }
     }
     
-    public func detectPaymentCard(frame: CVImageBuffer) -> VNRectangleObservation? {
+    public func performPaymentCardOCR(frame: CVImageBuffer) {
         let rectangleDetectionRequest = VNDetectRectanglesRequest()
         let paymentCardAspectRatio: Float = 85.60 / 53.98
         rectangleDetectionRequest.minimumAspectRatio = paymentCardAspectRatio * 0.95
@@ -74,32 +74,13 @@ public class VisionUtility: ObservableObject {
         
         try? self.requestHandler.perform([rectangleDetectionRequest, textDetectionRequest], on: frame)
         
-        guard let rectangle = (rectangleDetectionRequest.results)?.first, let text = (textDetectionRequest.results)?.first, rectangle.boundingBox.contains(text.boundingBox) else {
-            return nil
-        }
+        guard let rectangle = (rectangleDetectionRequest.results)?.first, let text = (textDetectionRequest.results)?.first, rectangle.boundingBox.contains(text.boundingBox) else { return }
         
-        return rectangle
-    }
-    
-    public func trackPaymentCard(for observation: VNRectangleObservation, in frame: CVImageBuffer) -> VNRectangleObservation? {
-        let request = VNTrackRectangleRequest(rectangleObservation: observation)
-        request.trackingLevel = .fast
-        
-        try? self.requestHandler.perform([request], on: frame)
-        
-        guard let trackedRectangle = (request.results as? [VNRectangleObservation])?.first else { return nil }
-        return trackedRectangle
-    }
-    
-    public func restartOCR() {
-        pan = nil
-        expiryMonth = nil
-        expiryYear = nil
-        name = nil
+        recognizePaymentCard(frame: frame, rectangle: rectangle)
     }
     
     private func scheduleTimer() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 4) { [weak self] in
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
             guard let self = self else { return }
             self.subject.send(completion: .finished)
         }
@@ -160,45 +141,6 @@ public class VisionUtility: ObservableObject {
         guard let nsrange1 = result.first?.range(at: 1), let range1 = Range(nsrange1, in: string) else { return nil }
         guard let nsrange2 = result.first?.range(at: 2), let range2 = Range(nsrange2, in: string) else { return nil }
         return (String(string[range1]), String(string[range2]))
-    }
-    
-    
-    // MARK: - Still image
-    
-    public func createVisionRequest(image: UIImage, completion: @escaping (String?) -> Void ) {
-        guard let cgImage = image.cgImage else { return }
-        
-        var vnBarcodeDetectionRequest: VNDetectBarcodesRequest {
-            let request = VNDetectBarcodesRequest { request, error in
-                guard error == nil else {
-                    completion(nil)
-                    return
-                }
-                
-                guard let observations = request.results as? [VNBarcodeObservation], let stringValue = observations.first?.payloadStringValue else {
-                    DispatchQueue.main.async {
-                        completion(nil)
-                    }
-                    return
-                }
-                
-                DispatchQueue.main.async {
-                    completion(stringValue)
-                }
-            }
-            return request
-        }
-        
-        let requestHandler = VNImageRequestHandler(cgImage: cgImage, options: [:])
-        let vnRequests = [vnBarcodeDetectionRequest]
-        
-        DispatchQueue.global(qos: .userInitiated).async {
-            do {
-                try requestHandler.perform(vnRequests)
-            } catch {
-                completion(nil)
-            }
-        }
     }
 }
 
