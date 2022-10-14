@@ -37,6 +37,12 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
         let navigationController = UINavigationController(rootViewController: debugScreen)
         currentViewController?.present(navigationController, animated: true)
     }
+    
+    public func launchAddPaymentCardScreen(paymentCard: PaymentCardCreateModel) {
+        let addPaymentCardViewController = AddPaymentCardViewController(viewModel: AddPaymentCardViewModel(paymentCard: paymentCard))
+        let navigationController = UINavigationController(rootViewController: addPaymentCardViewController)
+        currentViewController?.show(navigationController, sender: nil)
+    }
 }
 
 extension UIViewController {
