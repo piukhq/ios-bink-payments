@@ -5,6 +5,7 @@
 //  Created by Sean Williams on 14/10/2022.
 //
 
+import Combine
 import UIKit
 
 class AddPaymentCardViewController: UIViewController {
@@ -59,6 +60,7 @@ class AddPaymentCardViewController: UIViewController {
         return layout
     }()
     
+    private var cancellable: AnyCancellable?
     private var hasSetupCell = false
     public var viewModel: AddPaymentCardViewModel
     
@@ -74,6 +76,11 @@ class AddPaymentCardViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureLayout()
+        
+        cancellable = viewModel.$paymentCard
+            .sink() { [weak self] in
+                self?.card.configureWithAddViewModel($0)
+            }
     }
 
     private func configureLayout() {
@@ -98,7 +105,6 @@ class AddPaymentCardViewController: UIViewController {
         // This is due to strange layout issues on first appearance
         if collectionView.contentSize.width > 0.0 {
             hasSetupCell = true
-//            card.frame = CGRect(origin: .zero, size: CGSize(width: collectionView.contentSize.width, height: Constants.cardHeight))
             card.configureWithAddViewModel(viewModel.paymentCard)
         }
     }

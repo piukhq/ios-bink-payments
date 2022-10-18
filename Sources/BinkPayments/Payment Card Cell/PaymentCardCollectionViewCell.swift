@@ -103,7 +103,7 @@ class PaymentCardCollectionViewCell: WalletCardCollectionViewCell, UIGestureReco
         var redacted = stripped.replacingCharacters(in: range, with: String(repeating: "•", count: length))
         
         // FORMAT
-        let textOffset = (UIFont.systemFont(ofSize: 12).capHeight - UIFont.systemFont(ofSize: 12).capHeight) / 2
+        let textOffset = (UIFont.systemFont(ofSize: 16).capHeight - UIFont.systemFont(ofSize: 16).capHeight) / 2
         var padRange = 0
         whitespaceIndexLocations.forEach { spaceIndex in
             if redacted.count > spaceIndex {
@@ -124,14 +124,14 @@ class PaymentCardCollectionViewCell: WalletCardCollectionViewCell, UIGestureReco
         nsRange.length += padRange
         let style = NSMutableParagraphStyle()
         style.minimumLineHeight = 25 // Discovered via trial and error, come back and fix some other time
-        attributedString.addAttributes([.font: UIFont.systemFont(ofSize: 12), .kern: 1.5, .paragraphStyle: style, .baselineOffset: textOffset], range: nsRange)
-        attributedString.addAttributes([.font: UIFont.systemFont(ofSize: 12), .kern: 0.2], range: NSRange(location: nsRange.length, length: redacted.count - (nsRange.length)))
+        attributedString.addAttributes([.font: UIFont.systemFont(ofSize: 16), .kern: 1.5, .paragraphStyle: style, .baselineOffset: textOffset], range: nsRange)
+        attributedString.addAttributes([.font: UIFont.systemFont(ofSize: 16), .kern: 0.2], range: NSRange(location: nsRange.length, length: redacted.count - (nsRange.length)))
         
         return attributedString
     }
     
     private func setLabelStyling() {
-        nameOnCardLabel.font = .systemFont(ofSize: 12)
+        nameOnCardLabel.font = .systemFont(ofSize: 16)
         
         [nameOnCardLabel, cardNumberLabel].forEach {
             $0?.textColor = .white

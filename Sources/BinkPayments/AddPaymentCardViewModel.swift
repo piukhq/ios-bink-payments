@@ -5,6 +5,7 @@
 //  Created by Sean Williams on 14/10/2022.
 //
 
+import Combine
 import UIKit
 
 
@@ -12,10 +13,10 @@ class AddPaymentCardViewModel {
     private enum Constants {
         static let expiryYearsInTheFuture = 50
     }
-    
+     
+//    var passthroughSubject: PassthroughSubject
     var fields: [FormField] = []
-    
-    var paymentCard: PaymentCardCreateModel
+    @Published var paymentCard: PaymentCardCreateModel
     
     init(paymentCard: PaymentCardCreateModel) {
         self.paymentCard = paymentCard
@@ -24,14 +25,13 @@ class AddPaymentCardViewModel {
     
     private func setupfields(paymentCard: PaymentCardCreateModel) {
         let updatedBlock: FormField.ValueUpdatedBlock = { [weak self] field, newValue in
-//            guard let self = self else { return }
-//            self.delegate?.formDataSource(self, changed: newValue, for: field)
+            guard let self = self else { return }
+            self.textField(changed: newValue, for: field)
         }
         
         let shouldChangeBlock: FormField.TextFieldShouldChange = { [weak self] (field, textField, range, newValue) in
-//            guard let self = self, let delegate = self.delegate else { return true }
-//            return delegate.formDataSource(self, textField: textField, shouldChangeTo: newValue, in: range, for: field)
-            return true
+            guard let self = self else { return false }
+            return self.textFieldShouldChange(textField, shouldChangeTo: newValue, in: range, for: field)
         }
         
         let pickerUpdatedBlock: FormField.PickerUpdatedBlock = { [weak self] field, options in
@@ -98,6 +98,62 @@ class AddPaymentCardViewModel {
     }
     
     func formDataSource(manualValidate field: FormField) -> Bool {
+        return true
+    }
+    
+    func textField(changed value: String?, for field: FormField) {
+        if field.fieldType == .paymentCardNumber {
+            let type = PaymentCardType.type(from: value)
+            paymentCard.cardType = type
+            paymentCard.fullPan = value
+        }
+        
+        if field.fieldType == .text { paymentCard.nameOnCard = value }
+        paymentCard = paymentCard
+    }
+    
+    func textFieldShouldChange(_ textField: UITextField, shouldChangeTo newValue: String?, in range: NSRange, for field: FormField) -> Bool {
+        if let type = paymentCard.cardType, let newValue = newValue, let text = textField.text, field.fieldType == .paymentCardNumber {
+            /*
+            Potentially "needlessly" complex, but the below will insert whitespace to format card numbers correctly according
+            to the pattern available in PaymentCardType.
+            EXAMPLE: 4242424242424242 becomes 4242 4242 4242 4242
+            */
+            
+            if !newValue.isEmpty {
+                let values = type.lengthRange()
+                let cardLength = values.length + values.whitespaceIndexes.count
+                
+                if let textFieldText = textField.text, values.whitespaceIndexes.contains(range.location) && !newValue.isEmpty {
+                    textField.text = textFieldText + " "
+                }
+                
+                if text.count >= cardLength && range.length == 0 {
+                    return false
+                } else {
+                    let filtered = newValue.components(separatedBy: CharacterSet.decimalDigits.inverted).joined(separator: "")
+                    return newValue == filtered
+                }
+            } else {
+                // If newValue length is 0 then we can assume this is a delete, and if the next character after
+                // this one is a whitespace string then let's remove it.
+                
+                let secondToLastCharacterLocation = range.location - 1
+                if secondToLastCharacterLocation > 0, text.count > secondToLastCharacterLocation {
+                    let stringRange = text.index(text.startIndex, offsetBy: secondToLastCharacterLocation)
+                    let secondToLastCharacter = text[stringRange]
+                    
+                    if secondToLastCharacter == " " {
+                        var mutableText = text
+                        mutableText.remove(at: stringRange)
+                        textField.text = mutableText
+                    }
+                }
+                
+                return true
+            }
+        }
+        
         return true
     }
 
