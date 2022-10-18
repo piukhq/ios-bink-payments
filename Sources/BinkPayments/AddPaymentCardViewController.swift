@@ -12,11 +12,12 @@ class AddPaymentCardViewController: UIViewController {
     
     private enum Constants {
         static let normalCellHeight: CGFloat = 84.0
-        static let horizontalInset: CGFloat = 25.0
+        static let horizontalInset: CGFloat = 10
         static let bottomInset: CGFloat = 150.0
         static let postCollectionViewPadding: CGFloat = 25.0
         static let preCollectionViewPadding: CGFloat = 10.0
         static let offsetPadding: CGFloat = 30.0
+        static let cardHeight: CGFloat = 120.0
     }
     
     // MARK: - Properties
@@ -27,6 +28,7 @@ class AddPaymentCardViewController: UIViewController {
         stackView.margin = UIEdgeInsets(top: 0, left: Constants.horizontalInset, bottom: 0, right: Constants.horizontalInset)
         stackView.distribution = .fill
         stackView.alignment = .fill
+        stackView.backgroundColor = .systemBackground
         stackView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: Constants.bottomInset, right: 0)
         stackView.customPadding(Constants.postCollectionViewPadding, after: collectionView)
         stackView.customPadding(Constants.preCollectionViewPadding, before: collectionView)
@@ -45,6 +47,11 @@ class AddPaymentCardViewController: UIViewController {
         return collectionView
     }()
     
+    private lazy var card: PaymentCardCollectionViewCell = {
+        let cell: PaymentCardCollectionViewCell = .fromNib()
+        return cell
+    }()
+    
     private lazy var layout: UICollectionViewFlowLayout = {
         let layout = UICollectionViewFlowLayout()
         layout.minimumLineSpacing = 20
@@ -52,6 +59,7 @@ class AddPaymentCardViewController: UIViewController {
         return layout
     }()
     
+    private var hasSetupCell = false
     public var viewModel: AddPaymentCardViewModel
     
     public init(viewModel: AddPaymentCardViewModel) {
@@ -73,12 +81,35 @@ class AddPaymentCardViewController: UIViewController {
             stackScrollView.topAnchor.constraint(equalTo: view.topAnchor),
             stackScrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             stackScrollView.leftAnchor.constraint(equalTo: view.leftAnchor),
-            stackScrollView.rightAnchor.constraint(equalTo: view.rightAnchor)
+            stackScrollView.rightAnchor.constraint(equalTo: view.rightAnchor),
         ])
+        
+        stackScrollView.insert(arrangedSubview: card, atIndex: 0, customSpacing: 20)
+
+        NSLayoutConstraint.activate([
+            card.heightAnchor.constraint(equalToConstant: Constants.cardHeight),
+            card.widthAnchor.constraint(equalTo: collectionView.widthAnchor)
+        ])
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        // This is due to strange layout issues on first appearance
+        if collectionView.contentSize.width > 0.0 {
+            hasSetupCell = true
+//            card.frame = CGRect(origin: .zero, size: CGSize(width: collectionView.contentSize.width, height: Constants.cardHeight))
+            card.configureWithAddViewModel(viewModel.paymentCard)
+        }
     }
 }
 
 extension AddPaymentCardViewController: UICollectionViewDataSource, UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        guard let cell = cell as? FormCollectionViewCell else { return }
+        cell.setWidth(collectionView.frame.size.width)
+    }
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return viewModel.fields.count
     }

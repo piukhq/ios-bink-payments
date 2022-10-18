@@ -44,9 +44,9 @@ class FormCollectionViewCell: UICollectionViewCell {
         let stackView = UIStackView(arrangedSubviews: [fieldContentHStack])
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
-//        stackView.backgroundColor = Current.themeManager.color(for: .walletCardBackground)
+        stackView.backgroundColor = .clear
         stackView.layer.cornerCurve = .continuous
-        stackView.layer.cornerRadius = 12
+        stackView.layer.cornerRadius = 5
         stackView.clipsToBounds = true
         let gestureRecognizer = UITapGestureRecognizer(target: self, action: .handleCellTap)
         stackView.addGestureRecognizer(gestureRecognizer)
@@ -58,8 +58,8 @@ class FormCollectionViewCell: UICollectionViewCell {
         // Remove when we drop iOS 13 - add validation view to fieldContainerVStack
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-//        view.backgroundColor = Current.themeManager.color(for: .walletCardBackground)
-        view.layer.cornerRadius = 12
+        view.backgroundColor = .quaternarySystemFill
+        view.layer.cornerRadius = 5
         view.layer.cornerCurve = .continuous
         view.addSubview(validationView)
         view.clipsToBounds = true
@@ -97,7 +97,7 @@ class FormCollectionViewCell: UICollectionViewCell {
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-//        label.font = UIFont.navbarHeaderLine2
+        label.font = .systemFont(ofSize: 12, weight: .light)
 //        label.textColor = Current.themeManager.color(for: .text)
         label.heightAnchor.constraint(equalToConstant: Constants.titleLabelHeight).isActive = true
         label.setContentCompressionResistancePriority(.required, for: .vertical)
@@ -144,7 +144,7 @@ class FormCollectionViewCell: UICollectionViewCell {
         let view = UIView()
         view.backgroundColor = .clear
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.heightAnchor.constraint(equalToConstant: 3).isActive = true
+        view.heightAnchor.constraint(equalToConstant: 2).isActive = true
         return view
     }()
     
@@ -240,12 +240,8 @@ class FormCollectionViewCell: UICollectionViewCell {
     @objc private func configureForCurrentTheme() {}
 
     func configure(with field: FormField, delegate: FormCollectionViewCellDelegate?) {
-        let isEnabled = !field.isReadOnly
-        
 //        tintColor = .activeField
         titleLabel.text = field.title
-//        titleLabel.textColor = isEnabled ? Current.themeManager.color(for: .text) : .binkDynamicGray
-//        textField.textColor = isEnabled ? Current.themeManager.color(for: .text) : .binkDynamicGray
         textField.text = field.forcedValue
         textField.placeholder = field.placeholder
         textField.keyboardType = field.fieldType.keyboardType()
@@ -304,13 +300,11 @@ class FormCollectionViewCell: UICollectionViewCell {
     }
     
     private func configureTextFieldRightView(shouldDisplay: Bool) {
-//        if formField?.fieldCommonName == .cardNumber && formField?.alternatives?.contains(.barcode) == true && shouldDisplay {
-//            textFieldRightView.isHidden = false
-//        } else if formField?.fieldCommonName == .cardNumber && shouldDisplay {
-//            textFieldRightView.isHidden = false
-//        } else {
-//            textFieldRightView.isHidden = true
-//        }
+        if formField?.fieldType == .paymentCardNumber && shouldDisplay {
+            textFieldRightView.isHidden = false
+        } else {
+            textFieldRightView.isHidden = true
+        }
     }
     
     @objc func handleCellTap() {

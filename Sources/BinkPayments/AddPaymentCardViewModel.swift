@@ -15,8 +15,10 @@ class AddPaymentCardViewModel {
     
     var fields: [FormField] = []
     
+    var paymentCard: PaymentCardCreateModel
     
     init(paymentCard: PaymentCardCreateModel) {
+        self.paymentCard = paymentCard
         setupfields(paymentCard: paymentCard)
     }
     

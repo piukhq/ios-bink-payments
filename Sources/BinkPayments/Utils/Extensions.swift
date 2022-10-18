@@ -100,6 +100,13 @@ extension UIView {
             bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
+    static func fromNib<T: UIView>() -> T {
+        guard let viewFromNib = Foundation.Bundle.module.loadNibNamed(String(describing: T.self), owner: self)?.first as? T else { fatalError("Could not load view from nib") }
+//        guard let viewFromNib = Bundle.main.loadNibNamed(String(describing: T.self), owner: self, options: nil)?.first as? T else {
+//            fatalError("Could not load view from nib")
+//        }
+        return viewFromNib
+    }
 }
 
 public extension UICollectionReusableView {
@@ -112,5 +119,65 @@ public extension Collection {
     /// Returns the element at the specified index if it is within bounds, otherwise nil.
     subscript (safe index: Index) -> Element? {
         return indices.contains(index) ? self[index] : nil
+    }
+}
+
+extension UIColor {
+    convenience init(hexString: String, alpha: CGFloat = 1.0) {
+        let hexString: String = hexString.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+        let scanner = Scanner(string: hexString)
+        if hexString.hasPrefix("#") {
+            scanner.currentIndex = hexString.index(hexString.startIndex, offsetBy: 1)
+        }
+        var color: UInt64 = 0
+        scanner.scanHexInt64(&color)
+        let mask = 0x000000FF
+        let r = Int(color >> 16) & mask
+        let g = Int(color >> 8) & mask
+        let b = Int(color) & mask
+        let red = CGFloat(r) / 255.0
+        let green = CGFloat(g) / 255.0
+        let blue = CGFloat(b) / 255.0
+        self.init(red: red, green: green, blue: blue, alpha: alpha)
+    }
+    
+    // MARK: - Payment Card Gradient Colours
+
+    static let visaGradientLeft = UIColor(hexString: "13288d")
+    static let visaGradientRight = UIColor(hexString: "181c51")
+
+    static let mastercardGradientLeft = UIColor(hexString: "f79e1b")
+    static let mastercardGradientRight = UIColor(hexString: "eb001b")
+
+    static let amexGradientLeft = UIColor(hexString: "57c4ff")
+    static let amexGradientRight = UIColor(hexString: "006bcd")
+
+    static let unknownGradientLeft = UIColor(hexString: "b46fea")
+    static let unknownGradientRight = UIColor(hexString: "4371fe")
+
+    static let visaPaymentCardGradients: [CGColor] = [UIColor.visaGradientLeft.cgColor, UIColor.visaGradientRight.cgColor]
+    static let mastercardPaymentCardGradients: [CGColor] = [UIColor.mastercardGradientLeft.cgColor, UIColor.mastercardGradientRight.cgColor]
+    static let amexPaymentCardGradients: [CGColor] = [UIColor.amexGradientLeft.cgColor, UIColor.amexGradientRight.cgColor]
+    static let unknownPaymentCardGradients: [CGColor] = [UIColor.systemBlue.cgColor, UIColor.systemMint.cgColor]
+}
+
+extension CALayer {
+    func applyDefaultBinkShadow() {
+        applySketchShadow(color: .black, alpha: 0.1, x: 0, y: 3, blur: 15, spread: 0)
+    }
+
+    func applySketchShadow(color: UIColor = .black, alpha: Float = 0.5, x: CGFloat = 0, y: CGFloat = 2, blur: CGFloat = 4, spread: CGFloat = 0) {
+        shadowColor = color.cgColor
+        shadowOpacity = alpha
+        shadowOffset = CGSize(width: x, height: y)
+        shadowRadius = blur / 2.0
+
+        if spread == 0 {
+            shadowPath = nil
+        } else {
+            let dx = -spread
+            let rect = bounds.insetBy(dx: dx, dy: dx)
+            shadowPath = UIBezierPath(rect: rect).cgPath
+        }
     }
 }
