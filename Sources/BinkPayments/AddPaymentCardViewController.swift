@@ -81,7 +81,7 @@ class AddPaymentCardViewController: UIViewController {
         return layout
     }()
     
-    private var cancellable: AnyCancellable?
+    private var cancellable = Set<AnyCancellable>()
     private var hasSetupCell = false
     public var viewModel: AddPaymentCardViewModel
     
@@ -97,11 +97,21 @@ class AddPaymentCardViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureLayout()
-        
-        cancellable = viewModel.$paymentCard
+        configureSubscribers()
+    }
+    
+    private func configureSubscribers() {
+        viewModel.$paymentCard
             .sink() { [weak self] in
                 self?.card.configureWithAddViewModel($0)
             }
+            .store(in: &cancellable)
+        
+        viewModel.$fullFormIsValid
+            .sink() { [weak self] in
+                self?.addButton.isEnabled = $0
+            }
+            .store(in: &cancellable)
     }
 
     private func configureLayout() {

@@ -13,6 +13,18 @@ protocol FormMultipleChoiceInputDelegate: NSObjectProtocol {
     func multipleChoiceSeparatorForMultiValues() -> String?
 }
 
+struct FormPickerData: Equatable {
+    let title: String
+    let backingData: Int?
+    
+    init?(_ title: String?, backingData: Int? = nil) {
+        guard let title = title else { return nil }
+        
+        self.title = title
+        self.backingData = backingData
+    }
+}
+
 class FormMultipleChoiceInput: UIInputView {
     var fullContentString = ""
     var backingData: [Int]?
