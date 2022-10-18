@@ -14,10 +14,9 @@ class AddPaymentCardViewModel {
         static let expiryYearsInTheFuture = 50
     }
      
-//    var passthroughSubject: PassthroughSubject
-    var fields: [FormField] = []
     @Published var paymentCard: PaymentCardCreateModel
-    
+    var fields: [FormField] = []
+
     init(paymentCard: PaymentCardCreateModel) {
         self.paymentCard = paymentCard
         setupfields(paymentCard: paymentCard)
@@ -35,13 +34,13 @@ class AddPaymentCardViewModel {
         }
         
         let pickerUpdatedBlock: FormField.PickerUpdatedBlock = { [weak self] field, options in
-//            guard let self = self else { return }
-//            self.delegate?.formDataSource(self, selected: options, for: field)
+            guard let self = self else { return }
+            self.picker(selected: options, for: field)
         }
         
         let fieldExitedBlock: FormField.FieldExitedBlock = { [weak self] field in
-//            guard let self = self else { return }
-//            self.delegate?.formDataSource(self, fieldDidExit: field)
+            guard let self = self else { return }
+            self.textField(didExit: field)
         }
 
         let manualValidateBlock: FormField.ManualValidateBlock = { [weak self] field in
@@ -170,6 +169,14 @@ class AddPaymentCardViewModel {
         return true
     }
 
+    func picker(selected options: [Any], for field: FormField) {
+        // For mapping to the payment card expiry fields, we only care if we have BOTH
+        guard options.count > 1 else { return }
+        paymentCard.month = options.first as? Int
+        paymentCard.year = options.last as? Int
+    }
+    
+    func textField(didExit: FormField) {}
 }
 
 
