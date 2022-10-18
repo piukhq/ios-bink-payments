@@ -158,7 +158,7 @@ extension UIColor {
     static let visaPaymentCardGradients: [CGColor] = [UIColor.visaGradientLeft.cgColor, UIColor.visaGradientRight.cgColor]
     static let mastercardPaymentCardGradients: [CGColor] = [UIColor.mastercardGradientLeft.cgColor, UIColor.mastercardGradientRight.cgColor]
     static let amexPaymentCardGradients: [CGColor] = [UIColor.amexGradientLeft.cgColor, UIColor.amexGradientRight.cgColor]
-    static let unknownPaymentCardGradients: [CGColor] = [UIColor.systemBlue.cgColor, UIColor.systemMint.cgColor]
+    static let unknownPaymentCardGradients: [CGColor] = [UIColor.systemBlue.cgColor, UIColor.systemPink.cgColor]
 }
 
 extension CALayer {

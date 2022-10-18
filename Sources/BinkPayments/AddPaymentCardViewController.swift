@@ -19,11 +19,18 @@ class AddPaymentCardViewController: UIViewController {
         static let preCollectionViewPadding: CGFloat = 10.0
         static let offsetPadding: CGFloat = 30.0
         static let cardHeight: CGFloat = 120.0
+        static let bottomPadding: CGFloat = 16
+        static let buttonSpacing: CGFloat = 25
+        static let bottomSafePadding: CGFloat = {
+            let window = UIApplication.shared.connectedScenes.flatMap { ($0 as? UIWindowScene)?.windows ?? [] }.first { $0.isKeyWindow }
+            let safeAreaBottom = window?.safeAreaInsets.bottom ?? 0
+            return bottomPadding + safeAreaBottom
+        }()
     }
     
     // MARK: - Properties
     
-    lazy var stackScrollView: StackScrollView = {
+    private lazy var stackScrollView: StackScrollView = {
         let stackView = StackScrollView(axis: .vertical, arrangedSubviews: [collectionView], adjustForKeyboard: true)
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.margin = UIEdgeInsets(top: 0, left: Constants.horizontalInset, bottom: 0, right: Constants.horizontalInset)
@@ -37,7 +44,7 @@ class AddPaymentCardViewController: UIViewController {
         return stackView
     }()
     
-    lazy var collectionView: NestedCollectionView = {
+    private lazy var collectionView: NestedCollectionView = {
         let collectionView = NestedCollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.dataSource = self
@@ -46,6 +53,20 @@ class AddPaymentCardViewController: UIViewController {
         collectionView.backgroundColor = .clear
         collectionView.register(FormCollectionViewCell.self)
         return collectionView
+    }()
+    
+    private lazy var addButton: UIButton = {
+        let button = UIButton(type: .roundedRect)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.backgroundColor = .systemPink
+        button.setTitle("Add Card", for: .normal)
+        button.layer.cornerRadius = 5
+        button.layer.cornerCurve = .continuous
+        button.tintColor = .label
+        button.isEnabled = false
+        button.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
+        view.addSubview(button)
+        return button
     }()
     
     private lazy var card: PaymentCardCollectionViewCell = {
@@ -89,6 +110,10 @@ class AddPaymentCardViewController: UIViewController {
             stackScrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             stackScrollView.leftAnchor.constraint(equalTo: view.leftAnchor),
             stackScrollView.rightAnchor.constraint(equalTo: view.rightAnchor),
+            addButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -Constants.bottomSafePadding),
+            addButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.buttonSpacing),
+            addButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.buttonSpacing),
+            addButton.heightAnchor.constraint(equalToConstant: 50)
         ])
         
         stackScrollView.insert(arrangedSubview: card, atIndex: 0, customSpacing: 20)
@@ -107,6 +132,10 @@ class AddPaymentCardViewController: UIViewController {
             hasSetupCell = true
             card.configureWithAddViewModel(viewModel.paymentCard)
         }
+    }
+    
+    @objc func addButtonTapped() {
+        BinkPaymentsManager.shared.launchDebugScreen(paymentCard: viewModel.paymentCard)
     }
 }
 

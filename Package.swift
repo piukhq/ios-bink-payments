@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "BinkPayments",
     platforms: [
-            .iOS(.v15),
+            .iOS(.v14),
             .macOS(.v10_12)
     ],
     products: [
