@@ -45,8 +45,8 @@ class AddPaymentCardViewModel {
         }
 
         let manualValidateBlock: FormField.ManualValidateBlock = { [weak self] field in
-//            guard let self = self, let delegate = self.delegate else { return false }
-            return self?.formDataSource(manualValidate: field) ?? true
+            guard let self = self else { return false }
+            return self.textField(manualValidate: field)
         }
         
         let cardNumberField = FormField(
@@ -97,8 +97,21 @@ class AddPaymentCardViewModel {
         fields = [cardNumberField, expiryField, nameOnCardField]
     }
     
-    func formDataSource(manualValidate field: FormField) -> Bool {
-        return true
+    func textField(manualValidate field: FormField) -> Bool {
+        switch field.fieldType {
+        case .expiry(months: _, years: _):
+            // Create date using components from string e.g. 11/2019
+            guard let dateStrings = field.value?.components(separatedBy: "/") else { return false }
+            guard let monthString = dateStrings[safe: 0] else { return false }
+            guard let yearString = dateStrings[safe: 1] else { return false }
+            guard let month = Int(monthString) else { return false }
+            guard let year = Int(yearString) else { return false }
+            guard let expiryDate = Date.makeDate(year: year, month: month, day: 01, hr: 12, min: 00, sec: 00) else { return false }
+            
+            return expiryDate.monthHasNotExpired
+        default:
+            return false
+        }
     }
     
     func textField(changed value: String?, for field: FormField) {
