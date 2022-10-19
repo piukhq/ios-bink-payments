@@ -20,9 +20,9 @@ class AddPaymentCardViewModel {
     
     var fields: [FormField] = []
 
-    init(paymentCard: PaymentCardCreateModel) {
-        self.paymentCard = paymentCard
-        setupfields(paymentCard: paymentCard)
+    init(paymentCard: PaymentCardCreateModel? = nil) {
+        self.paymentCard = paymentCard ?? PaymentCardCreateModel(fullPan: nil, nameOnCard: nil, month: nil, year: nil)
+        setupfields(paymentCard: self.paymentCard)
     }
     
     func refreshDataSource() {

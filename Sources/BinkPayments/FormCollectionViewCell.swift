@@ -26,6 +26,7 @@ class FormCollectionViewCell: UICollectionViewCell {
         static let titleLabelHeight: CGFloat = 20.0
         static let textFieldHeight: CGFloat = 24.0
         static let validationLabelHeight: CGFloat = 20.0
+        static let cornerRadius: CGFloat = 32
     }
 
     // MARK: - Properties
@@ -46,7 +47,7 @@ class FormCollectionViewCell: UICollectionViewCell {
         stackView.axis = .vertical
         stackView.backgroundColor = .clear
         stackView.layer.cornerCurve = .continuous
-        stackView.layer.cornerRadius = 5
+        stackView.layer.cornerRadius = Constants.cornerRadius
         stackView.clipsToBounds = true
         let gestureRecognizer = UITapGestureRecognizer(target: self, action: .handleCellTap)
         stackView.addGestureRecognizer(gestureRecognizer)
@@ -59,7 +60,7 @@ class FormCollectionViewCell: UICollectionViewCell {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = .quaternarySystemFill
-        view.layer.cornerRadius = 5
+        view.layer.cornerRadius = Constants.cornerRadius
         view.layer.cornerCurve = .continuous
         view.addSubview(validationView)
         view.clipsToBounds = true
@@ -71,7 +72,7 @@ class FormCollectionViewCell: UICollectionViewCell {
         let stackView = UIStackView(arrangedSubviews: [fieldLabelsVStack])
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .horizontal
-        stackView.layoutMargins = UIEdgeInsets(top: 10, left: 10, bottom: 7, right: 10)
+        stackView.layoutMargins = UIEdgeInsets(top: 10, left: 20, bottom: 10, right: 20)
         stackView.isLayoutMarginsRelativeArrangement = true
         return stackView
     }()
@@ -98,7 +99,6 @@ class FormCollectionViewCell: UICollectionViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .systemFont(ofSize: 12, weight: .light)
-//        label.textColor = Current.themeManager.color(for: .text)
         label.heightAnchor.constraint(equalToConstant: Constants.titleLabelHeight).isActive = true
         label.setContentCompressionResistancePriority(.required, for: .vertical)
         return label
@@ -107,8 +107,7 @@ class FormCollectionViewCell: UICollectionViewCell {
     lazy var textField: UITextField = {
         let field = UITextField()
         field.translatesAutoresizingMaskIntoConstraints = false
-//        field.font = UIFont.textFieldInput
-//        field.textColor = Current.themeManager.color(for: .text)
+        field.font = .systemFont(ofSize: 14, weight: .regular)
         field.delegate = self
         field.heightAnchor.constraint(equalToConstant: Constants.textFieldHeight).isActive = true
         field.addTarget(self, action: .textFieldUpdated, for: .editingChanged)
@@ -118,7 +117,7 @@ class FormCollectionViewCell: UICollectionViewCell {
     }()
     
     lazy var validationIconImageView: UIImageView = {
-        let imageView = UIImageView(image: UIImage(named: "icon-check"))
+        let imageView = UIImageView(image: UIImage(named: "icon-check", in: .module, with: nil))
         imageView.contentMode = .scaleAspectFit
         NSLayoutConstraint.activate([
             imageView.widthAnchor.constraint(equalToConstant: 20)
@@ -165,8 +164,8 @@ class FormCollectionViewCell: UICollectionViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 0
-//        label.font = UIFont.textFieldExplainer
-        label.text = "L10n.formFieldValidationError"
+        label.font = .systemFont(ofSize: 13, weight: .light)
+        label.text = "Invalid entry"
         label.isHidden = true
         label.textColor = .systemRed
         label.setContentCompressionResistancePriority(.required, for: .vertical)
@@ -340,7 +339,7 @@ class FormCollectionViewCell: UICollectionViewCell {
         case .active:
             validationView.backgroundColor = .systemBlue
         case .valid:
-            validationView.backgroundColor = .systemGreen
+            validationView.backgroundColor = .okGreen
             validationIconHidden = false
             validationLabelSpacing = 0
             validationLabel.isHidden = true

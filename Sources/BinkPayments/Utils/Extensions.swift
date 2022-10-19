@@ -102,9 +102,6 @@ extension UIView {
     }
     static func fromNib<T: UIView>() -> T {
         guard let viewFromNib = Foundation.Bundle.module.loadNibNamed(String(describing: T.self), owner: self)?.first as? T else { fatalError("Could not load view from nib") }
-//        guard let viewFromNib = Bundle.main.loadNibNamed(String(describing: T.self), owner: self, options: nil)?.first as? T else {
-//            fatalError("Could not load view from nib")
-//        }
         return viewFromNib
     }
 }
@@ -159,6 +156,8 @@ extension UIColor {
     static let mastercardPaymentCardGradients: [CGColor] = [UIColor.mastercardGradientLeft.cgColor, UIColor.mastercardGradientRight.cgColor]
     static let amexPaymentCardGradients: [CGColor] = [UIColor.amexGradientLeft.cgColor, UIColor.amexGradientRight.cgColor]
     static let unknownPaymentCardGradients: [CGColor] = [UIColor.systemBlue.cgColor, UIColor.systemPink.cgColor]
+    
+    static let okGreen = UIColor(hexString: "50A7AB")
 }
 
 extension CALayer {

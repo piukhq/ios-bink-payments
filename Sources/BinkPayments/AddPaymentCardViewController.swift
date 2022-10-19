@@ -12,7 +12,6 @@ class AddPaymentCardViewController: UIViewController {
     // MARK: - Helpers
     
     private enum Constants {
-        static let normalCellHeight: CGFloat = 84.0
         static let horizontalInset: CGFloat = 10
         static let bottomInset: CGFloat = 150.0
         static let postCollectionViewPadding: CGFloat = 25.0
@@ -60,7 +59,7 @@ class AddPaymentCardViewController: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.backgroundColor = .systemPink
         button.setTitle("Add Card", for: .normal)
-        button.layer.cornerRadius = 5
+        button.layer.cornerRadius = 25
         button.layer.cornerCurve = .continuous
         button.tintColor = .label
         button.isEnabled = false
@@ -81,7 +80,7 @@ class AddPaymentCardViewController: UIViewController {
         return layout
     }()
     
-    private var cancellable = Set<AnyCancellable>()
+    private var subscriptions = Set<AnyCancellable>()
     private var hasSetupCell = false
     public var viewModel: AddPaymentCardViewModel
     
@@ -105,19 +104,19 @@ class AddPaymentCardViewController: UIViewController {
             .sink() { [weak self] in
                 self?.card.configureWithAddViewModel($0)
             }
-            .store(in: &cancellable)
+            .store(in: &subscriptions)
         
         viewModel.$fullFormIsValid
             .sink() { [weak self] in
                 self?.addButton.isEnabled = $0
             }
-            .store(in: &cancellable)
+            .store(in: &subscriptions)
         
         viewModel.$refreshForm
             .sink() { [weak self] _ in
                 self?.collectionView.reloadData()
             }
-            .store(in: &cancellable)
+            .store(in: &subscriptions)
     }
 
     private func configureLayout() {
