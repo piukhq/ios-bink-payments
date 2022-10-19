@@ -112,6 +112,12 @@ class AddPaymentCardViewController: UIViewController {
                 self?.addButton.isEnabled = $0
             }
             .store(in: &cancellable)
+        
+        viewModel.$refreshForm
+            .sink() { [weak self] _ in
+                self?.collectionView.reloadData()
+            }
+            .store(in: &cancellable)
     }
 
     private func configureLayout() {
@@ -174,5 +180,24 @@ extension AddPaymentCardViewController: FormCollectionViewCellDelegate {
     
     func formCollectionViewCell(_ cell: FormCollectionViewCell, shouldResignTextField textField: UITextField) {
         
+    }
+    
+    func formCollectionViewCellDidReceivePaymentScannerButtonTap(_ cell: FormCollectionViewCell) {
+        BinkPaymentsManager.shared.launchScanner(delegate: self)
+    }
+}
+
+extension AddPaymentCardViewController: BinkScannerViewControllerDelegate {
+    func binkScannerViewControllerShouldEnterManually(_ viewController: BinkScannerViewController, completion: (() -> Void)?) {
+        // TODO: - add enter manually widget to scanner
+//        dismiss(animated: true)
+        print("Should enter manually")
+    }
+    
+    func binkScannerViewController(_ viewController: BinkScannerViewController, didScan paymentCard: PaymentCardCreateModel) {
+        dismiss(animated: true) { [weak self] in
+            self?.viewModel.paymentCard = paymentCard
+            self?.viewModel.refreshDataSource()
+        }
     }
 }

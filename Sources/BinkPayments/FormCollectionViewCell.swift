@@ -131,7 +131,7 @@ class FormCollectionViewCell: UICollectionViewCell {
     /// Camera icon
     lazy var textFieldRightView: UIView = {
         let cameraButton = UIButton(type: .custom)
-//        cameraButton.setImage(Asset.scanIcon.image, for: .normal)
+        cameraButton.setImage(UIImage(named: "scanIcon", in: .module, with: nil), for: .normal)
         cameraButton.imageView?.contentMode = .scaleAspectFill
         cameraButton.addTarget(self, action: .handleScanButtonTap, for: .touchUpInside)
         cameraButton.translatesAutoresizingMaskIntoConstraints = false
@@ -233,12 +233,6 @@ class FormCollectionViewCell: UICollectionViewCell {
     
     // MARK: - Public Methods
 
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        configureForCurrentTheme()
-    }
-
-    @objc private func configureForCurrentTheme() {}
-
     func configure(with field: FormField, delegate: FormCollectionViewCellDelegate?) {
 //        tintColor = .activeField
         titleLabel.text = field.title
@@ -254,7 +248,6 @@ class FormCollectionViewCell: UICollectionViewCell {
         // Remove when we drop iOS 13 - add validation view to fieldContainerVStack
         fieldContainerVStack.insertSubview(stackBackgroundView, at: 0)
         stackBackgroundView.pin(to: fieldContainerVStack)
-        //
         
         configureTextFieldRightView(shouldDisplay: formField?.value == nil)
         validationLabel.isHidden = textField.text?.isEmpty == true ? true : field.isValid()
@@ -263,22 +256,6 @@ class FormCollectionViewCell: UICollectionViewCell {
         
         if case let .expiry(months, years) = field.fieldType {
             textField.inputView = FormMultipleChoiceInput(with: [months, years], delegate: self)
-//        } else if case let .choice(data) = field.fieldType {
-//            textField.inputView = FormMultipleChoiceInput(with: [data], delegate: self)
-//            pickerSelectedChoice = data.first?.title
-//            formField?.updateValue(pickerSelectedChoice)
-//        } else if case .date = field.fieldType {
-//            let datePicker = UIDatePicker()
-//            datePicker.datePickerMode = .date
-//            datePicker.addTarget(self, action: #selector(datePickerValueChanged(_:)), for: .valueChanged)
-//
-//            datePicker.preferredDatePickerStyle = .inline
-//            datePicker.backgroundColor = Current.themeManager.color(for: .viewBackground)
-//            datePicker.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 400)
-//
-//            textField.inputView = datePicker
-//            pickerSelectedChoice = datePicker.date.getFormattedString(format: .dayShortMonthYearWithSlash)
-//            formField?.updateValue(pickerSelectedChoice)
         } else {
             textField.inputView = nil
         }

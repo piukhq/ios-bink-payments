@@ -16,12 +16,23 @@ class AddPaymentCardViewModel {
      
     @Published var paymentCard: PaymentCardCreateModel
     @Published var fullFormIsValid = false
+    @Published var refreshForm = false
     
     var fields: [FormField] = []
 
     init(paymentCard: PaymentCardCreateModel) {
         self.paymentCard = paymentCard
         setupfields(paymentCard: paymentCard)
+    }
+    
+    func refreshDataSource() {
+        setupfields(paymentCard: paymentCard)
+        refreshForm = true
+        checkFormValidity()
+    }
+    
+    private func checkFormValidity() {
+        fullFormIsValid = fields.allSatisfy { $0.isValid() }
     }
 
     private func setupfields(paymentCard: PaymentCardCreateModel) {
@@ -98,7 +109,7 @@ class AddPaymentCardViewModel {
         fields = [cardNumberField, expiryField, nameOnCardField]
     }
     
-    func textField(manualValidate field: FormField) -> Bool {
+    private func textField(manualValidate field: FormField) -> Bool {
         switch field.fieldType {
         case .expiry(months: _, years: _):
             // Create date using components from string e.g. 11/2019
@@ -115,7 +126,7 @@ class AddPaymentCardViewModel {
         }
     }
     
-    func textField(changed value: String?, for field: FormField) {
+    private func textField(changed value: String?, for field: FormField) {
         if field.fieldType == .paymentCardNumber {
             let type = PaymentCardType.type(from: value)
             paymentCard.cardType = type
@@ -126,7 +137,7 @@ class AddPaymentCardViewModel {
         paymentCard = paymentCard
     }
     
-    func textFieldShouldChange(_ textField: UITextField, shouldChangeTo newValue: String?, in range: NSRange, for field: FormField) -> Bool {
+    private func textFieldShouldChange(_ textField: UITextField, shouldChangeTo newValue: String?, in range: NSRange, for field: FormField) -> Bool {
         if let type = paymentCard.cardType, let newValue = newValue, let text = textField.text, field.fieldType == .paymentCardNumber {
             /*
             Potentially "needlessly" complex, but the below will insert whitespace to format card numbers correctly according
@@ -171,7 +182,7 @@ class AddPaymentCardViewModel {
         return true
     }
 
-    func picker(selected options: [Any], for field: FormField) {
+    private func picker(selected options: [Any], for field: FormField) {
         // For mapping to the payment card expiry fields, we only care if we have BOTH
         guard options.count > 1 else { return }
         paymentCard.month = options.first as? Int
@@ -179,6 +190,6 @@ class AddPaymentCardViewModel {
     }
     
     func textField(didExit: FormField) {
-        fullFormIsValid = fields.allSatisfy { $0.isValid() }
+        checkFormValidity()
     }
 }
