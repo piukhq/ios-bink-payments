@@ -16,6 +16,7 @@ class AddPaymentCardViewController: UIViewController {
         static let bottomInset: CGFloat = 150.0
         static let postCollectionViewPadding: CGFloat = 25.0
         static let preCollectionViewPadding: CGFloat = 10.0
+        static let cellErrorLabelSafeSpacing: CGFloat = 60.0
         static let offsetPadding: CGFloat = 30.0
         static let cardHeight: CGFloat = 120.0
         static let bottomPadding: CGFloat = 16
@@ -82,6 +83,8 @@ class AddPaymentCardViewController: UIViewController {
     
     private var subscriptions = Set<AnyCancellable>()
     private var hasSetupCell = false
+    private var selectedCellYOrigin: CGFloat = 0.0
+    private var selectedCellHeight: CGFloat = 0.0
     public var viewModel: AddPaymentCardViewModel
     
     public init(viewModel: AddPaymentCardViewModel) {
@@ -97,6 +100,7 @@ class AddPaymentCardViewController: UIViewController {
         super.viewDidLoad()
         configureLayout()
         configureSubscribers()
+        NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
     }
     
     private func configureSubscribers() {
@@ -119,6 +123,16 @@ class AddPaymentCardViewController: UIViewController {
             .store(in: &subscriptions)
     }
 
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        // This is due to strange layout issues on first appearance
+        if collectionView.contentSize.width > 0.0 {
+            hasSetupCell = true
+            card.configureWithAddViewModel(viewModel.paymentCard)
+        }
+    }
+    
     private func configureLayout() {
         NSLayoutConstraint.activate([
             stackScrollView.topAnchor.constraint(equalTo: view.topAnchor),
@@ -139,18 +153,33 @@ class AddPaymentCardViewController: UIViewController {
         ])
     }
     
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        
-        // This is due to strange layout issues on first appearance
-        if collectionView.contentSize.width > 0.0 {
-            hasSetupCell = true
-            card.configureWithAddViewModel(viewModel.paymentCard)
-        }
-    }
-    
     @objc func addButtonTapped() {
         BinkPaymentsManager.shared.launchDebugScreen(paymentCard: viewModel.paymentCard)
+    }
+    
+    @objc func handleKeyboardWillShow(_ notification: Notification) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
+            guard let self = self else { return }
+
+            if let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
+                let keyboardRectangle = keyboardFrame.cgRectValue
+                let keyboardHeight = keyboardRectangle.height
+                let visibleOffset = UIScreen.main.bounds.height - keyboardHeight
+                let cellVisibleOffset = self.selectedCellYOrigin + self.selectedCellHeight
+
+                if cellVisibleOffset > visibleOffset {
+                    let actualOffset = self.stackScrollView.contentOffset.y
+                    let neededOffset = CGPoint(x: 0, y: Constants.offsetPadding + actualOffset + cellVisibleOffset - visibleOffset)
+                    self.stackScrollView.setContentOffset(neededOffset, animated: true)
+
+                    /// From iOS 14, we are seeing this method being called more often than we would like due to a notification trigger not only when the cell's text field is selected, but when typed into.
+                    /// We are resetting these values so that the existing behaviour will still work, whereby these values are updated from delegate methods when they should be, but when the notification is
+                    /// called from text input, these won't be updated and therefore will remain as 0.0, and won't fall into this if statement and won't update the content offset of the stack scroll view.
+                    self.selectedCellYOrigin = 0.0
+                    self.selectedCellHeight = 0.0
+                }
+            }
+        }
     }
 }
 
@@ -174,7 +203,9 @@ extension AddPaymentCardViewController: UICollectionViewDataSource, UICollection
 
 extension AddPaymentCardViewController: FormCollectionViewCellDelegate {
     func formCollectionViewCell(_ cell: FormCollectionViewCell, didSelectField: UITextField) {
-        
+        let cellOrigin = collectionView.convert(cell.frame.origin, to: view)
+        self.selectedCellYOrigin = cellOrigin.y
+        selectedCellHeight = cell.isValidationLabelHidden ? cell.frame.size.height + Constants.cellErrorLabelSafeSpacing : cell.frame.size.height
     }
     
     func formCollectionViewCell(_ cell: FormCollectionViewCell, shouldResignTextField textField: UITextField) {
