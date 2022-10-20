@@ -45,16 +45,3 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
     }
 }
 
-extension UIViewController {
-    static public func topMostViewController() -> UIViewController? {
-        let window = UIApplication.shared.connectedScenes.flatMap { ($0 as? UIWindowScene)?.windows ?? [] }.first { $0.isKeyWindow }
-        if var topController = window?.rootViewController {
-            while let presentedViewController = topController.presentedViewController {
-                topController = presentedViewController
-            }
-            return topController
-        }
-        return nil
-    }
-}
-

@@ -19,8 +19,10 @@ class AddPaymentCardViewController: UIViewController {
         static let cellErrorLabelSafeSpacing: CGFloat = 60.0
         static let offsetPadding: CGFloat = 30.0
         static let cardHeight: CGFloat = 120.0
-        static let bottomPadding: CGFloat = 16
+        static let buttonCornerRadius: CGFloat = 25
         static let buttonSpacing: CGFloat = 25
+        static let buttonHeight: CGFloat = 50
+        static let bottomPadding: CGFloat = 16
         static let bottomSafePadding: CGFloat = {
             let window = UIApplication.shared.connectedScenes.flatMap { ($0 as? UIWindowScene)?.windows ?? [] }.first { $0.isKeyWindow }
             let safeAreaBottom = window?.safeAreaInsets.bottom ?? 0
@@ -60,7 +62,7 @@ class AddPaymentCardViewController: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.backgroundColor = .systemPink
         button.setTitle("Add Card", for: .normal)
-        button.layer.cornerRadius = 25
+        button.layer.cornerRadius = Constants.buttonCornerRadius
         button.layer.cornerCurve = .continuous
         button.tintColor = .label
         button.isEnabled = false
@@ -142,7 +144,7 @@ class AddPaymentCardViewController: UIViewController {
             addButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -Constants.bottomSafePadding),
             addButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.buttonSpacing),
             addButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.buttonSpacing),
-            addButton.heightAnchor.constraint(equalToConstant: 50)
+            addButton.heightAnchor.constraint(equalToConstant: Constants.buttonHeight)
         ])
         
         stackScrollView.insert(arrangedSubview: card, atIndex: 0, customSpacing: 20)
@@ -208,9 +210,7 @@ extension AddPaymentCardViewController: FormCollectionViewCellDelegate {
         selectedCellHeight = cell.isValidationLabelHidden ? cell.frame.size.height + Constants.cellErrorLabelSafeSpacing : cell.frame.size.height
     }
     
-    func formCollectionViewCell(_ cell: FormCollectionViewCell, shouldResignTextField textField: UITextField) {
-        
-    }
+    func formCollectionViewCell(_ cell: FormCollectionViewCell, shouldResignTextField textField: UITextField) {}
     
     func formCollectionViewCellDidReceivePaymentScannerButtonTap(_ cell: FormCollectionViewCell) {
         BinkPaymentsManager.shared.launchScanner(delegate: self)

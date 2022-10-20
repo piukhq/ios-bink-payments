@@ -23,6 +23,7 @@ class AddPaymentCardViewModel {
     init(paymentCard: PaymentCardCreateModel? = nil) {
         self.paymentCard = paymentCard ?? PaymentCardCreateModel(fullPan: nil, nameOnCard: nil, month: nil, year: nil)
         setupfields(paymentCard: self.paymentCard)
+        checkFormValidity()
     }
     
     func refreshDataSource() {
@@ -189,7 +190,7 @@ class AddPaymentCardViewModel {
         paymentCard.year = options.last as? Int
     }
     
-    func textField(didExit: FormField) {
+    private func textField(didExit: FormField) {
         checkFormValidity()
     }
 }

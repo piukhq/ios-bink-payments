@@ -82,12 +82,10 @@ class BinkScannerWidgetView: UIView {
     func configure() {
         clipsToBounds = true
         layer.cornerRadius = Constants.cornerRadius
-        backgroundColor = .systemPink.withAlphaComponent(0.5)
+        backgroundColor = .systemPink.withAlphaComponent(0.8)
         titleLabel.font = .systemFont(ofSize: 18, weight: .medium)
         explainerLabel.font = .systemFont(ofSize: 16, weight: .light)
         explainerLabel.numberOfLines = 2
-        imageView.tintColor = .green
-
         setState(state)
     }
 

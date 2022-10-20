@@ -50,10 +50,14 @@ public class DebugViewController: UIViewController {
         return stackView
     }()
     
-    private lazy var arrowImageView: UIImageView = {
-        let imageView = UIImageView(image: UIImage(systemName: "arrowtriangle.down.fill"))
+    private lazy var closeImageView: UIImageView = {
+        let imageView = UIImageView(image: UIImage(named: "close", in: .module, with: nil))
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.tintColor = .lightGray
+        imageView.tintColor = .systemPink
+//        imageView.addTarget(self, action: #selector(close), for: .touchUpInside)
+            let tap = UITapGestureRecognizer(target: self, action: #selector(close))
+        imageView.addGestureRecognizer(tap)
+        imageView.isUserInteractionEnabled = true
         view.addSubview(imageView)
         return imageView
     }()
@@ -78,15 +82,19 @@ public class DebugViewController: UIViewController {
         NSLayoutConstraint.activate([
             stackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             stackView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            arrowImageView.heightAnchor.constraint(equalToConstant: 40),
-            arrowImageView.widthAnchor.constraint(equalToConstant: 40),
-            arrowImageView.topAnchor.constraint(equalTo: view.topAnchor, constant: 10),
-            arrowImageView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10)
+            closeImageView.heightAnchor.constraint(equalToConstant: 20),
+            closeImageView.widthAnchor.constraint(equalToConstant: 20),
+            closeImageView.topAnchor.constraint(equalTo: view.topAnchor, constant: 20),
+            closeImageView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
         ])
         
         view.backgroundColor = .darkGray
         panLabel.text = paymentCard.fullPan
         expiryLabel.text = paymentCard.formattedExpiryDate()
         nameOnCardLabel.text = paymentCard.nameOnCard
+    }
+    
+    @objc private func close() {
+        dismiss(animated: true)
     }
 }

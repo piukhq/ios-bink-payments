@@ -72,9 +72,7 @@ extension String {
     }
 }
 
-public extension UICollectionView {
-    // MARK: - Cell
-    
+public extension UICollectionView {    
     func register<T: UICollectionViewCell>(_: T.Type, asNib: Bool = false) {
         if asNib {
             register(UINib(nibName: T.reuseIdentifier, bundle: nil), forCellWithReuseIdentifier: T.reuseIdentifier)
@@ -88,6 +86,19 @@ public extension UICollectionView {
             fatalError("Could not dequeue cell with identifier: \(T.reuseIdentifier)")
         }
         return cell
+    }
+}
+
+extension UIViewController {
+    static public func topMostViewController() -> UIViewController? {
+        let window = UIApplication.shared.connectedScenes.flatMap { ($0 as? UIWindowScene)?.windows ?? [] }.first { $0.isKeyWindow }
+        if var topController = window?.rootViewController {
+            while let presentedViewController = topController.presentedViewController {
+                topController = presentedViewController
+            }
+            return topController
+        }
+        return nil
     }
 }
 

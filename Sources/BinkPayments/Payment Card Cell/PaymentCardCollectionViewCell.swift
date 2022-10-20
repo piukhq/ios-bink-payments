@@ -21,22 +21,9 @@ class PaymentCardCollectionViewCell: WalletCardCollectionViewCell, UIGestureReco
         case unknownGradient
         case swipeGradient
     }
-//
-//    private lazy var width: NSLayoutConstraint = {
-//        let width = contentView.widthAnchor.constraint(equalToConstant: bounds.size.width)
-//        width.isActive = true
-//        return width
-//    }()
-//
-//    private lazy var height: NSLayoutConstraint = {
-//        let height = contentView.heightAnchor.constraint(equalToConstant: bounds.size.height)
-//        height.isActive = true
-//        return height
-//    }()
     
     private var cardGradientLayer: CAGradientLayer?
     private var startingOffset: CGFloat = 0
-    
     private var viewModel: PaymentCardCellViewModel!
     
     override var bounds: CGRect {
@@ -114,7 +101,7 @@ class PaymentCardCollectionViewCell: WalletCardCollectionViewCell, UIGestureReco
         }
         
         /*
-        The below is kind of a nightmare. Due to the way UILabel draws itself, we need the lineheight to be set to a constant
+        Due to the way UILabel draws itself, we need the lineheight to be set to a constant
         so that when an unredacted character (of a different font size) is added, there is no visual vertical shifting taking
         place. Due to using NSAttributedString we've lost some safety because we have to use NSRange.
         */
@@ -151,26 +138,6 @@ class PaymentCardCollectionViewCell: WalletCardCollectionViewCell, UIGestureReco
         processGradient(type: type)
     }
     
-//    private func configurePaymentCardLinkingStatus() {
-//        guard !viewModel.paymentCardIsExpired else {
-//            alertView.configureForType(.paymentExpired) { [weak self] in
-//                self?.viewModel.expiredAction()
-//            }
-//            alertView.isHidden = false
-//            statusLabel.isHidden = true
-//            statusImageView.isHidden = true
-//            return
-//        }
-//
-//        statusLabel.text = viewModel.statusText
-//        statusImageView.isHidden = !viewModel.paymentCardIsActive
-//        statusImageView.image = imageForLinkedStatus()
-//    }
-    
-//    private func imageForLinkedStatus() -> UIImage? {
-//        return viewModel.paymentCardIsLinkedToMembershipCards ? Asset.linked.image : Asset.unlinked.image
-//    }
-    
     private func processGradient(type: PaymentCardType?) {
         cardGradientLayer?.removeFromSuperlayer()
         let gradient = CAGradientLayer()
@@ -192,11 +159,4 @@ class PaymentCardCollectionViewCell: WalletCardCollectionViewCell, UIGestureReco
             cardGradientLayer?.colors = UIColor.unknownPaymentCardGradients
         }
     }
-    
-//    override func systemLayoutSizeFitting(_ targetSize: CGSize, withHorizontalFittingPriority horizontalFittingPriority: UILayoutPriority, verticalFittingPriority: UILayoutPriority) -> CGSize {
-//        width.priority = UILayoutPriority(999)
-//        width.constant = bounds.size.width
-//        height.constant = bounds.size.height
-//        return contentView.systemLayoutSizeFitting(CGSize(width: targetSize.width, height: targetSize.height))
-//    }
 }

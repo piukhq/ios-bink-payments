@@ -38,7 +38,6 @@ extension BinkScannerViewControllerDelegate {
     }
 
     public weak var delegate: BinkScannerViewControllerDelegate?
-
     private var session = AVCaptureSession()
     private var captureOutput: AVCaptureOutput?
     private var videoPreviewLayer: AVCaptureVideoPreviewLayer?
@@ -47,7 +46,6 @@ extension BinkScannerViewControllerDelegate {
     private var rectOfInterest = CGRect.zero
     private var timer: Timer?
     private var canPresentScanError = true
-    private var hideNavigationBar = true
     private var shouldAllowScanning = true
     private var shouldPresentWidgetError = true
     private let visionUtility = VisionUtility()
@@ -112,14 +110,16 @@ extension BinkScannerViewControllerDelegate {
         return widget
     }()
     
-//
-//    private lazy var cancelButton: UIButton = {
-//        let button = UIButton(type: .custom)
-//        button.translatesAutoresizingMaskIntoConstraints = false
-//        button.setImage(Asset.close.image, for: .normal)
-//        button.addTarget(self, action: #selector(close), for: .touchUpInside)
-//        return button
-//    }()
+
+    private lazy var cancelButton: UIButton = {
+        let button = UIButton(type: .custom)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setImage(UIImage(named: "close", in: .module, with: nil), for: .normal)
+        button.addTarget(self, action: #selector(close), for: .touchUpInside)
+        button.tintColor = .systemPink
+        view.addSubview(button)
+        return button
+    }()
 
     public init() {
         super.init(nibName: nil, bundle: nil)
@@ -131,8 +131,6 @@ extension BinkScannerViewControllerDelegate {
 
     override public func viewDidLoad() {
         super.viewDidLoad()
-        
-
         configureUI()
         configureSubscribers()
         startScanning()
@@ -186,7 +184,11 @@ extension BinkScannerViewControllerDelegate {
             expiryLabel.topAnchor.constraint(equalTo: panLabel.bottomAnchor),
             expiryLabel.centerXAnchor.constraint(equalTo: panLabel.centerXAnchor),
             nameOnCardLabel.leadingAnchor.constraint(equalTo: guideImageView.leadingAnchor, constant: 25),
-            nameOnCardLabel.bottomAnchor.constraint(equalTo: guideImageView.bottomAnchor, constant: -10)
+            nameOnCardLabel.bottomAnchor.constraint(equalTo: guideImageView.bottomAnchor, constant: -10),
+            cancelButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 4),
+            cancelButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -4),
+            cancelButton.heightAnchor.constraint(equalToConstant: Constants.closeButtonSize.height),
+            cancelButton.widthAnchor.constraint(equalToConstant: Constants.closeButtonSize.width)
         ])
     }
     
@@ -297,10 +299,10 @@ extension BinkScannerViewControllerDelegate {
                         self.nameOnCardLabel.alpha = 1
                         self.guideImageView.tintColor = .systemPink
                         self.guideImageView.layer.addBinkAnimation(.shake)
-                    } completion: { _ in
+                    } completion: { [weak self] _ in
                         HapticFeedbackUtil.giveFeedback(forType: .notification(type: .success))
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
-                            
+                            guard let self = self else { return }
                             self.delegate?.binkScannerViewController(self, didScan: self.visionUtility.paymentCard)
                         }
                     }
@@ -334,7 +336,7 @@ extension BinkScannerViewControllerDelegate {
     }
     
     @objc private func close() {
-        
+        dismiss(animated: true)
     }
 }
 
