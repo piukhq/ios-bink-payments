@@ -296,9 +296,9 @@ extension BinkScannerViewControllerDelegate {
                         self.nameOnCardLabel.text = self.visionUtility.paymentCard.nameOnCard ?? ""
                         self.nameOnCardLabel.alpha = 1
                         self.guideImageView.tintColor = .systemPink
-//                        self.guideImageView.layer.addBinkAnimation(.shake)
+                        self.guideImageView.layer.addBinkAnimation(.shake)
                     } completion: { _ in
-//                        HapticFeedbackUtil.giveFeedback(forType: .notification(type: .success))
+                        HapticFeedbackUtil.giveFeedback(forType: .notification(type: .success))
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
                             
                             self.delegate?.binkScannerViewController(self, didScan: self.visionUtility.paymentCard)

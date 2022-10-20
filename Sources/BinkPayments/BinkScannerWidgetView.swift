@@ -10,7 +10,7 @@ import UIKit
 
 class BinkScannerWidgetView: UIView {
     enum Constants {
-        static let cornerRadius: CGFloat = 4
+        static let cornerRadius: CGFloat = 8
     }
 
     private lazy var titleLabel: UILabel = {
@@ -82,7 +82,6 @@ class BinkScannerWidgetView: UIView {
     func configure() {
         clipsToBounds = true
         layer.cornerRadius = Constants.cornerRadius
-
         backgroundColor = .systemPink.withAlphaComponent(0.5)
         titleLabel.font = .systemFont(ofSize: 18, weight: .medium)
         explainerLabel.font = .systemFont(ofSize: 16, weight: .light)
@@ -93,8 +92,8 @@ class BinkScannerWidgetView: UIView {
     }
 
     private func error(state: WidgetState) {
-//        layer.addBinkAnimation(.shake)
-//        HapticFeedbackUtil.giveFeedback(forType: .notification(type: .error))
+        layer.addBinkAnimation(.shake)
+        HapticFeedbackUtil.giveFeedback(forType: .notification(type: .error))
         setState(state)
     }
 
