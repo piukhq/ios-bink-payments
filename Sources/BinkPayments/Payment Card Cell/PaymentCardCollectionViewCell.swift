@@ -21,18 +21,18 @@ class PaymentCardCollectionViewCell: WalletCardCollectionViewCell, UIGestureReco
         case unknownGradient
         case swipeGradient
     }
-    
-    private lazy var width: NSLayoutConstraint = {
-        let width = contentView.widthAnchor.constraint(equalToConstant: bounds.size.width)
-        width.isActive = true
-        return width
-    }()
-    
-    private lazy var height: NSLayoutConstraint = {
-        let height = contentView.heightAnchor.constraint(equalToConstant: bounds.size.height)
-        height.isActive = true
-        return height
-    }()
+//
+//    private lazy var width: NSLayoutConstraint = {
+//        let width = contentView.widthAnchor.constraint(equalToConstant: bounds.size.width)
+//        width.isActive = true
+//        return width
+//    }()
+//
+//    private lazy var height: NSLayoutConstraint = {
+//        let height = contentView.heightAnchor.constraint(equalToConstant: bounds.size.height)
+//        height.isActive = true
+//        return height
+//    }()
     
     private var cardGradientLayer: CAGradientLayer?
     private var startingOffset: CGFloat = 0
@@ -193,10 +193,10 @@ class PaymentCardCollectionViewCell: WalletCardCollectionViewCell, UIGestureReco
         }
     }
     
-    override func systemLayoutSizeFitting(_ targetSize: CGSize, withHorizontalFittingPriority horizontalFittingPriority: UILayoutPriority, verticalFittingPriority: UILayoutPriority) -> CGSize {
-        width.priority = UILayoutPriority(999)
-        width.constant = bounds.size.width
-        height.constant = bounds.size.height
-        return contentView.systemLayoutSizeFitting(CGSize(width: targetSize.width, height: targetSize.height))
-    }
+//    override func systemLayoutSizeFitting(_ targetSize: CGSize, withHorizontalFittingPriority horizontalFittingPriority: UILayoutPriority, verticalFittingPriority: UILayoutPriority) -> CGSize {
+//        width.priority = UILayoutPriority(999)
+//        width.constant = bounds.size.width
+//        height.constant = bounds.size.height
+//        return contentView.systemLayoutSizeFitting(CGSize(width: targetSize.width, height: targetSize.height))
+//    }
 }
