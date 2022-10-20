@@ -224,6 +224,9 @@ extension AddPaymentCardViewController: BinkScannerViewControllerDelegate {
     
     func binkScannerViewController(_ viewController: BinkScannerViewController, didScan paymentCard: PaymentCardCreateModel) {
         dismiss(animated: true) { [weak self] in
+            paymentCard.month = paymentCard.month ?? self?.viewModel.paymentCard.month
+            paymentCard.year = paymentCard.year ?? self?.viewModel.paymentCard.year
+            paymentCard.nameOnCard = paymentCard.nameOnCard ?? self?.viewModel.paymentCard.nameOnCard
             self?.viewModel.paymentCard = paymentCard
             self?.viewModel.refreshDataSource()
         }
