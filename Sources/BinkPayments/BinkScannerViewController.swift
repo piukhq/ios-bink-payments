@@ -105,12 +105,13 @@ extension BinkScannerViewControllerDelegate {
         return label
     }()
 
-//    private lazy var widgetView: LoyaltyScannerWidgetView = {
-//        let widget = LoyaltyScannerWidgetView()
-//        widget.addTarget(self, selector: #selector(enterManually))
-//        widget.translatesAutoresizingMaskIntoConstraints = false
-//        return widget
-//    }()
+    private lazy var widgetView: BinkScannerWidgetView = {
+        var widget = BinkScannerWidgetView()
+        widget.addTarget(self, selector: #selector(enterManually))
+        widget.translatesAutoresizingMaskIntoConstraints = false
+        return widget
+    }()
+    
 //
 //    private lazy var cancelButton: UIButton = {
 //        let button = UIButton(type: .custom)
@@ -130,6 +131,8 @@ extension BinkScannerViewControllerDelegate {
 
     override public func viewDidLoad() {
         super.viewDidLoad()
+        
+
         configureUI()
         configureSubscribers()
         startScanning()
@@ -164,10 +167,7 @@ extension BinkScannerViewControllerDelegate {
         guideImageView.frame = rectOfInterest.inset(by: Constants.guideImageInset)
         view.addSubview(guideImageView)
         view.addSubview(explainerLabel)
-//        view.addSubview(widgetView)
-        
-//        footerButtons = [photoLibraryButton]
-        
+        view.addSubview(widgetView)
         view.addSubview(panLabel)
         view.addSubview(expiryLabel)
         view.addSubview(nameOnCardLabel)
@@ -177,10 +177,10 @@ extension BinkScannerViewControllerDelegate {
             explainerLabel.leftAnchor.constraint(equalTo: view.leftAnchor, constant: Constants.explainerLabelPadding),
             explainerLabel.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -Constants.explainerLabelPadding),
             explainerLabel.heightAnchor.constraint(equalToConstant: Constants.explainerLabelHeight),
-//            widgetView.topAnchor.constraint(equalTo: explainerLabel.bottomAnchor, constant: Constants.widgetViewTopPadding),
-//            widgetView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: Constants.widgetViewLeftRightPadding),
-//            widgetView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -Constants.widgetViewLeftRightPadding),
-//            widgetView.heightAnchor.constraint(equalToConstant: Constants.widgetViewHeight),
+            widgetView.topAnchor.constraint(equalTo: explainerLabel.bottomAnchor, constant: Constants.widgetViewTopPadding),
+            widgetView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: Constants.widgetViewLeftRightPadding),
+            widgetView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -Constants.widgetViewLeftRightPadding),
+            widgetView.heightAnchor.constraint(equalToConstant: Constants.widgetViewHeight),
             panLabel.centerXAnchor.constraint(equalTo: guideImageView.centerXAnchor),
             panLabel.centerYAnchor.constraint(equalTo: guideImageView.centerYAnchor, constant: 20),
             expiryLabel.topAnchor.constraint(equalTo: panLabel.bottomAnchor),
@@ -228,7 +228,7 @@ extension BinkScannerViewControllerDelegate {
         }
         
         captureOutput = videoOutput
-//        scheduleTimer()
+        scheduleTimer()
     }
 
     private func stopScanning() {
@@ -242,20 +242,15 @@ extension BinkScannerViewControllerDelegate {
         }
     }
     
-//    private func scheduleTimer() {
-//        timer = Timer.scheduledTimer(withTimeInterval: Constants.timerInterval, repeats: true, block: { [weak self] _ in
-//            guard let self = self else { return }
-//            if self.shouldPresentWidgetError {
-//                self.widgetView.timeout()
-//                self.shouldPresentWidgetError = false
-//            }
-//
-//            if self.viewModel.type == .loyalty {
-//                /// If after 5 seconds no barcode has been scanned, switch detection type
-//                self.loyaltyScannerDetectionType = self.loyaltyScannerDetectionType == .barcode ? .string : .barcode
-//            }
-//        })
-//    }
+    private func scheduleTimer() {
+        timer = Timer.scheduledTimer(withTimeInterval: Constants.timerInterval, repeats: true, block: { [weak self] _ in
+            guard let self = self else { return }
+            if self.shouldPresentWidgetError {
+                self.widgetView.timeout()
+                self.shouldPresentWidgetError = false
+            }
+        })
+    }
 
     private func performCaptureChecksForDevice(_ device: AVCaptureDevice) {
         do {
@@ -333,8 +328,8 @@ extension BinkScannerViewControllerDelegate {
     
     @objc private func enterManually() {
         delegate?.binkScannerViewControllerShouldEnterManually(self, completion: { [weak self] in
-//            guard let self = self else { return }
-//            self.navigationController?.removeViewController(self)
+            guard let self = self else { return }
+            self.navigationController?.removeViewController(self)
         })
     }
     
@@ -350,29 +345,5 @@ extension BinkScannerViewController: AVCaptureVideoDataOutputSampleBufferDelegat
     public func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         guard let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
         self.visionUtility.performPaymentCardOCR(frame: imageBuffer)
-    }
-    
-    private func cropImage(imageBuffer: CVImageBuffer) -> CIImage? {
-        CVPixelBufferLockBaseAddress(imageBuffer, .readOnly)
-        guard let baseAddress = CVPixelBufferGetBaseAddress(imageBuffer) else { return nil }
-        let bytesPerRow = CVPixelBufferGetBytesPerRow(imageBuffer)
-        let scale = UIScreen.main.scale
-        let cropWidth = Int(rectOfInterest.width * scale)
-        let cropHeight = Int(rectOfInterest.height * scale)
-        let colorSpace = CGColorSpaceCreateDeviceRGB()
-        
-        // Calculate start position
-        let bytesPerPixel = 4
-        let startPointX = Int(rectOfInterest.minX)
-        let startPointY = Int(rectOfInterest.minY)
-        let startAddress = baseAddress + startPointY * bytesPerRow + startPointX * bytesPerPixel
-        let context = CGContext(data: startAddress, width: cropWidth, height: cropHeight, bitsPerComponent: 8, bytesPerRow: bytesPerRow, space: colorSpace, bitmapInfo: CGImageAlphaInfo.noneSkipFirst.rawValue | CGBitmapInfo.byteOrder32Little.rawValue)
-
-        CVPixelBufferUnlockBaseAddress(imageBuffer, .readOnly)
-        
-        if let cgImage = context?.makeImage() {
-            return CIImage(cgImage: cgImage)
-        }
-        return nil
     }
 }

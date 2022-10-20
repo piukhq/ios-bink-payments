@@ -112,6 +112,14 @@ public extension UICollectionReusableView {
     }
 }
 
+extension UINavigationController {
+    func removeViewController(_ viewController: UIViewController) {
+        if let index = viewControllers.firstIndex(where: { $0 == viewController }) {
+            viewControllers.remove(at: index)
+        }
+    }
+}
+
 public extension Collection {
     /// Returns the element at the specified index if it is within bounds, otherwise nil.
     subscript (safe index: Index) -> Element? {

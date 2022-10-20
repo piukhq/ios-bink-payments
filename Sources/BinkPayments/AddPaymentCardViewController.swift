@@ -218,10 +218,8 @@ extension AddPaymentCardViewController: FormCollectionViewCellDelegate {
 }
 
 extension AddPaymentCardViewController: BinkScannerViewControllerDelegate {
-    func binkScannerViewControllerShouldEnterManually(_ viewController: BinkScannerViewController, completion: (() -> Void)?) {
-        // TODO: - add enter manually widget to scanner
-//        dismiss(animated: true)
-        print("Should enter manually")
+    func binkScannerViewControllerShouldEnterManually(_ viewController: BinkPayments.BinkScannerViewController, completion: (() -> Void)?) {
+        dismiss(animated: true)
     }
     
     func binkScannerViewController(_ viewController: BinkScannerViewController, didScan paymentCard: PaymentCardCreateModel) {
