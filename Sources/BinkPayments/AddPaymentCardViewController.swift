@@ -116,6 +116,7 @@ class AddPaymentCardViewController: UIViewController {
             .sink() { [weak self] in
                 self?.addButton.isEnabled = $0
                 self?.collectionView.collectionViewLayout.invalidateLayout()
+                self?.stackScrollView.contentInset.bottom = Constants.bottomInset
             }
             .store(in: &subscriptions)
         
@@ -211,7 +212,7 @@ extension AddPaymentCardViewController: FormCollectionViewCellDelegate {
     func formCollectionViewCell(_ cell: FormCollectionViewCell, didSelectField: UITextField) {
         let cellOrigin = collectionView.convert(cell.frame.origin, to: view)
         self.selectedCellYOrigin = cellOrigin.y
-        selectedCellHeight = cell.isValidationLabelHidden ? cell.frame.size.height + Constants.cellErrorLabelSafeSpacing : cell.frame.size.height
+        selectedCellHeight = cell.frame.size.height + Constants.cellErrorLabelSafeSpacing
     }
     
     func formCollectionViewCell(_ cell: FormCollectionViewCell, shouldResignTextField textField: UITextField) {}

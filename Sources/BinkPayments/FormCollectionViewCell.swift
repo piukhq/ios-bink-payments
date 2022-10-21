@@ -160,16 +160,16 @@ class FormCollectionViewCell: UICollectionViewCell {
     }()
     
     /// The label that describes a validation error
-    private lazy var validationLabel: UILabel = {
-        let label = UILabel()
+    private lazy var validationLabel: PaddedLabelView = {
+        let label = PaddedLabelView()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 0
+        label.leftInset = 20
         label.font = .systemFont(ofSize: 13, weight: .light)
         label.text = "Invalid entry"
         label.isHidden = true
         label.textColor = .systemRed
         label.setContentCompressionResistancePriority(.required, for: .vertical)
-        label.widthAnchor.constraint(equalToConstant: preferredWidth).isActive = true
         return label
     }()
     
@@ -194,7 +194,6 @@ class FormCollectionViewCell: UICollectionViewCell {
     
     private weak var formField: FormField?
     private var pickerSelectedChoice: String?
-    var isValidationLabelHidden = true
     
     // MARK: - Initialisation
     
@@ -233,7 +232,6 @@ class FormCollectionViewCell: UICollectionViewCell {
     // MARK: - Public Methods
 
     func configure(with field: FormField, delegate: FormCollectionViewCellDelegate?) {
-//        tintColor = .activeField
         titleLabel.text = field.title
         textField.text = field.forcedValue
         textField.placeholder = field.placeholder
@@ -351,7 +349,6 @@ class FormCollectionViewCell: UICollectionViewCell {
         
         guard let field = formField else { return }
         validationLabel.text = field.validationErrorMessage != nil ? field.validationErrorMessage : "Invalid input"
-        isValidationLabelHidden = validationLabel.isHidden
         validationIconImageView.isHidden = validationIconHidden
         containerStack.setCustomSpacing(validationLabelSpacing, after: fieldContainerVStack)
     }
