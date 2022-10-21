@@ -50,16 +50,14 @@ public class DebugViewController: UIViewController {
         return stackView
     }()
     
-    private lazy var closeImageView: UIImageView = {
-        let imageView = UIImageView(image: UIImage(named: "close", in: .module, with: nil))
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.tintColor = .systemPink
-//        imageView.addTarget(self, action: #selector(close), for: .touchUpInside)
-            let tap = UITapGestureRecognizer(target: self, action: #selector(close))
-        imageView.addGestureRecognizer(tap)
-        imageView.isUserInteractionEnabled = true
-        view.addSubview(imageView)
-        return imageView
+    private lazy var cancelButton: UIButton = {
+        let button = UIButton(type: .custom)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setImage(UIImage(named: "close", in: .module, with: nil), for: .normal)
+        button.addTarget(self, action: #selector(close), for: .touchUpInside)
+        button.tintColor = .systemPink
+        view.addSubview(button)
+        return button
     }()
     
     public var paymentCard: PaymentCardCreateModel
@@ -82,10 +80,10 @@ public class DebugViewController: UIViewController {
         NSLayoutConstraint.activate([
             stackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             stackView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            closeImageView.heightAnchor.constraint(equalToConstant: 20),
-            closeImageView.widthAnchor.constraint(equalToConstant: 20),
-            closeImageView.topAnchor.constraint(equalTo: view.topAnchor, constant: 20),
-            closeImageView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+            cancelButton.heightAnchor.constraint(equalToConstant: 20),
+            cancelButton.widthAnchor.constraint(equalToConstant: 20),
+            cancelButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 20),
+            cancelButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
         ])
         
         view.backgroundColor = .darkGray
@@ -94,7 +92,7 @@ public class DebugViewController: UIViewController {
         nameOnCardLabel.text = paymentCard.nameOnCard
     }
     
-    @objc private func close() {
+    @objc public func close() {
         dismiss(animated: true)
     }
 }

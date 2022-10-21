@@ -34,8 +34,7 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
     
     public func launchDebugScreen(paymentCard: PaymentCardCreateModel) {
         let debugScreen = DebugViewController(paymentCard: paymentCard)
-        let navigationController = UINavigationController(rootViewController: debugScreen)
-        currentViewController?.present(navigationController, animated: true)
+        currentViewController?.present(debugScreen, animated: true)
     }
     
     public func launchAddPaymentCardScreen(_ paymentCard: PaymentCardCreateModel? = nil) {
