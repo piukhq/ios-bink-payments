@@ -115,6 +115,7 @@ class AddPaymentCardViewController: UIViewController {
         viewModel.$fullFormIsValid
             .sink() { [weak self] in
                 self?.addButton.isEnabled = $0
+                self?.collectionView.collectionViewLayout.invalidateLayout()
             }
             .store(in: &subscriptions)
         
