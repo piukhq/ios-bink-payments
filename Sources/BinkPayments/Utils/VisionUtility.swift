@@ -32,8 +32,8 @@ public class VisionUtility: ObservableObject {
     
     let subject = PassthroughSubject<PaymentCardCreateModel, Error>()
     
-    func recognizePaymentCard(frame: CVImageBuffer, rectangle: VNRectangleObservation) {
-        performTextRecognition(frame: frame, rectangle: rectangle) { [weak self] observations in
+    func recognizePaymentCard(in image: CIImage) {
+        performTextRecognition(in: image) { [weak self] observations in
             guard let observations = observations else { return }
             guard let self = self else { return }
             let recognizedTexts = observations.compactMap { observation in
@@ -65,20 +65,6 @@ public class VisionUtility: ObservableObject {
         }
     }
     
-    public func performPaymentCardOCR(frame: CVImageBuffer) {
-        let rectangleDetectionRequest = VNDetectRectanglesRequest()
-        let paymentCardAspectRatio: Float = 85.60 / 53.98
-        rectangleDetectionRequest.minimumAspectRatio = paymentCardAspectRatio * 0.95
-        rectangleDetectionRequest.maximumAspectRatio = paymentCardAspectRatio * 1.10
-        let textDetectionRequest = VNDetectTextRectanglesRequest()
-        
-        try? self.requestHandler.perform([rectangleDetectionRequest, textDetectionRequest], on: frame)
-        
-        guard let rectangle = (rectangleDetectionRequest.results)?.first, let text = (textDetectionRequest.results)?.first, rectangle.boundingBox.contains(text.boundingBox) else { return }
-        
-        recognizePaymentCard(frame: frame, rectangle: rectangle)
-    }
-    
     private func scheduleTimer() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
             guard let self = self else { return }
@@ -86,16 +72,12 @@ public class VisionUtility: ObservableObject {
         }
     }
     
-    private func performTextRecognition(frame: CVImageBuffer, rectangle: VNRectangleObservation, completion: ([VNRecognizedTextObservation]?) -> Void) {
-        let cardPositionInImage = VNImageRectForNormalizedRect(rectangle.boundingBox, CVPixelBufferGetWidth(frame), CVPixelBufferGetHeight(frame))
-        let ciImage = CIImage(cvImageBuffer: frame)
-        let croppedImage = ciImage.cropped(to: cardPositionInImage)
-        
+    private func performTextRecognition(in image: CIImage, completion: ([VNRecognizedTextObservation]?) -> Void) {
         let request = VNRecognizeTextRequest()
         request.recognitionLevel = .accurate
         request.usesLanguageCorrection = false
         
-        let stillImageRequestHandler = VNImageRequestHandler(ciImage: croppedImage, options: [:])
+        let stillImageRequestHandler = VNImageRequestHandler(ciImage: image, options: [:])
         try? stillImageRequestHandler.perform([request])
         
         guard let observations = request.results, !observations.isEmpty else {

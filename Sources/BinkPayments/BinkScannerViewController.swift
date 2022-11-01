@@ -345,7 +345,31 @@ extension BinkScannerViewControllerDelegate {
 
 extension BinkScannerViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
     public func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-        guard let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
-        self.visionUtility.performPaymentCardOCR(frame: imageBuffer)
+        guard let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer), let croppedImage = cropImage(imageBuffer: imageBuffer) else { return }
+        self.visionUtility.recognizePaymentCard(image: croppedImage)
+    }
+    
+    private func cropImage(imageBuffer: CVImageBuffer) -> CIImage? {
+        CVPixelBufferLockBaseAddress(imageBuffer, .readOnly)
+        guard let baseAddress = CVPixelBufferGetBaseAddress(imageBuffer) else { return nil }
+        let bytesPerRow = CVPixelBufferGetBytesPerRow(imageBuffer)
+        let scale = UIScreen.main.scale
+        let cropWidth = Int(rectOfInterest.width * scale)
+        let cropHeight = Int(rectOfInterest.height * scale)
+        let colorSpace = CGColorSpaceCreateDeviceRGB()
+        
+        // Calculate start position
+        let bytesPerPixel = 4
+        let startPointX = Int(rectOfInterest.minX)
+        let startPointY = Int(rectOfInterest.minY)
+        let startAddress = baseAddress + startPointY * bytesPerRow + startPointX * bytesPerPixel
+        let context = CGContext(data: startAddress, width: cropWidth, height: cropHeight, bitsPerComponent: 8, bytesPerRow: bytesPerRow, space: colorSpace, bitmapInfo: CGImageAlphaInfo.noneSkipFirst.rawValue | CGBitmapInfo.byteOrder32Little.rawValue)
+
+        CVPixelBufferUnlockBaseAddress(imageBuffer, .readOnly)
+        
+        if let cgImage = context?.makeImage() {
+            return CIImage(cgImage: cgImage)
+        }
+        return nil
     }
 }
