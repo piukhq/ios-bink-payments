@@ -346,7 +346,7 @@ extension BinkScannerViewControllerDelegate {
 extension BinkScannerViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
     public func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         guard let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer), let croppedImage = cropImage(imageBuffer: imageBuffer) else { return }
-        self.visionUtility.recognizePaymentCard(image: croppedImage)
+        self.visionUtility.recognizePaymentCard(in: croppedImage)
     }
     
     private func cropImage(imageBuffer: CVImageBuffer) -> CIImage? {
