@@ -353,7 +353,7 @@ extension BinkScannerViewController: AVCaptureVideoDataOutputSampleBufferDelegat
         CVPixelBufferLockBaseAddress(imageBuffer, .readOnly)
         guard let baseAddress = CVPixelBufferGetBaseAddress(imageBuffer) else { return nil }
         let bytesPerRow = CVPixelBufferGetBytesPerRow(imageBuffer)
-        let scale = UIScreen.main.scale
+        let scale = 3.0
         let cropWidth = Int(rectOfInterest.width * scale)
         let cropHeight = Int(rectOfInterest.height * scale)
         let colorSpace = CGColorSpaceCreateDeviceRGB()
