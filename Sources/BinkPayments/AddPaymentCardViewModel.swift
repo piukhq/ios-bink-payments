@@ -19,11 +19,25 @@ class AddPaymentCardViewModel {
     @Published var refreshForm = false
     
     var fields: [FormField] = []
+    let repository = PaymentWalletRepository()
+    var isDebug = true
 
     init(paymentCard: PaymentCardCreateModel? = nil) {
-        self.paymentCard = paymentCard ?? PaymentCardCreateModel(fullPan: nil, nameOnCard: nil, month: nil, year: nil)
+        self.paymentCard = paymentCard ?? PaymentCardCreateModel(fullPan: nil, nameOnCard: nil, month: nil, year: nil, cardNickname: nil)
         setupfields(paymentCard: self.paymentCard)
         checkFormValidity()
+    }
+    
+    func addPaymentCard(onError: (() -> Void)? = nil) {
+        repository.addPaymentCard(paymentCard, onSuccess: {
+//            let name = paymentAccount?.nameOnCard ?? ""
+//            let nickName = paymentAccount?.cardNickname ?? ""
+//            let expiry = paymentAccount?.expiryMonth ?? "" + " /" + (paymentAccount?.expiryYear ?? "")
+//            let message = name + ", " + nickName + ", " + expiry
+            
+        }) {
+            onError?()
+        }
     }
     
     func refreshDataSource() {
