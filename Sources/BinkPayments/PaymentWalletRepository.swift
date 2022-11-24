@@ -8,7 +8,8 @@
 import Foundation
 
 class PaymentWalletRepository {
-    var isProduction = false
+    private let apiClient = APIClient()
+    private var isProduction = false
     
     func addPaymentCard(_ paymentCard: PaymentCardCreateModel, onSuccess: @escaping () -> Void, onError: @escaping() -> Void) {
         if isProduction {
@@ -27,7 +28,7 @@ class PaymentWalletRepository {
 //            }
 //            return
         } else {
-            createPaymentAccount(paymentCard, onSuccess: {
+            createPaymentCard(paymentCard, onSuccess: {
                 onSuccess()
             }, onError: {
                 onError()
@@ -48,28 +49,48 @@ class PaymentWalletRepository {
 //        }
 //    }
 
-    private func createPaymentAccount(_ paymentAccount: PaymentCardCreateModel, spreedlyResponse: SpreedlyResponse? = nil, onSuccess: @escaping () -> Void, onError: @escaping() -> Void) {
+    private func createPaymentCard(_ paymentCard: PaymentCardCreateModel, spreedlyResponse: SpreedlyResponse? = nil, onSuccess: @escaping () -> Void, onError: @escaping() -> Void) {
         var paymentCreateRequest: PaymentCardCreateRequest?
 
         if let spreedlyResponse = spreedlyResponse {
-            paymentCreateRequest = PaymentCardCreateRequest(spreedlyResponse: spreedlyResponse, paymentAccount: paymentAccount)
+            paymentCreateRequest = PaymentCardCreateRequest(spreedlyResponse: spreedlyResponse, paymentAccount: paymentCard)
         } else {
-            paymentCreateRequest = PaymentCardCreateRequest(model: paymentAccount)
+            paymentCreateRequest = PaymentCardCreateRequest(model: paymentCard)
         }
 
-        guard let request = paymentCreateRequest else {
+        guard let paymentCreateRequest = paymentCreateRequest else {
             onError()
             return
         }
 
-//        addPaymentCard(withRequestModel: request) { (result, responseData) in
-//            switch result {
-//            case .success(var response):
-//                response.firstSix = paymentAccount.firstSixDigits
-//                onSuccess()
-//            case .failure(let error):
-//                onError(error)
-//            }
-//        }
+        
+        let binkNetworkRequest = BinkNetworkRequest(endpoint: .createPaymentAccount, method: .post, headers: nil, isUserDriven: true)
+        apiClient.performRequestWithBody(binkNetworkRequest, body: paymentCreateRequest, expecting: Safe<PaymentCardResponseModel>.self) { (result, rawResponse) in
+            switch result {
+            case .success(let response):
+                guard let safeResponse = response.value else {
+                    onError()
+                    return
+                }
+
+                onSuccess()
+            case .failure:
+                onError()
+            }
+        }
+    }
+}
+
+struct Safe<Base: Decodable>: Decodable {
+    let value: Base?
+
+    init(from decoder: Decoder) throws {
+        do {
+            let container = try decoder.singleValueContainer()
+            self.value = try container.decode(Base.self)
+        } catch {
+            self.value = nil
+            print(String(describing: error))
+        }
     }
 }

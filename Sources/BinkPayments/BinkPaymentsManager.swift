@@ -9,8 +9,9 @@ import UIKit
 
 public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
     public static let shared = BinkPaymentsManager()
-    private var token: String!
-    private var environmentKey: String!
+    var token: String!
+    var environmentKey: String!
+    var isTesting: Bool!
     
     private var currentViewController: UIViewController? {
         return UIViewController.topMostViewController()
@@ -18,11 +19,12 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
 
     private override init() {}
     
-    public func configure(token: String!, environmentKey: String!) {
+    public func configure(token: String!, environmentKey: String!, isTesting: Bool) {
         assert(!token.isEmpty && !environmentKey.isEmpty, "Bink Payments SDK Error - Not Initialised due to missing token/environment key")
         
         self.token = token
         self.environmentKey = environmentKey
+        self.isTesting = isTesting
         print("Bink Payments SDK Initialised")
     }
     
