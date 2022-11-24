@@ -158,10 +158,11 @@ class AddPaymentCardViewController: UIViewController {
     }
     
     @objc func addButtonTapped() {
-        dismiss(animated: true) { [weak self] in
-            guard let paymentCard = self?.viewModel.paymentCard else { return }
-            BinkPaymentsManager.shared.launchDebugScreen(paymentCard: paymentCard)
-        }
+        viewModel.addPaymentCard()
+//        dismiss(animated: true) { [weak self] in
+//            guard let paymentCard = self?.viewModel.paymentCard else { return }
+//            BinkPaymentsManager.shared.launchDebugScreen(paymentCard: paymentCard)
+//        }
     }
     
     @objc func handleKeyboardWillShow(_ notification: Notification) {

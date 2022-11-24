@@ -12,27 +12,27 @@ class PaymentWalletRepository {
     private var isProduction = false
     
     func addPaymentCard(_ paymentCard: PaymentCardCreateModel, onSuccess: @escaping () -> Void, onError: @escaping() -> Void) {
-        if isProduction {
-//            requestSpreedlyToken(paymentCard: paymentCard, onSuccess: { [weak self] spreedlyResponse in
-//                guard spreedlyResponse.isValid else {
-//                    onError(nil)
-//                    return
-//                }
-//                self?.createPaymentAccount(paymentCard, spreedlyResponse: spreedlyResponse, onSuccess: { createdPaymentCard in
-//                    onSuccess(createdPaymentCard)
-//                }, onError: { error in
-//                    onError(error)
-//                })
-//            }) { error in
-//                onError(error)
-//            }
-//            return
-        } else {
+        if BinkPaymentsManager.shared.isTesting {
             createPaymentCard(paymentCard, onSuccess: {
                 onSuccess()
             }, onError: {
                 onError()
             })
+        } else {
+            //            requestSpreedlyToken(paymentCard: paymentCard, onSuccess: { [weak self] spreedlyResponse in
+            //                guard spreedlyResponse.isValid else {
+            //                    onError(nil)
+            //                    return
+            //                }
+            //                self?.createPaymentAccount(paymentCard, spreedlyResponse: spreedlyResponse, onSuccess: { createdPaymentCard in
+            //                    onSuccess(createdPaymentCard)
+            //                }, onError: { error in
+            //                    onError(error)
+            //                })
+            //            }) { error in
+            //                onError(error)
+            //            }
+            //            return
         }
     }
     
