@@ -19,6 +19,7 @@ enum NetworkingError: Error {
     case serverError(Int)
     case checkStatusCode(Int)
     case customError(String)
+    case failedToGetSpreedlyToken
 
     var message: String {
         switch self {
@@ -44,6 +45,8 @@ enum NetworkingError: Error {
             return "Error with status code \(String(status))"
         case .customError(let message):
             return message
+        case .failedToGetSpreedlyToken:
+            return "Failed to get Spreedly token"
         }
     }
 }

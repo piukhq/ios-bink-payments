@@ -11,45 +11,49 @@ class PaymentWalletRepository {
     private let apiClient = APIClient()
     private var isProduction = false
     
-    func addPaymentCard(_ paymentCard: PaymentCardCreateModel, onSuccess: @escaping () -> Void, onError: @escaping() -> Void) {
+    func addPaymentCard(_ paymentCard: PaymentCardCreateModel, onSuccess: @escaping (PaymentCardResponseModel) -> Void, onError: @escaping(NetworkingError?) -> Void) {
         if BinkPaymentsManager.shared.isTesting {
-            createPaymentCard(paymentCard, onSuccess: {
-                onSuccess()
-            }, onError: {
-                onError()
+            createPaymentCard(paymentCard, onSuccess: { createdPaymentCard in
+                onSuccess(createdPaymentCard)
+            }, onError: { error in
+                onError(error)
             })
         } else {
-            //            requestSpreedlyToken(paymentCard: paymentCard, onSuccess: { [weak self] spreedlyResponse in
-            //                guard spreedlyResponse.isValid else {
-            //                    onError(nil)
-            //                    return
-            //                }
-            //                self?.createPaymentAccount(paymentCard, spreedlyResponse: spreedlyResponse, onSuccess: { createdPaymentCard in
-            //                    onSuccess(createdPaymentCard)
-            //                }, onError: { error in
-            //                    onError(error)
-            //                })
-            //            }) { error in
-            //                onError(error)
-            //            }
-            //            return
+            requestSpreedlyToken(paymentCard: paymentCard, onSuccess: { [weak self] spreedlyResponse in
+                guard spreedlyResponse.isValid else {
+                    onError(nil)
+                    return
+                }
+                
+                print("Spreedly request SUCCESS >>>>>>>>>>>>>>>>>>")
+                print(spreedlyResponse)
+                
+                self?.createPaymentCard(paymentCard, spreedlyResponse: spreedlyResponse, onSuccess: { createdPaymentCard in
+                    onSuccess(createdPaymentCard)
+                }, onError: { error in
+                    onError(error)
+                })
+            }) { error in
+                onError(error)
+            }
+            return
         }
     }
     
-//    private func requestSpreedlyToken(paymentCard: PaymentAccountCreateModel, onSuccess: @escaping (SpreedlyResponse) -> Void, onError: @escaping (BinkError?) -> Void) {
-//        let spreedlyRequest = SpreedlyRequest(fullName: paymentCard.nameOnCard, number: paymentCard.fullPan, month: paymentCard.expiryMonth, year: paymentCard.expiryYear)
-//
-//        getSpreedlyToken(withRequest: spreedlyRequest) { result in
-//            switch result {
-//            case .success(let response):
-//                onSuccess(response)
-//            case .failure(let error):
-//                onError(error)
-//            }
-//        }
-//    }
+    private func requestSpreedlyToken(paymentCard: PaymentCardCreateModel, onSuccess: @escaping (SpreedlyResponse) -> Void, onError: @escaping (NetworkingError) -> Void) {
+        let spreedlyRequest = SpreedlyRequest(fullName: paymentCard.nameOnCard, number: paymentCard.fullPan, month: paymentCard.month, year: paymentCard.year)
 
-    private func createPaymentCard(_ paymentCard: PaymentCardCreateModel, spreedlyResponse: SpreedlyResponse? = nil, onSuccess: @escaping () -> Void, onError: @escaping() -> Void) {
+        getSpreedlyToken(withRequest: spreedlyRequest) { result in
+            switch result {
+            case .success(let response):
+                onSuccess(response)
+            case .failure(let error):
+                onError(error)
+            }
+        }
+    }
+
+    private func createPaymentCard(_ paymentCard: PaymentCardCreateModel, spreedlyResponse: SpreedlyResponse? = nil, onSuccess: @escaping (PaymentCardResponseModel) -> Void, onError: @escaping(NetworkingError?) -> Void) {
         var paymentCreateRequest: PaymentCardCreateRequest?
 
         if let spreedlyResponse = spreedlyResponse {
@@ -59,7 +63,7 @@ class PaymentWalletRepository {
         }
 
         guard let paymentCreateRequest = paymentCreateRequest else {
-            onError()
+            onError(nil)
             return
         }
 
@@ -69,13 +73,28 @@ class PaymentWalletRepository {
             switch result {
             case .success(let response):
                 guard let safeResponse = response.value else {
-                    onError()
+                    onError(nil)
                     return
                 }
-
-                onSuccess()
+                onSuccess(safeResponse)
+            case .failure(let error):
+                onError(error)
+            }
+        }
+    }
+    
+    func getSpreedlyToken(withRequest model: SpreedlyRequest, completion: @escaping (Result<SpreedlyResponse, NetworkingError>) -> Void) {
+        let request = BinkNetworkRequest(endpoint: .spreedly, method: .post, headers: nil, isUserDriven: true)
+        apiClient.performRequestWithBody(request, body: model, expecting: Safe<SpreedlyResponse>.self) { (result, rawResponse) in
+            switch result {
+            case .success(let response):
+                guard let safeResponse = response.value else {
+                    completion(.failure(.customError("Failed to decode spreedly response")))
+                    return
+                }
+                completion(.success(safeResponse))
             case .failure:
-                onError()
+                completion(.failure(.failedToGetSpreedlyToken))
             }
         }
     }
