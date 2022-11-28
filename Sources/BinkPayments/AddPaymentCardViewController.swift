@@ -158,6 +158,7 @@ class AddPaymentCardViewController: UIViewController {
     }
     
     @objc func addButtonTapped() {
+        addButton.isEnabled = false
         viewModel.addPaymentCard { [weak self] in
             let ac = UIAlertController(title: "Success", message: "Payment card successfully added to Bink", preferredStyle: .alert)
             let okAction = UIAlertAction(title: "OK", style: .default) { _ in
@@ -170,6 +171,7 @@ class AddPaymentCardViewController: UIViewController {
             let okAction = UIAlertAction(title: "OK", style: .cancel)
             ac.addAction(okAction)
             self?.navigationController?.present(ac, animated: true)
+            self?.addButton.isEnabled = true
         }
     }
     
