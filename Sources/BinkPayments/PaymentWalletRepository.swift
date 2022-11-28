@@ -9,7 +9,6 @@ import Foundation
 
 class PaymentWalletRepository {
     private let apiClient = APIClient()
-    private var isProduction = false
     
     func addPaymentCard(_ paymentCard: PaymentCardCreateModel, onSuccess: @escaping (PaymentCardResponseModel) -> Void, onError: @escaping(NetworkingError?) -> Void) {
         if BinkPaymentsManager.shared.isTesting {
@@ -24,9 +23,6 @@ class PaymentWalletRepository {
                     onError(nil)
                     return
                 }
-                
-                print("Spreedly request SUCCESS >>>>>>>>>>>>>>>>>>")
-                print(spreedlyResponse)
                 
                 self?.createPaymentCard(paymentCard, spreedlyResponse: spreedlyResponse, onSuccess: { createdPaymentCard in
                     onSuccess(createdPaymentCard)

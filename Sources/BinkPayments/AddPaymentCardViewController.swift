@@ -167,7 +167,7 @@ class AddPaymentCardViewController: UIViewController {
             ac.addAction(okAction)
             self?.navigationController?.present(ac, animated: true)
         } onError: { [weak self] in
-            let ac = UIAlertController(title: "Error", message: "There was a problem adding your card to Bink", preferredStyle: .alert)
+            let ac = UIAlertController(title: "Error Adding Card", message: "There was a problem adding your payment card. Please try again.", preferredStyle: .alert)
             let okAction = UIAlertAction(title: "OK", style: .cancel)
             ac.addAction(okAction)
             self?.navigationController?.present(ac, animated: true)

@@ -24,8 +24,6 @@ class APIClient {
     }
     
     init() {
-        let url = "EnvironmentType.production.rawValue"
-
         let configuration = URLSessionConfiguration.default
         configuration.timeoutIntervalForRequest = 10.0
         
@@ -161,8 +159,6 @@ private extension APIClient {
                 return
             } else if serverErrorStatusRange.contains(statusCode) {
                 // Failed response, server error
-                // TODO: Can we remove this and just respond to the error sent back in completion by either showing the error message or not?
-//                NotificationCenter.default.post(name: isUserDriven ? .outageError : .outageSilentFail, object: nil)
                 completion?(.failure(.serverError(statusCode)), networkResponseData)
                 return
             } else {
