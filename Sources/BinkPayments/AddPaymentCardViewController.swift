@@ -158,11 +158,19 @@ class AddPaymentCardViewController: UIViewController {
     }
     
     @objc func addButtonTapped() {
-        viewModel.addPaymentCard()
-//        dismiss(animated: true) { [weak self] in
-//            guard let paymentCard = self?.viewModel.paymentCard else { return }
-//            BinkPaymentsManager.shared.launchDebugScreen(paymentCard: paymentCard)
-//        }
+        viewModel.addPaymentCard { [weak self] in
+            let ac = UIAlertController(title: "Success", message: "Payment card successfully added to Bink", preferredStyle: .alert)
+            let okAction = UIAlertAction(title: "OK", style: .default) { _ in
+                self?.dismiss(animated: true)
+            }
+            ac.addAction(okAction)
+            self?.navigationController?.present(ac, animated: true)
+        } onError: { [weak self] in
+            let ac = UIAlertController(title: "Error", message: "There was a problem adding your card to Bink", preferredStyle: .alert)
+            let okAction = UIAlertAction(title: "OK", style: .cancel)
+            ac.addAction(okAction)
+            self?.navigationController?.present(ac, animated: true)
+        }
     }
     
     @objc func handleKeyboardWillShow(_ notification: Notification) {

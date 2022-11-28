@@ -40,7 +40,6 @@ enum APIEndpoint {
         }
         var components = URLComponents()
         components.scheme = scheme
-        
         components.host = baseURLString
         components.path = path
         components.queryItems = params.map { URLQueryItem(name: $0.key, value: $0.value) }

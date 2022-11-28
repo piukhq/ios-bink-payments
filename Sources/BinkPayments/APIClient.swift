@@ -133,8 +133,7 @@ private extension APIClient {
             do {
                 let _ = try decoder.decode(responseType, from: data)
             } catch {
-                print("SW: \(String(describing: error))")
-
+                print(String(describing: error))
             }
             
             if statusCode == unauthorizedStatus {

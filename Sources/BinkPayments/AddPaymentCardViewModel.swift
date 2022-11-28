@@ -28,15 +28,11 @@ class AddPaymentCardViewModel {
         checkFormValidity()
     }
     
-    func addPaymentCard(onError: ((NetworkingError?) -> Void)? = nil) {
-        repository.addPaymentCard(paymentCard, onSuccess: { createdPaymentCard in
-//            let name = paymentAccount?.nameOnCard ?? ""
-//            let nickName = paymentAccount?.cardNickname ?? ""
-//            let expiry = paymentAccount?.expiryMonth ?? "" + " /" + (paymentAccount?.expiryYear ?? "")
-//            let message = name + ", " + nickName + ", " + expiry
-            print(createdPaymentCard)
-        }) { error in
-            onError?(error)
+    func addPaymentCard(onSuccess: @escaping () -> Void, onError: @escaping (() -> Void)) {
+        repository.addPaymentCard(paymentCard, onSuccess: { _ in
+            onSuccess()
+        }) { _ in
+            onError()
         }
     }
     
