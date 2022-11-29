@@ -5,6 +5,7 @@
 //  Created by Ricardo Silva on 13/09/2022.
 //
 
+import AlamofireNetworkActivityLogger
 import UIKit
 
 public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
@@ -26,6 +27,14 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
         self.environmentKey = environmentKey
         self.isTesting = isTesting
         print("Bink Payments SDK Initialised")
+        
+        #if DEBUG
+        NetworkActivityLogger.shared.level = .debug
+        NetworkActivityLogger.shared.startLogging()
+        if !isTesting {
+            print("Warning: You are running a DEBUG session but not in Test Mode!")
+        }
+        #endif
     }
     
     public func launchScanner(delegate: BinkScannerViewControllerDelegate) {
