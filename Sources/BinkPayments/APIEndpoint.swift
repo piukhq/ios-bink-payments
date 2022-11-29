@@ -47,7 +47,7 @@ enum APIEndpoint {
     }
     
     var baseURLString: String {
-        if BinkPaymentsManager.shared.isTesting {
+        if BinkPaymentsManager.shared.isDebug {
             return "api.staging.gb.bink.com"
         } else {
             return "api.gb.bink.com"

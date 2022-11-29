@@ -11,7 +11,7 @@ class PaymentWalletRepository {
     private let apiClient = APIClient()
     
     func addPaymentCard(_ paymentCard: PaymentCardCreateModel, onSuccess: @escaping (PaymentCardResponseModel) -> Void, onError: @escaping(NetworkingError?) -> Void) {
-        if BinkPaymentsManager.shared.isTesting {
+        if BinkPaymentsManager.shared.isDebug {
             createPaymentCard(paymentCard, onSuccess: { createdPaymentCard in
                 onSuccess(createdPaymentCard)
             }, onError: { error in

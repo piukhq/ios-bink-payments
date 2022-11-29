@@ -12,7 +12,7 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
     public static let shared = BinkPaymentsManager()
     var token: String!
     var environmentKey: String!
-    var isTesting: Bool!
+    var isDebug: Bool!
     
     private var currentViewController: UIViewController? {
         return UIViewController.topMostViewController()
@@ -20,18 +20,18 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
 
     private override init() {}
     
-    public func configure(token: String!, environmentKey: String!, isTesting: Bool) {
+    public func configure(token: String!, environmentKey: String!, isDebug: Bool) {
         assert(!token.isEmpty && !environmentKey.isEmpty, "Bink Payments SDK Error - Not Initialised due to missing token/environment key")
         
         self.token = token
         self.environmentKey = environmentKey
-        self.isTesting = isTesting
+        self.isDebug = isDebug
         print("Bink Payments SDK Initialised")
         
         #if DEBUG
         NetworkActivityLogger.shared.level = .debug
         NetworkActivityLogger.shared.startLogging()
-        if !isTesting {
+        if !isDebug {
             print("Warning: You are running a DEBUG session but not in Test Mode!")
         }
         #endif
