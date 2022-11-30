@@ -7,9 +7,7 @@
 
 import Foundation
 
-class PaymentWalletRepository {
-    private let apiClient = APIClient()
-    
+class PaymentWalletRepository: WalletService {    
     func addPaymentCard(_ paymentCard: PaymentCardCreateModel, onSuccess: @escaping (PaymentCardResponseModel) -> Void, onError: @escaping(NetworkingError?) -> Void) {
         if BinkPaymentsManager.shared.isDebug {
             createPaymentCard(paymentCard, onSuccess: { createdPaymentCard in
@@ -63,34 +61,12 @@ class PaymentWalletRepository {
             return
         }
 
-        
-        let binkNetworkRequest = BinkNetworkRequest(endpoint: .createPaymentAccount, method: .post, headers: nil, isUserDriven: true)
-        apiClient.performRequestWithBody(binkNetworkRequest, body: paymentCreateRequest, expecting: Safe<PaymentCardResponseModel>.self) { (result, rawResponse) in
+        addPaymentCard(withRequestModel: paymentCreateRequest) { result, responseData in
             switch result {
             case .success(let response):
-                guard let safeResponse = response.value else {
-                    onError(nil)
-                    return
-                }
-                onSuccess(safeResponse)
-            case .failure(let error):
-                onError(error)
-            }
-        }
-    }
-    
-    func getSpreedlyToken(withRequest model: SpreedlyRequest, completion: @escaping (Result<SpreedlyResponse, NetworkingError>) -> Void) {
-        let request = BinkNetworkRequest(endpoint: .spreedly, method: .post, headers: nil, isUserDriven: true)
-        apiClient.performRequestWithBody(request, body: model, expecting: Safe<SpreedlyResponse>.self) { (result, rawResponse) in
-            switch result {
-            case .success(let response):
-                guard let safeResponse = response.value else {
-                    completion(.failure(.customError("Failed to decode spreedly response")))
-                    return
-                }
-                completion(.success(safeResponse))
+                onSuccess(response)
             case .failure:
-                completion(.failure(.failedToGetSpreedlyToken))
+                onError(nil)
             }
         }
     }

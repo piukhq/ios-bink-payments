@@ -53,5 +53,9 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
         let navigationController = UINavigationController(rootViewController: addPaymentCardViewController)
         currentViewController?.show(navigationController, sender: nil)
     }
+    
+    public func pllStatus(loyaltyCardID: String, linkedState: @escaping (Bool) -> Void ) {
+        
+    }
 }
 
