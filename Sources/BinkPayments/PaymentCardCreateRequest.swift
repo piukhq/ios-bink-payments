@@ -29,7 +29,7 @@ struct PaymentCardCreateRequest: Codable {
     }
     
     /// This should only be used for creating test payment cards as it naturally bypasses the Spreedly path
-    init?(model: PaymentCardCreateModel) {
+    init?(model: PaymentAccountCreateModel) {
         guard let pan = model.fullPan?.replacingOccurrences(of: " ", with: ""),
             let year = model.year,
             let month = model.month
@@ -55,7 +55,7 @@ struct PaymentCardCreateRequest: Codable {
     }
 
     /// This should only be used for creating genuine payment cards using Spreedly path in a production environment
-    init?(spreedlyResponse: SpreedlyResponse, paymentAccount: PaymentCardCreateModel) {
+    init?(spreedlyResponse: SpreedlyResponse, paymentAccount: PaymentAccountCreateModel) {
         let paymentMethodResponse = spreedlyResponse.transaction?.paymentMethod
         
         self.token = paymentMethodResponse?.token ?? ""

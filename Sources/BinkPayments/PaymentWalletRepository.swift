@@ -8,9 +8,9 @@
 import Foundation
 
 class PaymentWalletRepository: WalletService {    
-    func addPaymentCard(_ paymentCard: PaymentCardCreateModel, onSuccess: @escaping (PaymentCardResponseModel) -> Void, onError: @escaping(NetworkingError?) -> Void) {
+    func addPaymentCard(_ paymentCard: PaymentAccountCreateModel, onSuccess: @escaping (PaymentAccountResponseModel) -> Void, onError: @escaping(BinkError?) -> Void) {
         if BinkPaymentsManager.shared.isDebug {
-            createPaymentCard(paymentCard, onSuccess: { createdPaymentCard in
+            createPaymentAccount(paymentCard, onSuccess: { createdPaymentCard in
                 onSuccess(createdPaymentCard)
             }, onError: { error in
                 onError(error)
@@ -22,7 +22,7 @@ class PaymentWalletRepository: WalletService {
                     return
                 }
                 
-                self?.createPaymentCard(paymentCard, spreedlyResponse: spreedlyResponse, onSuccess: { createdPaymentCard in
+                self?.createPaymentAccount(paymentCard, spreedlyResponse: spreedlyResponse, onSuccess: { createdPaymentCard in
                     onSuccess(createdPaymentCard)
                 }, onError: { error in
                     onError(error)
@@ -34,7 +34,7 @@ class PaymentWalletRepository: WalletService {
         }
     }
     
-    private func requestSpreedlyToken(paymentCard: PaymentCardCreateModel, onSuccess: @escaping (SpreedlyResponse) -> Void, onError: @escaping (NetworkingError) -> Void) {
+    private func requestSpreedlyToken(paymentCard: PaymentAccountCreateModel, onSuccess: @escaping (SpreedlyResponse) -> Void, onError: @escaping (BinkError?) -> Void) {
         let spreedlyRequest = SpreedlyRequest(fullName: paymentCard.nameOnCard, number: paymentCard.fullPan, month: paymentCard.month, year: paymentCard.year)
 
         getSpreedlyToken(withRequest: spreedlyRequest) { result in
@@ -47,13 +47,13 @@ class PaymentWalletRepository: WalletService {
         }
     }
 
-    private func createPaymentCard(_ paymentCard: PaymentCardCreateModel, spreedlyResponse: SpreedlyResponse? = nil, onSuccess: @escaping (PaymentCardResponseModel) -> Void, onError: @escaping(NetworkingError?) -> Void) {
+    private func createPaymentAccount(_ paymentAccount: PaymentAccountCreateModel, spreedlyResponse: SpreedlyResponse? = nil, onSuccess: @escaping (PaymentAccountResponseModel) -> Void, onError: @escaping(NetworkingError?) -> Void) {
         var paymentCreateRequest: PaymentCardCreateRequest?
 
         if let spreedlyResponse = spreedlyResponse {
-            paymentCreateRequest = PaymentCardCreateRequest(spreedlyResponse: spreedlyResponse, paymentAccount: paymentCard)
+            paymentCreateRequest = PaymentCardCreateRequest(spreedlyResponse: spreedlyResponse, paymentAccount: paymentAccount)
         } else {
-            paymentCreateRequest = PaymentCardCreateRequest(model: paymentCard)
+            paymentCreateRequest = PaymentCardCreateRequest(model: paymentAccount)
         }
 
         guard let paymentCreateRequest = paymentCreateRequest else {

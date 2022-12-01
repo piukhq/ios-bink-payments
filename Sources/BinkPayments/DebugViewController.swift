@@ -60,9 +60,9 @@ public class DebugViewController: UIViewController {
         return button
     }()
     
-    public var paymentCard: PaymentCardCreateModel
+    public var paymentCard: PaymentAccountCreateModel
     
-    public init(paymentCard: PaymentCardCreateModel) {
+    public init(paymentCard: PaymentAccountCreateModel) {
         self.paymentCard = paymentCard
         super.init(nibName: nil, bundle: nil)
     }

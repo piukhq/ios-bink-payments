@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class PaymentCardCreateModel: Codable {
+public class PaymentAccountCreateModel: Codable {
     public var fullPan: String?
     var nameOnCard: String?
     var month: Int?

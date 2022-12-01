@@ -7,7 +7,25 @@
 
 import Foundation
 
-enum NetworkingError: Error {
+enum BinkErrorDomain: Int {
+    case networking
+    case configuration
+    case walletService
+    case userService
+}
+
+protocol BinkError: Error {
+    var domain: BinkErrorDomain { get }
+    var message: String { get }
+}
+
+extension BinkError {
+    var localizedDescription: String {
+        return message
+    }
+}
+
+enum NetworkingError: BinkError {
     case invalidRequest
     case unauthorized
     case noInternetConnection
@@ -21,6 +39,10 @@ enum NetworkingError: Error {
     case customError(String)
     case failedToGetSpreedlyToken
 
+    var domain: BinkErrorDomain {
+        return .networking
+    }
+    
     var message: String {
         switch self {
         case .invalidRequest:
@@ -47,6 +69,36 @@ enum NetworkingError: Error {
             return message
         case .failedToGetSpreedlyToken:
             return "Failed to get Spreedly token"
+        }
+    }
+}
+
+enum WalletServiceError: BinkError {
+    case failedToGetSpreedlyToken
+    case failedToAddPaymentCard
+    case failedToDecodeWallet
+    case failedToGetWallet
+    case failedToGetLoyaltyPlans(NetworkingError)
+    case customError(String)
+    
+    var domain: BinkErrorDomain {
+        return .walletService
+    }
+    
+    var message: String {
+        switch self {
+        case .failedToGetSpreedlyToken:
+            return "Failed to get Spreedly token"
+        case .failedToAddPaymentCard:
+            return "Failed to add payment account"
+        case .failedToDecodeWallet:
+            return "Failed to decode wallet"
+        case .failedToGetWallet:
+            return "Failed to get wallet"
+        case .customError(let message):
+            return message
+        case .failedToGetLoyaltyPlans:
+            return "Failed to get loyalty plans"
         }
     }
 }

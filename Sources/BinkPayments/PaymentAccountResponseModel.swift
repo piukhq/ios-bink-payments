@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct PaymentCardResponseModel: Codable {
+struct PaymentAccountResponseModel: Codable {
     var apiId: Int?
     let status: String?
     let expiryMonth: String?

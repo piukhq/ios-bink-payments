@@ -13,11 +13,11 @@ import Vision
 
 public protocol BinkScannerViewControllerDelegate: AnyObject {
     func binkScannerViewControllerShouldEnterManually(_ viewController: BinkScannerViewController, completion: (() -> Void)?)
-    func binkScannerViewController(_ viewController: BinkScannerViewController, didScan paymentCard: PaymentCardCreateModel)
+    func binkScannerViewController(_ viewController: BinkScannerViewController, didScan paymentCard: PaymentAccountCreateModel)
 }
 
 extension BinkScannerViewControllerDelegate {
-    func binkScannerViewController(_ viewController: BinkScannerViewController, didScan paymentCard: PaymentCardCreateModel) {}
+    func binkScannerViewController(_ viewController: BinkScannerViewController, didScan paymentCard: PaymentAccountCreateModel) {}
 }
 
 @objc open class BinkScannerViewController: UIViewController, UINavigationControllerDelegate {
