@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct LoyaltyCardModel: Codable {
+public struct LoyaltyCardModel: Codable {
     let apiId: Int?
     let loyaltyPlanID: Int?
     let status: StatusModel?

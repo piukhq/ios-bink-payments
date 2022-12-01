@@ -10,7 +10,7 @@ import UIKit
 
 public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
     public static let shared = BinkPaymentsManager()
-    private var wallet = Wallet()
+    var wallet = Wallet()
     var token: String!
     var environmentKey: String!
     var isDebug: Bool!
@@ -37,7 +37,7 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
         }
         #endif
         
-        wallet.launch()
+        wallet.fetch()
     }
     
     public func launchScanner(delegate: BinkScannerViewControllerDelegate) {
@@ -57,8 +57,52 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
         currentViewController?.show(navigationController, sender: nil)
     }
     
-    public func pllStatus(loyaltyCardID: String, linkedState: @escaping (Bool) -> Void ) {
+//    public func pllStatus(for loyaltyCard: LoyaltyCardModel, linkedState: @escaping (LoyaltyCardPLLState) -> Void ) -> LoyaltyCardPLLState {
+//        var pllState = LoyaltyCardPLLState(linked: [], unlinked: [], timeChecked: wallet.lastWalletUpdate)
+//
+//        loyaltyCard.pllLinks?.forEach({ pllLink in
+//            if let paymentAccount = wallet.paymentAccounts?.first(where: { $0.apiId == pllLink.paymentAccountID }) {
+//                if pllLink.status == "active" {
+//                    pllState.linked.append(paymentAccount)
+//                } else {
+//                    pllState.unlinked.append(paymentAccount)
+//                }
+//            }
+//        })
+//
+//        wallet.fetch {
+//
+//        }
+//
+//        return pllState
+//    }
+    
+    public func loyaltyCard(from id: Int) -> LoyaltyCardModel? {
+        return wallet.loyaltyCards?.first(where: { $0.apiId == id })
+    }
+    
+    public func pllStatus(for loyaltyCard: LoyaltyCardModel, refreshedLinkedState: @escaping (LoyaltyCardPLLState) -> Void ) -> LoyaltyCardPLLState {
+        let pllState = wallet.configurePLLState(for: loyaltyCard)
         
+        wallet.fetch { [weak self] in
+            if let refreshedState = self?.wallet.configurePLLState(for: loyaltyCard) {
+                refreshedLinkedState(refreshedState)
+            }
+        }
+        
+        return pllState
     }
 }
 
+public struct LoyaltyCardPLLState {
+    var linked: [PaymentAccountResponseModel]
+    var unlinked: [PaymentAccountResponseModel]
+    var timeChecked: Date?
+}
+
+
+public struct PaymentAccountPLLState {
+    let linked: [LoyaltyCardModel]
+    let unlinked: [LoyaltyCardModel]
+    let timeChecked: Date
+}

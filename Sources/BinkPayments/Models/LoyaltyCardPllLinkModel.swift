@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct LoyaltyCardPllLinkModel: Codable {
+public struct LoyaltyCardPllLinkModel: Codable {
     var apiId: Int?
     let paymentAccountID: Int?
     let paymentScheme, status: String?
