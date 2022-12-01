@@ -10,6 +10,7 @@ import UIKit
 
 public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
     public static let shared = BinkPaymentsManager()
+    private var wallet = Wallet()
     var token: String!
     var environmentKey: String!
     var isDebug: Bool!
@@ -35,6 +36,8 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
             print("Warning: You are running a DEBUG session but not in Test Mode!")
         }
         #endif
+        
+        wallet.launch()
     }
     
     public func launchScanner(delegate: BinkScannerViewControllerDelegate) {
