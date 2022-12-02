@@ -31,7 +31,7 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
         
         #if DEBUG
         NetworkActivityLogger.shared.level = .debug
-        NetworkActivityLogger.shared.startLogging()
+//        NetworkActivityLogger.shared.startLogging()
         if !isDebug {
             print("Warning: You are running a DEBUG session but not in Test Mode!")
         }
@@ -56,26 +56,6 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
         let navigationController = UINavigationController(rootViewController: addPaymentCardViewController)
         currentViewController?.show(navigationController, sender: nil)
     }
-    
-//    public func pllStatus(for loyaltyCard: LoyaltyCardModel, linkedState: @escaping (LoyaltyCardPLLState) -> Void ) -> LoyaltyCardPLLState {
-//        var pllState = LoyaltyCardPLLState(linked: [], unlinked: [], timeChecked: wallet.lastWalletUpdate)
-//
-//        loyaltyCard.pllLinks?.forEach({ pllLink in
-//            if let paymentAccount = wallet.paymentAccounts?.first(where: { $0.apiId == pllLink.paymentAccountID }) {
-//                if pllLink.status == "active" {
-//                    pllState.linked.append(paymentAccount)
-//                } else {
-//                    pllState.unlinked.append(paymentAccount)
-//                }
-//            }
-//        })
-//
-//        wallet.fetch {
-//
-//        }
-//
-//        return pllState
-//    }
     
     public func loyaltyCard(from id: Int) -> LoyaltyCardModel? {
         return wallet.loyaltyCards?.first(where: { $0.apiId == id })

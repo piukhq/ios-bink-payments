@@ -21,6 +21,7 @@ class Wallet: WalletService {
                 self.loyaltyCards = response.loyaltyCards
                 self.lastWalletUpdate = Date()
                 completion?()
+                print("Wallet fetch complete")
             case .failure(let error):
                 print(error.localizedDescription)
             }
@@ -32,7 +33,7 @@ class Wallet: WalletService {
 
         loyaltyCard.pllLinks?.forEach({ pllLink in
             if let paymentAccount = paymentAccounts?.first(where: { $0.apiId == pllLink.paymentAccountID }) {
-                if pllLink.status == "active" {
+                if pllLink.status?.state == "active" {
                     pllState.linked.append(paymentAccount)
                 } else {
                     pllState.unlinked.append(paymentAccount)

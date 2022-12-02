@@ -8,7 +8,7 @@
 import Foundation
 
 struct LoyaltyCardTransactionModel: Codable {
-    let apiId: Int?
+    let apiId: String?
     let timestamp: Double?
     let transactionDescription: String?
     let displayValue: String?

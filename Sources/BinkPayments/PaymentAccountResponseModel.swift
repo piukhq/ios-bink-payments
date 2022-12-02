@@ -36,7 +36,7 @@ struct PaymentAccountPllLink: Codable {
     let apiId: Int?
     let loyaltyCardID: Int?
     let loyaltyPlan: String?
-    let status: String?
+    let status: PLLStatus?
 
     enum CodingKeys: String, CodingKey {
         case apiId = "id"
@@ -44,4 +44,10 @@ struct PaymentAccountPllLink: Codable {
         case loyaltyPlan = "loyalty_plan"
         case status
     }
+}
+
+struct PLLStatus: Codable {
+    let state: String?
+    let slug: String?
+    let description: String?
 }

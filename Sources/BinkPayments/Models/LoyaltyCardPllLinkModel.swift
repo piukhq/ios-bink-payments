@@ -10,7 +10,8 @@ import Foundation
 public struct LoyaltyCardPllLinkModel: Codable {
     var apiId: Int?
     let paymentAccountID: Int?
-    let paymentScheme, status: String?
+    let paymentScheme: String?
+    let status: PLLStatus?
 
     enum CodingKeys: String, CodingKey {
         case apiId = "id"
