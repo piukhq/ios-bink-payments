@@ -43,4 +43,20 @@ class Wallet: WalletService {
         
         return pllState
     }
+    
+    func configurePLLState(for paymentAccount: PaymentAccountResponseModel) -> PaymentAccountPLLState {
+        var pllState = PaymentAccountPLLState(linked: [], unlinked: [], timeChecked: lastWalletUpdate)
+        
+        paymentAccount.pllLinks?.forEach({ pllLink in
+            if let loyaltyCard = loyaltyCards?.first(where: { $0.apiId == pllLink.loyaltyCardID }) {
+                if pllLink.status?.state == "active" {
+                    pllState.linked.append(loyaltyCard)
+                } else {
+                    pllState.unlinked.append(loyaltyCard)
+                }
+            }
+        })
+        
+        return pllState
+    }
 }

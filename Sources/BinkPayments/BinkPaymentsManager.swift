@@ -61,11 +61,27 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
         return wallet.loyaltyCards?.first(where: { $0.apiId == id })
     }
     
+    public func paymentAccount(from id: Int) -> PaymentAccountResponseModel? {
+        return wallet.paymentAccounts?.first(where: { $0.apiId == id })
+    }
+    
     public func pllStatus(for loyaltyCard: LoyaltyCardModel, refreshedLinkedState: @escaping (LoyaltyCardPLLState) -> Void ) -> LoyaltyCardPLLState {
         let pllState = wallet.configurePLLState(for: loyaltyCard)
         
         wallet.fetch { [weak self] in
             if let refreshedState = self?.wallet.configurePLLState(for: loyaltyCard) {
+                refreshedLinkedState(refreshedState)
+            }
+        }
+        
+        return pllState
+    }
+    
+    public func pllStatus(for paymentAccount: PaymentAccountResponseModel, refreshedLinkedState: @escaping (PaymentAccountPLLState) -> Void ) -> PaymentAccountPLLState {
+        let pllState = wallet.configurePLLState(for: paymentAccount)
+        
+        wallet.fetch { [weak self] in
+            if let refreshedState = self?.wallet.configurePLLState(for: paymentAccount) {
                 refreshedLinkedState(refreshedState)
             }
         }
@@ -82,7 +98,7 @@ public struct LoyaltyCardPLLState {
 
 
 public struct PaymentAccountPLLState {
-    let linked: [LoyaltyCardModel]
-    let unlinked: [LoyaltyCardModel]
-    let timeChecked: Date
+    var linked: [LoyaltyCardModel]
+    var unlinked: [LoyaltyCardModel]
+    var timeChecked: Date?
 }
