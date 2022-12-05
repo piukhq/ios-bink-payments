@@ -10,7 +10,7 @@ import UIKit
 
 public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
     public static let shared = BinkPaymentsManager()
-    var wallet = Wallet()
+    private var wallet = Wallet()
     var token: String!
     var environmentKey: String!
     var isDebug: Bool!
@@ -31,7 +31,7 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
         
         #if DEBUG
         NetworkActivityLogger.shared.level = .debug
-//        NetworkActivityLogger.shared.startLogging()
+        NetworkActivityLogger.shared.startLogging()
         if !isDebug {
             print("Warning: You are running a DEBUG session but not in Test Mode!")
         }
@@ -88,17 +88,4 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
         
         return pllState
     }
-}
-
-public struct LoyaltyCardPLLState {
-    var linked: [PaymentAccountResponseModel]
-    var unlinked: [PaymentAccountResponseModel]
-    var timeChecked: Date?
-}
-
-
-public struct PaymentAccountPLLState {
-    var linked: [LoyaltyCardModel]
-    var unlinked: [LoyaltyCardModel]
-    var timeChecked: Date?
 }
