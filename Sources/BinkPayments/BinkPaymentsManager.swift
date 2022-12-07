@@ -51,8 +51,8 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
         currentViewController?.present(debugScreen, animated: true)
     }
     
-    public func launchAddPaymentCardScreen(_ paymentCard: PaymentAccountCreateModel? = nil) {
-        let addPaymentCardViewController = AddPaymentCardViewController(viewModel: AddPaymentCardViewModel(paymentCard: paymentCard))
+    public func launchAddPaymentCardScreen(_ paymentCard: PaymentAccountCreateModel? = nil, themeConfig: BinkThemeConfiguration? = nil) {
+        let addPaymentCardViewController = AddPaymentCardViewController(viewModel: AddPaymentCardViewModel(paymentCard: paymentCard), themeConfig: themeConfig)
         let navigationController = UINavigationController(rootViewController: addPaymentCardViewController)
         currentViewController?.show(navigationController, sender: nil)
     }

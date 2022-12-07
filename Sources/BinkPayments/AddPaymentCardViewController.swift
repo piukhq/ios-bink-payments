@@ -38,7 +38,6 @@ class AddPaymentCardViewController: UIViewController {
         stackView.margin = UIEdgeInsets(top: 0, left: Constants.horizontalInset, bottom: 0, right: Constants.horizontalInset)
         stackView.distribution = .fill
         stackView.alignment = .fill
-        stackView.backgroundColor = .systemBackground
         stackView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: Constants.bottomInset, right: 0)
         stackView.customPadding(Constants.postCollectionViewPadding, after: collectionView)
         stackView.customPadding(Constants.preCollectionViewPadding, before: collectionView)
@@ -87,10 +86,12 @@ class AddPaymentCardViewController: UIViewController {
     private var hasSetupCell = false
     private var selectedCellYOrigin: CGFloat = 0.0
     private var selectedCellHeight: CGFloat = 0.0
+    private var themeConfig: BinkThemeConfiguration?
     public var viewModel: AddPaymentCardViewModel
     
-    public init(viewModel: AddPaymentCardViewModel) {
+    init(viewModel: AddPaymentCardViewModel, themeConfig: BinkThemeConfiguration? = nil) {
         self.viewModel = viewModel
+        self.themeConfig = themeConfig
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -101,8 +102,15 @@ class AddPaymentCardViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureLayout()
+        configureTheme()
         configureSubscribers()
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+    }
+    
+    private func configureTheme() {
+        let config = themeConfig ?? BinkThemeConfiguration()
+        stackScrollView.backgroundColor = config.backgroundColor
+        title = config.title
     }
     
     private func configureSubscribers() {
@@ -214,7 +222,7 @@ extension AddPaymentCardViewController: UICollectionViewDataSource, UICollection
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell: FormCollectionViewCell = collectionView.dequeue(indexPath: indexPath)
         let field = viewModel.fields[indexPath.item]
-        cell.configure(with: field, delegate: self)
+        cell.configure(with: field, themeConfig: themeConfig, delegate: self)
         return cell
     }
 }

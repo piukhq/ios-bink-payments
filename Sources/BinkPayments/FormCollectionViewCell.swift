@@ -194,6 +194,7 @@ class FormCollectionViewCell: UICollectionViewCell {
     
     private weak var formField: FormField?
     private var pickerSelectedChoice: String?
+    private var themeConfig: BinkThemeConfiguration?
     
     // MARK: - Initialisation
     
@@ -231,7 +232,8 @@ class FormCollectionViewCell: UICollectionViewCell {
     
     // MARK: - Public Methods
 
-    func configure(with field: FormField, delegate: FormCollectionViewCellDelegate?) {
+    func configure(with field: FormField, themeConfig: BinkThemeConfiguration? = nil, delegate: FormCollectionViewCellDelegate?) {
+        self.themeConfig = themeConfig
         titleLabel.text = field.title
         textField.text = field.forcedValue
         textField.placeholder = field.placeholder
@@ -259,10 +261,16 @@ class FormCollectionViewCell: UICollectionViewCell {
         
         self.delegate = delegate
         configureStateForFieldValidity(field)
+        configureTheme()
     }
     
     func setWidth(_ width: CGFloat) {
         preferredWidth = width
+    }
+    
+    private func configureTheme() {
+        let config = themeConfig ?? BinkThemeConfiguration()
+        titleLabel.textColor = config.textColor
     }
     
     // MARK: - Actions
