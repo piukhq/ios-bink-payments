@@ -18,6 +18,11 @@ public class BinkThemeConfiguration {
         case underline
     }
     
+    public enum FieldAutoCapitalisationType {
+        case sentences
+        case allCharacters
+    }
+    
     public init() {}
     
     
@@ -30,11 +35,12 @@ public class BinkThemeConfiguration {
     
     
     /// Textfield
-    public var fieldPromptCapitalisationStyle: UITextAutocapitalizationType = .sentences
+    public var fieldPromptCapitalisationStyle: FieldAutoCapitalisationType = .sentences
     public var fieldPromptStyle: FieldPromptStyle = .header
     public var fieldBorderStyle: FieldBorderStyle = .underline
     public var fieldBorderWidth: CGFloat = 2
     public var fieldBorderColor: UIColor = .systemGray2
     public var fieldCursorColor: UIColor = .systemGray
+    public var fieldBackgroundColor: UIColor = .quaternarySystemFill
     public var fieldTextColor: UIColor = .label
 }

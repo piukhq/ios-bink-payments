@@ -46,7 +46,6 @@ class FormCollectionViewCell: UICollectionViewCell {
         let stackView = UIStackView(arrangedSubviews: [textFieldHStack])
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
-        stackView.backgroundColor = .clear
         stackView.layer.cornerCurve = .continuous
         stackView.layer.cornerRadius = Constants.cornerRadius
         stackView.clipsToBounds = true
@@ -57,25 +56,7 @@ class FormCollectionViewCell: UICollectionViewCell {
         stackView.isLayoutMarginsRelativeArrangement = true
         return stackView
     }()
-    
-//    /// Contains title label, text field, camera icon and validation icon
-//    private lazy var fieldContentHStack: UIStackView = {
-//        let stackView = UIStackView(arrangedSubviews: [fieldLabelsVStack])
-//        stackView.translatesAutoresizingMaskIntoConstraints = false
-//        stackView.axis = .horizontal
-//        stackView.layoutMargins = UIEdgeInsets(top: 10, left: 20, bottom: 10, right: 20)
-//        stackView.isLayoutMarginsRelativeArrangement = true
-//        return stackView
-//    }()
-//
-//    /// The view that contains the title label and text field
-//    private lazy var fieldLabelsVStack: UIStackView = {
-//        let stackView = UIStackView(arrangedSubviews: [textFieldHStack])
-//        stackView.translatesAutoresizingMaskIntoConstraints = false
-//        stackView.axis = .vertical
-//        return stackView
-//    }()
-    
+
     /// The view that contains the text field and camera icon
     private lazy var textFieldHStack: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [textField, textFieldRightView])
@@ -106,18 +87,7 @@ class FormCollectionViewCell: UICollectionViewCell {
         field.smartQuotesType = .no // This stops the "smart" apostrophe setting. The default breaks field regex validation
         return field
     }()
-    
-//    lazy var validationIconImageView: UIImageView = {
-//        let imageView = UIImageView(image: UIImage(named: "icon-check", in: .module, with: nil))
-//        imageView.contentMode = .scaleAspectFit
-//        NSLayoutConstraint.activate([
-//            imageView.widthAnchor.constraint(equalToConstant: 20)
-//        ])
-//        imageView.transform = CGAffineTransform(translationX: -4, y: 0)
-//        imageView.isHidden = true
-//        return imageView
-//    }()
-    
+ 
     /// Camera icon
     lazy var textFieldRightView: UIView = {
         let cameraButton = UIButton(type: .custom)
@@ -133,16 +103,15 @@ class FormCollectionViewCell: UICollectionViewCell {
         // Remove when we drop iOS 13 - add validation view to fieldContainerVStack
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .quaternarySystemFill
         view.layer.cornerRadius = Constants.cornerRadius
         view.layer.cornerCurve = .continuous
-        view.addSubview(validationView)
+        view.addSubview(underlineView)
         view.clipsToBounds = true
         return view
     }()
     
     /// The bar that represents the field's state using colour
-    private lazy var validationView: UIView = {
+    private lazy var underlineView: UIView = {
         let view = UIView()
         view.backgroundColor = .clear
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -166,7 +135,6 @@ class FormCollectionViewCell: UICollectionViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 0
-//        label.leftInset = 20
         label.font = .systemFont(ofSize: 13, weight: .light)
         label.text = "Invalid entry"
         label.isHidden = true
@@ -226,9 +194,9 @@ class FormCollectionViewCell: UICollectionViewCell {
             containerStack.rightAnchor.constraint(equalTo: contentView.rightAnchor),
             topConstraint,
             bottomConstraint,
-            validationView.leftAnchor.constraint(equalTo: stackBackgroundView.leftAnchor),
-            validationView.rightAnchor.constraint(equalTo: stackBackgroundView.rightAnchor),
-            validationView.bottomAnchor.constraint(equalTo: stackBackgroundView.bottomAnchor)
+            underlineView.leftAnchor.constraint(equalTo: stackBackgroundView.leftAnchor),
+            underlineView.rightAnchor.constraint(equalTo: stackBackgroundView.rightAnchor),
+            underlineView.bottomAnchor.constraint(equalTo: stackBackgroundView.bottomAnchor)
         ])
     }
     
@@ -272,13 +240,14 @@ class FormCollectionViewCell: UICollectionViewCell {
         titleLabel.textColor = config.titleTextColor
         textField.textColor = config.fieldTextColor
         textField.tintColor = config.fieldCursorColor
+        stackBackgroundView.backgroundColor = config.fieldBackgroundColor
+        let fieldTitle = config.fieldPromptCapitalisationStyle == .allCharacters ? field.title.uppercased() : field.title
         
         switch config.fieldPromptStyle {
         case .header:
-            titleLabel.text = field.title
+            titleLabel.text = fieldTitle
         case .inline:
-            textField.attributedPlaceholder = NSAttributedString(string: field.title, attributes: [.foregroundColor : config.titleTextColor.withAlphaComponent(0.5)])
-                
+            textField.attributedPlaceholder = NSAttributedString(string: fieldTitle, attributes: [.foregroundColor : config.titleTextColor.withAlphaComponent(0.5)])
         }
         
         switch config.fieldBorderStyle {
@@ -286,9 +255,9 @@ class FormCollectionViewCell: UICollectionViewCell {
             fieldContainerVStack.layer.borderColor = config.fieldBorderColor.cgColor
             fieldContainerVStack.layer.borderWidth = config.fieldBorderWidth
         case .underline:
-            validationView.isHidden = false
-            validationView.backgroundColor = config.fieldBorderColor
-            validationView.heightAnchor.constraint(equalToConstant: config.fieldBorderWidth).isActive = true
+            underlineView.isHidden = false
+            underlineView.backgroundColor = config.fieldBorderColor
+            underlineView.heightAnchor.constraint(equalToConstant: config.fieldBorderWidth).isActive = true
         }
     }
     
