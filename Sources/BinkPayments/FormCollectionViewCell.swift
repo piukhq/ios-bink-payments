@@ -26,7 +26,7 @@ class FormCollectionViewCell: UICollectionViewCell {
         static let titleLabelHeight: CGFloat = 20.0
         static let textFieldHeight: CGFloat = 24.0
         static let validationLabelHeight: CGFloat = 20.0
-        static let cornerRadius: CGFloat = 10
+        static let cornerRadius: CGFloat = 5
     }
 
     // MARK: - Properties
@@ -53,7 +53,7 @@ class FormCollectionViewCell: UICollectionViewCell {
         let gestureRecognizer = UITapGestureRecognizer(target: self, action: .handleCellTap)
         stackView.addGestureRecognizer(gestureRecognizer)
         stackView.isUserInteractionEnabled = true
-        stackView.layoutMargins = UIEdgeInsets(top: 10, left: 20, bottom: 10, right: 20)
+        stackView.layoutMargins = UIEdgeInsets(top: 12, left: 10, bottom: 12, right: 20)
         stackView.isLayoutMarginsRelativeArrangement = true
         return stackView
     }()
@@ -76,9 +76,9 @@ class FormCollectionViewCell: UICollectionViewCell {
 //        return stackView
 //    }()
     
-    /// The view that contains the text field, camera icon and the validation icon
+    /// The view that contains the text field and camera icon
     private lazy var textFieldHStack: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [textField, textFieldRightView, validationIconImageView])
+        let stackView = UIStackView(arrangedSubviews: [textField, textFieldRightView])
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .horizontal
         stackView.distribution = .fillProportionally
@@ -107,16 +107,16 @@ class FormCollectionViewCell: UICollectionViewCell {
         return field
     }()
     
-    lazy var validationIconImageView: UIImageView = {
-        let imageView = UIImageView(image: UIImage(named: "icon-check", in: .module, with: nil))
-        imageView.contentMode = .scaleAspectFit
-        NSLayoutConstraint.activate([
-            imageView.widthAnchor.constraint(equalToConstant: 20)
-        ])
-        imageView.transform = CGAffineTransform(translationX: -4, y: 0)
-        imageView.isHidden = true
-        return imageView
-    }()
+//    lazy var validationIconImageView: UIImageView = {
+//        let imageView = UIImageView(image: UIImage(named: "icon-check", in: .module, with: nil))
+//        imageView.contentMode = .scaleAspectFit
+//        NSLayoutConstraint.activate([
+//            imageView.widthAnchor.constraint(equalToConstant: 20)
+//        ])
+//        imageView.transform = CGAffineTransform(translationX: -4, y: 0)
+//        imageView.isHidden = true
+//        return imageView
+//    }()
     
     /// Camera icon
     lazy var textFieldRightView: UIView = {
@@ -249,7 +249,7 @@ class FormCollectionViewCell: UICollectionViewCell {
         stackBackgroundView.pin(to: fieldContainerVStack)
         
         configureTextFieldRightView(shouldDisplay: formField?.value == nil)
-//        validationLabel.isHidden = textField.text?.isEmpty == true ? true : field.isValid()
+        validationLabel.isHidden = textField.text?.isEmpty == true ? true : field.isValid()
 
         textField.inputAccessoryView = inputAccessory
         
@@ -260,7 +260,6 @@ class FormCollectionViewCell: UICollectionViewCell {
         }
         
         self.delegate = delegate
-//        configureStateForFieldValidity(field)
         configureTheme(field)
     }
     
@@ -271,7 +270,8 @@ class FormCollectionViewCell: UICollectionViewCell {
     private func configureTheme(_ field: FormField) {
         let config = themeConfig ?? BinkThemeConfiguration()
         titleLabel.textColor = config.titleTextColor
-        textField.textColor = config.textfieldTextColor
+        textField.textColor = config.fieldTextColor
+        textField.tintColor = config.fieldCursorColor
         
         switch config.fieldPromptStyle {
         case .header:
@@ -341,43 +341,15 @@ class FormCollectionViewCell: UICollectionViewCell {
     }
     
     private func configureStateForFieldValidity(_ field: FormField) {
-//        let textfieldIsEmpty = textField.text?.isEmpty ?? false
+        let textfieldIsEmpty = textField.text?.isEmpty ?? false
 
-//        if field.isValid() && !textfieldIsEmpty {
-//            setState(.valid)
-//        } else if !field.isValid() && !textfieldIsEmpty {
-//            setState(.invalid)
-//        } else {
-//            setState(.inactive)
-//        }
-    }
-    
-    func setState(_ state: ControlState) {
-        var validationLabelSpacing: CGFloat = validationLabel.isHidden ? 0 : 4
-        var validationIconHidden = true
-
-        switch state {
-        case .inactive:
-            validationView.backgroundColor = .clear
-            validationLabel.isHidden = true
-            validationLabelSpacing = 0
-        case .active:
-            validationView.backgroundColor = .systemBlue
-        case .valid:
-            validationView.backgroundColor = .okGreen
-            validationIconHidden = false
-            validationLabelSpacing = 0
-            validationLabel.isHidden = true
-        case .invalid:
-            validationView.backgroundColor = .systemRed
-            validationLabelSpacing = 4
+        if !field.isValid() && !textfieldIsEmpty {
             validationLabel.isHidden = false
+        } else {
+            validationLabel.isHidden = true
         }
-
-        guard let field = formField else { return }
+        
         validationLabel.text = field.validationErrorMessage != nil ? field.validationErrorMessage : "Invalid input"
-        validationIconImageView.isHidden = validationIconHidden
-        containerStack.setCustomSpacing(validationLabelSpacing, after: fieldContainerVStack)
     }
 }
 
@@ -396,8 +368,6 @@ extension FormCollectionViewCell: UITextFieldDelegate {
         if let multipleChoiceInput = textField.inputView as? FormMultipleChoiceInput {
             textField.text = (pickerSelectedChoice?.isEmpty ?? false) ? multipleChoiceInput.fullContentString : pickerSelectedChoice
         }
-        
-//        setState(.active)
         
         self.delegate?.formCollectionViewCell(self, didSelectField: textField)
     }

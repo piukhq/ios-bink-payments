@@ -24,16 +24,17 @@ public class BinkThemeConfiguration {
     /// Colors
     public var backgroundColor: UIColor = .systemBackground
     public var titleTextColor: UIColor = .label
-    public var textfieldTextColor: UIColor = .label
     
     /// Text
     public var title: String = ""
     
     
     /// Textfield
-    public var fieldPromptStyle: FieldPromptStyle = .header
     public var fieldPromptCapitalisationStyle: UITextAutocapitalizationType = .sentences
+    public var fieldPromptStyle: FieldPromptStyle = .header
     public var fieldBorderStyle: FieldBorderStyle = .underline
-    public var fieldBorderColor: UIColor = .systemPink
     public var fieldBorderWidth: CGFloat = 2
+    public var fieldBorderColor: UIColor = .systemGray2
+    public var fieldCursorColor: UIColor = .systemGray
+    public var fieldTextColor: UIColor = .label
 }
