@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import FrameworkTest
 
 class PaymentWalletRepository: WalletService {    
     func addPaymentCard(_ paymentCard: PaymentAccountCreateModel, onSuccess: @escaping (PaymentAccountResponseModel) -> Void, onError: @escaping(BinkError?) -> Void) {

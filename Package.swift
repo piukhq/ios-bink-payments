@@ -13,7 +13,7 @@ let package = Package(
         // Products define the executables and libraries a package produces, and make them visible to other packages.
         .library(
             name: "BinkPayments",
-            targets: ["BinkPayments"]),
+            targets: ["BinkPayments", "FrameworkTest"]),
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -29,5 +29,9 @@ let package = Package(
         .testTarget(
             name: "BinkPaymentsTests",
             dependencies: ["BinkPayments"]),
+        .binaryTarget(
+            name: "FrameworkTest",
+            path: "FrameworkTest.xcframework"
+        )
     ]
 )

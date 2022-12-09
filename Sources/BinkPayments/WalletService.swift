@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import FrameworkTest
 
 
 /// Used when there isn't an object being passed into the completion handler, just a success bool where it makes sense not to complicate things with Result.

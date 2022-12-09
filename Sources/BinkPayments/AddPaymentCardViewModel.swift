@@ -7,6 +7,7 @@
 
 import Combine
 import UIKit
+import FrameworkTest
 
 class AddPaymentCardViewModel {
     private enum Constants {

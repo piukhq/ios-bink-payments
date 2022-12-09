@@ -7,6 +7,7 @@
 
 import Combine
 import UIKit
+import FrameworkTest
 
 class AddPaymentCardViewController: UIViewController {
     // MARK: - Helpers
@@ -234,7 +235,7 @@ extension AddPaymentCardViewController: FormCollectionViewCellDelegate {
 }
 
 extension AddPaymentCardViewController: BinkScannerViewControllerDelegate {
-    func binkScannerViewControllerShouldEnterManually(_ viewController: BinkPayments.BinkScannerViewController, completion: (() -> Void)?) {
+    func binkScannerViewControllerShouldEnterManually(_ viewController: BinkScannerViewController, completion: (() -> Void)?) {
         dismiss(animated: true)
     }
     

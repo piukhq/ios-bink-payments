@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import FrameworkTest
 
 class Wallet: WalletService {
     private(set) var paymentAccounts: [PaymentAccountResponseModel]?

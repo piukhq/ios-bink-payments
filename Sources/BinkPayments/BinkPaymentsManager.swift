@@ -6,6 +6,7 @@
 //
 
 import AlamofireNetworkActivityLogger
+import FrameworkTest
 import UIKit
 
 public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
