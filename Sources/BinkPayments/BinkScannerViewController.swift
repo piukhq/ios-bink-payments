@@ -121,8 +121,9 @@ extension BinkScannerViewControllerDelegate {
         return button
     }()
 
-    public init() {
+    public init(themeConfig: BinkThemeConfiguration) {
         super.init(nibName: nil, bundle: nil)
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: themeConfig.backButtonTitle, style: .plain, target: nil, action: nil)
     }
 
     required public init?(coder: NSCoder) {

@@ -12,7 +12,7 @@ class AddPaymentCardViewController: UIViewController {
     // MARK: - Helpers
     
     private enum Constants {
-        static let horizontalInset: CGFloat = 10
+        static let horizontalInset: CGFloat = 20
         static let bottomInset: CGFloat = 150.0
         static let postCollectionViewPadding: CGFloat = 25.0
         static let preCollectionViewPadding: CGFloat = 10.0
@@ -38,7 +38,7 @@ class AddPaymentCardViewController: UIViewController {
         stackView.margin = UIEdgeInsets(top: 0, left: Constants.horizontalInset, bottom: 0, right: Constants.horizontalInset)
         stackView.distribution = .fill
         stackView.alignment = .fill
-        stackView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: Constants.bottomInset, right: 0)
+        stackView.contentInset = UIEdgeInsets(top: 20, left: 0, bottom: Constants.bottomInset, right: 0)
         stackView.customPadding(Constants.postCollectionViewPadding, after: collectionView)
         stackView.customPadding(Constants.preCollectionViewPadding, before: collectionView)
         view.addSubview(stackView)
@@ -86,10 +86,10 @@ class AddPaymentCardViewController: UIViewController {
     private var hasSetupCell = false
     private var selectedCellYOrigin: CGFloat = 0.0
     private var selectedCellHeight: CGFloat = 0.0
-    private var themeConfig: BinkThemeConfiguration?
+    private var themeConfig: BinkThemeConfiguration
     public var viewModel: AddPaymentCardViewModel
     
-    init(viewModel: AddPaymentCardViewModel, themeConfig: BinkThemeConfiguration? = nil) {
+    init(viewModel: AddPaymentCardViewModel, themeConfig: BinkThemeConfiguration) {
         self.viewModel = viewModel
         self.themeConfig = themeConfig
         super.init(nibName: nil, bundle: nil)
@@ -108,9 +108,8 @@ class AddPaymentCardViewController: UIViewController {
     }
     
     private func configureTheme() {
-        let config = themeConfig ?? BinkThemeConfiguration()
-        stackScrollView.backgroundColor = config.backgroundColor
-        title = config.title
+        stackScrollView.backgroundColor = themeConfig.backgroundColor
+        title = themeConfig.title
     }
     
     private func configureSubscribers() {

@@ -27,11 +27,15 @@ public class BinkThemeConfiguration {
     
     
     /// Colors
+    public var primaryColor: UIColor = .clear
     public var backgroundColor: UIColor = .systemBackground
     public var titleTextColor: UIColor = .label
+    public var navigationBarTintColor: UIColor = .label
     
+   
     /// Text
     public var title: String = ""
+    public var backButtonTitle: String = ""
     
     
     /// Textfield
@@ -43,4 +47,8 @@ public class BinkThemeConfiguration {
     public var fieldCursorColor: UIColor = .systemGray
     public var fieldBackgroundColor: UIColor = .quaternarySystemFill
     public var fieldTextColor: UIColor = .label
+
+    
+    /// Images
+    public var backIndicatorImage: UIImage?
 }

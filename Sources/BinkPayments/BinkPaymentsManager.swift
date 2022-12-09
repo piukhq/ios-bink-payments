@@ -11,6 +11,7 @@ import UIKit
 public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
     public static let shared = BinkPaymentsManager()
     private var wallet = Wallet()
+    public var themeConfig = BinkThemeConfiguration()
     var token: String!
     var environmentKey: String!
     var isDebug: Bool!
@@ -41,9 +42,21 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
     }
     
     public func launchScanner(delegate: BinkScannerViewControllerDelegate) {
-        let binkScannerViewController = BinkScannerViewController()
+        let binkScannerViewController = BinkScannerViewController(themeConfig: themeConfig)
         binkScannerViewController.delegate = delegate
-        currentViewController?.present(binkScannerViewController, animated: true)
+        let navigationController = UINavigationController(rootViewController: binkScannerViewController)
+
+//        navigationController.modalPresentationStyle = .fullScreen
+        
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = themeConfig.primaryColor
+        appearance.titleTextAttributes = [.foregroundColor: themeConfig.navigationBarTintColor]
+        appearance.setBackIndicatorImage(themeConfig.backIndicatorImage, transitionMaskImage: themeConfig.backIndicatorImage)
+        navigationController.navigationBar.tintColor = themeConfig.navigationBarTintColor
+        navigationController.navigationBar.standardAppearance = appearance
+        navigationController.navigationBar.scrollEdgeAppearance = appearance
+        currentViewController?.present(navigationController, animated: true)
     }
     
     public func launchDebugScreen(paymentCard: PaymentAccountCreateModel) {
@@ -51,10 +64,9 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
         currentViewController?.present(debugScreen, animated: true)
     }
     
-    public func launchAddPaymentCardScreen(_ paymentCard: PaymentAccountCreateModel? = nil, themeConfig: BinkThemeConfiguration? = nil) {
+    public func launchAddPaymentCardScreen(_ paymentCard: PaymentAccountCreateModel? = nil) {
         let addPaymentCardViewController = AddPaymentCardViewController(viewModel: AddPaymentCardViewModel(paymentCard: paymentCard), themeConfig: themeConfig)
-        let navigationController = UINavigationController(rootViewController: addPaymentCardViewController)
-        currentViewController?.show(navigationController, sender: nil)
+        currentViewController?.show(addPaymentCardViewController, sender: nil)
     }
     
     public func loyaltyCard(from id: Int) -> LoyaltyCardModel? {

@@ -164,7 +164,7 @@ class FormCollectionViewCell: UICollectionViewCell {
     
     private weak var formField: FormField?
     private var pickerSelectedChoice: String?
-    private var themeConfig: BinkThemeConfiguration?
+    private var themeConfig: BinkThemeConfiguration!
     
     // MARK: - Initialisation
     
@@ -202,7 +202,7 @@ class FormCollectionViewCell: UICollectionViewCell {
     
     // MARK: - Public Methods
 
-    func configure(with field: FormField, themeConfig: BinkThemeConfiguration? = nil, delegate: FormCollectionViewCellDelegate?) {
+    func configure(with field: FormField, themeConfig: BinkThemeConfiguration, delegate: FormCollectionViewCellDelegate?) {
         self.themeConfig = themeConfig
         textField.text = field.forcedValue
         textField.keyboardType = field.fieldType.keyboardType()
