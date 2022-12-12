@@ -27,14 +27,17 @@ public class BinkThemeConfiguration {
     
     
     /// Colors
-    public var primaryColor: UIColor = .clear
-    public var backgroundColor: UIColor = .systemBackground
+    public var primaryColor: UIColor = .secondarySystemBackground
+    public var backgroundColor: UIColor = .secondarySystemBackground
     public var titleTextColor: UIColor = .label
     public var navigationBarTintColor: UIColor = .label
+    public var navigationBarTitleTextColor: UIColor = .label
+    public var navigationBarBackgroundEffect: UIBlurEffect? = .init(style: .light)
+    public var navigationBarBackgroundAlpha: CGFloat = 0.6
     
    
     /// Text
-    public var title: String = ""
+    public var navigationTitle: String = ""
     public var backButtonTitle: String = ""
     
     
@@ -47,6 +50,14 @@ public class BinkThemeConfiguration {
     public var fieldCursorColor: UIColor = .systemGray
     public var fieldBackgroundColor: UIColor = .quaternarySystemFill
     public var fieldTextColor: UIColor = .label
+    
+    /// Font
+    public var navigationTitleFont: UIFont = .systemFont(ofSize: 15, weight: .light)
+    public var navigationBackButtonTitleFont: UIFont = .systemFont(ofSize: 13, weight: .light)
+
+    public var textfieldTitleFont: UIFont = .systemFont(ofSize: 13, weight: .thin)
+    public var textfieldFont: UIFont = .systemFont(ofSize: 14, weight: .regular)
+    public var validationLabelFont: UIFont = .systemFont(ofSize: 13, weight: .light)
 
     
     /// Images

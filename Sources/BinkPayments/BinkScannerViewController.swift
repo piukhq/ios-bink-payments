@@ -120,6 +120,11 @@ extension BinkScannerViewControllerDelegate {
 
     public init(themeConfig: BinkThemeConfiguration) {
         super.init(nibName: nil, bundle: nil)
+//        let attributedText = NSAttributedString(string: themeConfig.backButtonTitle, attributes: [.font: themeConfig.navigationTitleFont, .foregroundColor: themeConfig.navigationBarTintColor])
+//        let label = UILabel()
+//        label.attributedText = attributedText
+//        let backButton = UIBarButtonItem(customView: label)
+//        navigationItem.backBarButtonItem = backButton
         navigationItem.backBarButtonItem = UIBarButtonItem(title: themeConfig.backButtonTitle, style: .plain, target: nil, action: nil)
     }
 

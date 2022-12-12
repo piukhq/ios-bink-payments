@@ -115,7 +115,11 @@ class AddPaymentCardViewController: UIViewController {
     
     private func configureTheme() {
         stackScrollView.backgroundColor = themeConfig.backgroundColor
-        title = themeConfig.title
+        
+        let attributedText = NSAttributedString(string: themeConfig.navigationTitle, attributes: [.font: themeConfig.navigationTitleFont, .foregroundColor: themeConfig.navigationBarTitleTextColor])
+        let label = UILabel()
+        label.attributedText = attributedText
+        navigationItem.titleView = label
     }
     
     private func configureSubscribers() {

@@ -70,7 +70,6 @@ class FormCollectionViewCell: UICollectionViewCell {
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = .systemFont(ofSize: 12, weight: .light)
         label.heightAnchor.constraint(equalToConstant: Constants.titleLabelHeight).isActive = true
         label.setContentCompressionResistancePriority(.required, for: .vertical)
         return label
@@ -79,7 +78,6 @@ class FormCollectionViewCell: UICollectionViewCell {
     lazy var textField: UITextField = {
         let field = UITextField()
         field.translatesAutoresizingMaskIntoConstraints = false
-        field.font = .systemFont(ofSize: 14, weight: .regular)
         field.delegate = self
         field.heightAnchor.constraint(equalToConstant: Constants.textFieldHeight).isActive = true
         field.addTarget(self, action: .textFieldUpdated, for: .editingChanged)
@@ -135,7 +133,6 @@ class FormCollectionViewCell: UICollectionViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 0
-        label.font = .systemFont(ofSize: 13, weight: .light)
         label.text = "Invalid entry"
         label.isHidden = true
         label.textColor = .systemRed
@@ -238,8 +235,11 @@ class FormCollectionViewCell: UICollectionViewCell {
     private func configureTheme(_ field: FormField) {
         let config = themeConfig ?? BinkThemeConfiguration()
         titleLabel.textColor = config.titleTextColor
+        titleLabel.font = config.textfieldTitleFont
         textField.textColor = config.fieldTextColor
         textField.tintColor = config.fieldCursorColor
+        textField.font = config.textfieldFont
+        validationLabel.font = config.validationLabelFont
         stackBackgroundView.backgroundColor = config.fieldBackgroundColor
         let fieldTitle = config.fieldPromptCapitalisationStyle == .allCharacters ? field.title.uppercased() : field.title
         
