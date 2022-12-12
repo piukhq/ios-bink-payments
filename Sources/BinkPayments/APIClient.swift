@@ -7,6 +7,7 @@
 
 import Alamofire
 import Foundation
+import FrameworkTest
 
 class APIClient {
     private let session: Session

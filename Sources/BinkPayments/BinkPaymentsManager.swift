@@ -11,6 +11,7 @@ import UIKit
 
 public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
     public static let shared = BinkPaymentsManager()
+    private let baseShared = FrameworkManager.shared
     private var wallet = Wallet()
     var token: String!
     var environmentKey: String!
@@ -30,6 +31,8 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
         self.isDebug = isDebug
         print("Bink Payments SDK Initialised")
         
+        baseShared.configure(token: self.token, environmentKey: self.environmentKey, isDebug: self.isDebug)
+        
         #if DEBUG
         NetworkActivityLogger.shared.level = .debug
         NetworkActivityLogger.shared.startLogging()
@@ -42,18 +45,20 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
     }
     
     public func launchScanner(delegate: BinkScannerViewControllerDelegate) {
-        let binkScannerViewController = BinkScannerViewController()
-        binkScannerViewController.delegate = delegate
-        currentViewController?.present(binkScannerViewController, animated: true)
+//        let binkScannerViewController = BinkScannerViewController()
+//        binkScannerViewController.delegate = delegate
+//        currentViewController?.present(binkScannerViewController, animated: true)
+        baseShared.launchScanner(delegate: delegate)
     }
     
     public func launchDebugScreen(paymentCard: PaymentAccountCreateModel) {
-        let debugScreen = DebugViewController(paymentCard: paymentCard)
-        currentViewController?.present(debugScreen, animated: true)
+//        let debugScreen = DebugViewController(paymentCard: paymentCard)
+//        currentViewController?.present(debugScreen, animated: true)
+        baseShared.launchDebugScreen(paymentCard: paymentCard)
     }
     
     public func launchAddPaymentCardScreen(_ paymentCard: PaymentAccountCreateModel? = nil) {
-        let addPaymentCardViewController = AddPaymentCardViewController(viewModel: AddPaymentCardViewModel(paymentCard: paymentCard))
+        let addPaymentCardViewController = AddPaymentCardViewController(viewModel: AddPaymentCardViewModel(paymentCard: paymentCard, repository: PaymentWalletRepository()))
         let navigationController = UINavigationController(rootViewController: addPaymentCardViewController)
         currentViewController?.show(navigationController, sender: nil)
     }

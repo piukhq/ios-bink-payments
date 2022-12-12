@@ -8,8 +8,8 @@
 import Foundation
 import FrameworkTest
 
-class PaymentWalletRepository: WalletService {    
-    func addPaymentCard(_ paymentCard: PaymentAccountCreateModel, onSuccess: @escaping (PaymentAccountResponseModel) -> Void, onError: @escaping(BinkError?) -> Void) {
+class PaymentWalletRepository: WalletService, PaymentWalletRepositoryProtocol {
+    func addPaymentCard(_ paymentCard: FrameworkTest.PaymentAccountCreateModel, onSuccess: @escaping (FrameworkTest.PaymentAccountResponseModel) -> Void, onError: @escaping(FrameworkTest.BinkError?) -> Void) {
         if BinkPaymentsManager.shared.isDebug {
             createPaymentAccount(paymentCard, onSuccess: { createdPaymentCard in
                 onSuccess(createdPaymentCard)
@@ -35,7 +35,7 @@ class PaymentWalletRepository: WalletService {
         }
     }
     
-    private func requestSpreedlyToken(paymentCard: PaymentAccountCreateModel, onSuccess: @escaping (SpreedlyResponse) -> Void, onError: @escaping (BinkError?) -> Void) {
+    private func requestSpreedlyToken(paymentCard: FrameworkTest.PaymentAccountCreateModel, onSuccess: @escaping (FrameworkTest.SpreedlyResponse) -> Void, onError: @escaping (FrameworkTest.BinkError?) -> Void) {
         let spreedlyRequest = SpreedlyRequest(fullName: paymentCard.nameOnCard, number: paymentCard.fullPan, month: paymentCard.month, year: paymentCard.year)
 
         getSpreedlyToken(withRequest: spreedlyRequest) { result in
@@ -48,7 +48,7 @@ class PaymentWalletRepository: WalletService {
         }
     }
 
-    private func createPaymentAccount(_ paymentAccount: PaymentAccountCreateModel, spreedlyResponse: SpreedlyResponse? = nil, onSuccess: @escaping (PaymentAccountResponseModel) -> Void, onError: @escaping(NetworkingError?) -> Void) {
+    private func createPaymentAccount(_ paymentAccount: FrameworkTest.PaymentAccountCreateModel, spreedlyResponse: FrameworkTest.SpreedlyResponse? = nil, onSuccess: @escaping (FrameworkTest.PaymentAccountResponseModel) -> Void, onError: @escaping(FrameworkTest.NetworkingError?) -> Void) {
         var paymentCreateRequest: PaymentCardCreateRequest?
 
         if let spreedlyResponse = spreedlyResponse {
