@@ -70,6 +70,12 @@ class AddPaymentCardViewController: UIViewController {
         return button
     }()
     
+    private lazy var cancelButton: UIBarButtonItem = {
+        let image = UIImage(named: "close", in: .module, with: nil)
+        let button = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(close))
+        return button
+    }()
+    
     private lazy var card: PaymentCardCollectionViewCell = {
         let cell: PaymentCardCollectionViewCell = .fromNib()
         return cell
@@ -162,6 +168,8 @@ class AddPaymentCardViewController: UIViewController {
             card.heightAnchor.constraint(equalToConstant: Constants.cardHeight),
             card.widthAnchor.constraint(equalTo: collectionView.widthAnchor)
         ])
+        
+        navigationItem.rightBarButtonItem = cancelButton
     }
     
     @objc func addButtonTapped() {
@@ -205,6 +213,10 @@ class AddPaymentCardViewController: UIViewController {
                 }
             }
         }
+    }
+    
+    @objc private func close() {
+        dismiss(animated: true)
     }
 }
 

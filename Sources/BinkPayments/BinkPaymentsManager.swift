@@ -46,7 +46,7 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
         binkScannerViewController.delegate = delegate
         let navigationController = UINavigationController(rootViewController: binkScannerViewController)
 
-//        navigationController.modalPresentationStyle = .fullScreen
+        navigationController.modalPresentationStyle = .fullScreen
         
         let appearance = UINavigationBarAppearance()
         appearance.configureWithOpaqueBackground()

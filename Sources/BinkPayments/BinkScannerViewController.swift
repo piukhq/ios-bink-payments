@@ -24,7 +24,7 @@ extension BinkScannerViewControllerDelegate {
     enum Constants {
         static let rectOfInterestInset: CGFloat = 25
         static let viewFrameRatio: CGFloat = 12 / 18
-        static let maskedAreaY: CGFloat = 100
+        static let maskedAreaY: CGFloat = 150
         static let maskedAreaCornerRadius: CGFloat = 8
         static let guideImageInset = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
         static let explainerLabelPadding: CGFloat = 25
@@ -107,17 +107,14 @@ extension BinkScannerViewControllerDelegate {
         var widget = BinkScannerWidgetView()
         widget.addTarget(self, selector: #selector(enterManually))
         widget.translatesAutoresizingMaskIntoConstraints = false
+        widget.backgroundColor = .secondarySystemBackground
         return widget
     }()
     
 
-    private lazy var cancelButton: UIButton = {
-        let button = UIButton(type: .custom)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.setImage(UIImage(named: "close", in: .module, with: nil), for: .normal)
-        button.addTarget(self, action: #selector(close), for: .touchUpInside)
-        button.tintColor = .systemPink
-        view.addSubview(button)
+    private lazy var cancelButton: UIBarButtonItem = {
+        let image = UIImage(named: "close", in: .module, with: nil)
+        let button = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(close))
         return button
     }()
 
@@ -170,6 +167,7 @@ extension BinkScannerViewControllerDelegate {
         view.addSubview(panLabel)
         view.addSubview(expiryLabel)
         view.addSubview(nameOnCardLabel)
+        navigationItem.rightBarButtonItem = cancelButton
         
         NSLayoutConstraint.activate([
             explainerLabel.topAnchor.constraint(equalTo: guideImageView.bottomAnchor, constant: Constants.explainerLabelPadding),
@@ -185,11 +183,7 @@ extension BinkScannerViewControllerDelegate {
             expiryLabel.topAnchor.constraint(equalTo: panLabel.bottomAnchor),
             expiryLabel.centerXAnchor.constraint(equalTo: panLabel.centerXAnchor),
             nameOnCardLabel.leadingAnchor.constraint(equalTo: guideImageView.leadingAnchor, constant: 25),
-            nameOnCardLabel.bottomAnchor.constraint(equalTo: guideImageView.bottomAnchor, constant: -10),
-            cancelButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 4),
-            cancelButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -4),
-            cancelButton.heightAnchor.constraint(equalToConstant: Constants.closeButtonSize.height),
-            cancelButton.widthAnchor.constraint(equalToConstant: Constants.closeButtonSize.width)
+            nameOnCardLabel.bottomAnchor.constraint(equalTo: guideImageView.bottomAnchor, constant: -10)
         ])
     }
     
@@ -298,7 +292,6 @@ extension BinkScannerViewControllerDelegate {
                         self.stopScanning()
                         self.nameOnCardLabel.text = self.visionUtility.paymentCard.nameOnCard ?? ""
                         self.nameOnCardLabel.alpha = 1
-                        self.guideImageView.tintColor = .systemPink
                         self.guideImageView.layer.addBinkAnimation(.shake)
                     } completion: { [weak self] _ in
                         HapticFeedbackUtil.giveFeedback(forType: .notification(type: .success))
