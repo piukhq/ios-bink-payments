@@ -111,6 +111,10 @@ class AddPaymentCardViewController: UIViewController {
         configureTheme()
         configureSubscribers()
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        
+        let switchView = BinkSwitchView()
+        switchView.configure(themeConfig: themeConfig, text: "Bello")
+        stackScrollView.add(arrangedSubview: switchView)
     }
     
     private func configureTheme() {

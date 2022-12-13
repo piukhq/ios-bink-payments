@@ -27,7 +27,7 @@ public class BinkThemeConfiguration {
     
     
     /// Colors
-    public var primaryColor: UIColor = .secondarySystemBackground
+    public var primaryColor: UIColor = .darkGray
     public var backgroundColor: UIColor = .secondarySystemBackground
     public var titleTextColor: UIColor = .label
     public var navigationBarTintColor: UIColor = .label
