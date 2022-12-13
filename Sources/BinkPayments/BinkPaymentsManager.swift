@@ -12,7 +12,7 @@ import UIKit
 public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
     public static let shared = BinkPaymentsManager()
     private let baseShared = FrameworkManager.shared
-    private var wallet = Wallet()
+    private var wallet = Wallet(apiClient: APIClient())
     var token: String!
     var environmentKey: String!
     var isDebug: Bool!
@@ -58,7 +58,7 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
     }
     
     public func launchAddPaymentCardScreen(_ paymentCard: PaymentAccountCreateModel? = nil) {
-        let addPaymentCardViewController = AddPaymentCardViewController(viewModel: AddPaymentCardViewModel(paymentCard: paymentCard, repository: PaymentWalletRepository()))
+        let addPaymentCardViewController = AddPaymentCardViewController(viewModel: AddPaymentCardViewModel(paymentCard: paymentCard, repository: PaymentWalletRepository(apiClient: APIClient())))
         let navigationController = UINavigationController(rootViewController: addPaymentCardViewController)
         currentViewController?.show(navigationController, sender: nil)
     }

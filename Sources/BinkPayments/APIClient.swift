@@ -9,7 +9,7 @@ import Alamofire
 import Foundation
 import FrameworkTest
 
-class APIClient {
+class APIClient: APIClientProtocol {
     private let session: Session
     private let networkReachabilityManager = NetworkReachabilityManager()
     
@@ -41,7 +41,7 @@ class APIClient {
                 completion?(.failure(.invalidRequest), nil)
                 return
             }
-            session.request(validatedRequest.requestUrl, method: request.method, headers: validatedRequest.headers).cacheResponse(using: ResponseCacher.doNotCache).response { [weak self] response in
+            session.request(validatedRequest.requestUrl, method: convertToHttpMethod(method: request.method), headers: validatedRequest.headers).cacheResponse(using: ResponseCacher.doNotCache).response { [weak self] response in
                 self?.handleResponse(response, endpoint: request.endpoint, expecting: responseType, isUserDriven: request.isUserDriven, completion: completion)
             }
         }
@@ -57,9 +57,20 @@ class APIClient {
                 completion?(.failure(.invalidRequest), nil)
                 return
             }
-            session.request(validatedRequest.requestUrl, method: request.method, parameters: body, encoder: JSONParameterEncoder.default, headers: validatedRequest.headers).cacheResponse(using: ResponseCacher.doNotCache).response { [weak self] response in
+            session.request(validatedRequest.requestUrl, method: convertToHttpMethod(method: request.method), parameters: body, encoder: JSONParameterEncoder.default, headers: validatedRequest.headers).cacheResponse(using: ResponseCacher.doNotCache).response { [weak self] response in
                 self?.handleResponse(response, endpoint: request.endpoint, expecting: responseType, isUserDriven: request.isUserDriven, completion: completion)
             }
+        }
+    }
+    
+    private func convertToHttpMethod(method: String) -> HTTPMethod {
+        switch method {
+        case "GET":
+                return .get
+        case "POST":
+            return .post
+        default:
+            return .get
         }
     }
     
@@ -87,21 +98,6 @@ class APIClient {
         let requestHeaders = HTTPHeaders(BinkHTTPHeaders.asDictionary(request.headers ?? request.endpoint.headers))
         completion(ValidatedNetworkRequest(requestUrl: url, headers: requestHeaders), nil)
     }
-}
-
-typealias APIClientCompletionHandler<ResponseType: Any> = (Result<ResponseType, NetworkingError>, NetworkResponseData?) -> Void
-
-struct NetworkResponseData {
-    var urlResponse: HTTPURLResponse?
-    var errorMessage: String?
-}
-
-struct BinkNetworkRequest {
-    var endpoint: APIEndpoint
-    var method: HTTPMethod
-    var queryParameters: [String: String]?
-    var headers: [BinkHTTPHeader]?
-    var isUserDriven: Bool
 }
 
 struct ValidatedNetworkRequest {
