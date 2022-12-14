@@ -115,6 +115,16 @@ class AddPaymentCardViewController: UIViewController {
         let switchView = BinkSwitchView()
         switchView.configure(themeConfig: themeConfig, text: "Bello")
         stackScrollView.add(arrangedSubview: switchView)
+        
+        let checkbox = CheckboxView(checked: false)
+        stackScrollView.add(arrangedSubview: checkbox)
+        
+//        checkbox.translatesAutoresizingMaskIntoConstraints = false
+//        view.addSubview(checkbox)
+//        NSLayoutConstraint.activate([
+//            view.centerXAnchor.constraint(equalTo: checkbox.centerXAnchor),
+//            view.centerYAnchor.constraint(equalTo: checkbox.centerYAnchor)
+//            ])
     }
     
     private func configureTheme() {
