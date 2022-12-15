@@ -112,19 +112,11 @@ class AddPaymentCardViewController: UIViewController {
         configureSubscribers()
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         
-        let switchView = BinkSwitchView()
-        switchView.configure(themeConfig: themeConfig, text: "Bello")
+        let switchView = BinkSwitchView(themeConfig: themeConfig, text: "Switch me please")
         stackScrollView.add(arrangedSubview: switchView)
         
-        let checkbox = CheckboxView(checked: true)
+        let checkbox = CheckboxView(checked: true, themeConfig: themeConfig, title: "Check this")
         stackScrollView.add(arrangedSubview: checkbox)
-        
-//        checkbox.translatesAutoresizingMaskIntoConstraints = false
-//        view.addSubview(checkbox)
-//        NSLayoutConstraint.activate([
-//            view.centerXAnchor.constraint(equalTo: checkbox.centerXAnchor),
-//            view.centerYAnchor.constraint(equalTo: checkbox.centerYAnchor)
-//            ])
     }
     
     private func configureTheme() {

@@ -54,8 +54,7 @@ public class BinkThemeConfiguration {
     /// Font
     public var navigationTitleFont: UIFont = .systemFont(ofSize: 15, weight: .light)
     public var navigationBackButtonTitleFont: UIFont = .systemFont(ofSize: 13, weight: .light)
-
-    public var textfieldTitleFont: UIFont = .systemFont(ofSize: 13, weight: .thin)
+    public var textfieldTitleFont: UIFont = .systemFont(ofSize: 14, weight: .regular)
     public var textfieldFont: UIFont = .systemFont(ofSize: 14, weight: .regular)
     public var validationLabelFont: UIFont = .systemFont(ofSize: 13, weight: .light)
 

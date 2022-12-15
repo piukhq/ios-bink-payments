@@ -1,14 +1,12 @@
 //
 //  CheckboxView.swift
-//  binkapp
 //
-//  Copyright © 2019 Bink. All rights reserved.
+//  Copyright © 2022 Bink. All rights reserved.
 //
 
 import UIKit
 
 class CheckboxView: CustomView {
-    typealias TextAction = () -> Void
     @IBOutlet private weak var checkboxButtonExtendedTappableAreaView: UIView!
     @IBOutlet private weak var checkboxButton: UIButton!
     @IBOutlet private weak var textView: UITextView!
@@ -16,13 +14,7 @@ class CheckboxView: CustomView {
     
     private var checkedState = false
     private(set) var hideCheckbox = false
-    private(set) var optional = false
-    private(set) var textSelected: TextAction?
-    private(set) var title: NSMutableAttributedString? {
-        didSet {
-            textView.attributedText = title
-        }
-    }
+    private(set) var isOptional = false
     
     var value: String {
         return checkedState ? "1" : "0"
@@ -30,27 +22,15 @@ class CheckboxView: CustomView {
     
     private lazy var textViewGesture = UITapGestureRecognizer(target: self, action: .handleCheckboxTap)
     private lazy var checkboxGesture = UITapGestureRecognizer(target: self, action: .handleCheckboxTap)
+    private var themeConfig: BinkThemeConfiguration
 
     
-    init(checked: Bool) {
-        super.init(frame: .zero)
-        checkedState = checked
-        configureCheckboxButton(forState: checkedState, animated: false)
-    }
-    
-    public required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    func configure(title: NSMutableAttributedString, columnName: String, url: URL? = nil, optional: Bool = false, textSelected: TextAction? = nil, hideCheckbox: Bool = false) {
-        checkboxButton.layer.cornerRadius = 4
-        checkboxButton.layer.cornerCurve = .continuous
-   
-        self.optional = optional
-        self.textSelected = textSelected
+    init(checked: Bool, themeConfig: BinkThemeConfiguration, title: String? = nil, isOptional: Bool = false, hideCheckbox: Bool = false) {
+        self.themeConfig = themeConfig
+        self.checkedState = checked
+        self.isOptional = isOptional
         self.hideCheckbox = hideCheckbox
-
-        // We don't need a delegate if we don't have a checkbox, so we send a nil delegate to hide it
+        super.init(frame: .zero)
 
         if hideCheckbox {
             checkboxButton.isHidden = true
@@ -59,15 +39,14 @@ class CheckboxView: CustomView {
             textViewLeadingConstraint.constant = -(checkboxButtonExtendedTappableAreaView.frame.width - 11)
         }
 
-        guard let safeUrl = url else {
-            self.title = title
-            return
-        }
-
-        let attributedString = title
-        attributedString.addAttribute(.link, value: safeUrl, range: NSRange(location: title.length - columnName.count, length: columnName.count))
-        textView.attributedText = attributedString
-        textView.textColor = .cyan
+        textView.text = title
+        textView.textColor = themeConfig.titleTextColor
+        textView.font = themeConfig.textfieldTitleFont
+        configureCheckboxButton(forState: checkedState, animated: false)
+    }
+    
+    public required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     override func configureUI() {
@@ -83,9 +62,9 @@ class CheckboxView: CustomView {
     
     private func configureCheckboxButton(forState checked: Bool, animated: Bool = true) {
         let animationBlock = {
-            self.checkboxButton.backgroundColor = checked ? .black : .white
-            self.checkboxButton.setImage(checked ? UIImage(systemName: "Checkmark") : nil, for: .normal)
-            self.checkboxButton.layer.borderColor = checked ? nil : UIColor.systemGray.cgColor
+            self.checkboxButton.backgroundColor = checked ? self.themeConfig.primaryColor : self.themeConfig.fieldBackgroundColor
+            self.checkboxButton.setImage(checked ? UIImage(systemName: "checkmark") : nil, for: .normal)
+            self.checkboxButton.layer.borderColor = checked ? nil : self.themeConfig.fieldBorderColor.cgColor
             self.checkboxButton.layer.borderWidth = checked ? 0 : 2
         }
         
@@ -98,25 +77,19 @@ class CheckboxView: CustomView {
         }, completion: nil)
     }
     
-    /// Should only be used when the API call triggered by the delegate method fails, and we need to revert the state
-    func reset() {
-        checkedState.toggle()
-        configureCheckboxButton(forState: checkedState)
-    }
-    
     @objc func handleCheckboxTap() {
         toggleCheckbox()
     }
 }
 
-//extension CheckboxView: InputValidation {
-//    var isValid: Bool {
-//        if hideCheckbox {
-//            return true
-//        }
-//        return optional ? true : checkedState
-//    }
-//}
+extension CheckboxView {
+    var isValid: Bool {
+        if hideCheckbox {
+            return true
+        }
+        return isOptional ? true : checkedState
+    }
+}
 
 fileprivate extension Selector {
     static let handleCheckboxTap = #selector(CheckboxView.handleCheckboxTap)

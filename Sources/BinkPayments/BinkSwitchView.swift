@@ -16,10 +16,11 @@ class BinkSwitchView: UIStackView {
         return switchView
     }()
     
-    private lazy var label: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
+    private lazy var textview: UITextView = {
+        let textView = UITextView()
+        textView.backgroundColor = .clear
+        textView.translatesAutoresizingMaskIntoConstraints = false
+        return textView
     }()
     
     override func layoutSubviews() {
@@ -30,19 +31,24 @@ class BinkSwitchView: UIStackView {
         spacing = 10
     }
     
-    func configure(themeConfig: BinkThemeConfiguration, text: String?) {
+    init(themeConfig: BinkThemeConfiguration, text: String?) {
+        super.init(frame: .zero)
         switchView.onTintColor = themeConfig.primaryColor
         addArrangedSubview(switchView)
 
         if let text = text {
-            label.text = text
-            label.font = themeConfig.textfieldFont
-            addArrangedSubview(label)
+            textview.text = text
+            textview.font = themeConfig.textfieldTitleFont
+            addArrangedSubview(textview)
         }
     }
     
+    required init(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     @objc func handleSwitchChange(_ sender: UISwitch) {
-        print("SWITCH")
+        
     }
 }
 
