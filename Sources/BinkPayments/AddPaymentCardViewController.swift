@@ -116,7 +116,7 @@ class AddPaymentCardViewController: UIViewController {
         switchView.configure(themeConfig: themeConfig, text: "Bello")
         stackScrollView.add(arrangedSubview: switchView)
         
-        let checkbox = CheckboxView(checked: false)
+        let checkbox = CheckboxView(checked: true)
         stackScrollView.add(arrangedSubview: checkbox)
         
 //        checkbox.translatesAutoresizingMaskIntoConstraints = false

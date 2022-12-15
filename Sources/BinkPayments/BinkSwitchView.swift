@@ -19,26 +19,27 @@ class BinkSwitchView: UIStackView {
     private lazy var label: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Switch me baby"
         return label
     }()
     
-    func configure(themeConfig: BinkThemeConfiguration, text: String?) {
+    override func layoutSubviews() {
+        super.layoutSubviews()
         translatesAutoresizingMaskIntoConstraints = false
         axis = .horizontal
         distribution = .fill
-        
+        spacing = 10
+    }
+    
+    func configure(themeConfig: BinkThemeConfiguration, text: String?) {
         switchView.onTintColor = themeConfig.primaryColor
-        
+        addArrangedSubview(switchView)
+
         if let text = text {
             label.text = text
             label.font = themeConfig.textfieldFont
             addArrangedSubview(label)
         }
-
-        addArrangedSubview(switchView)
     }
-
     
     @objc func handleSwitchChange(_ sender: UISwitch) {
         print("SWITCH")
