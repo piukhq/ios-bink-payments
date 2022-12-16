@@ -48,8 +48,8 @@ extension BinkScannerViewControllerDelegate {
     private var canPresentScanError = true
     private var shouldAllowScanning = true
     private var shouldPresentWidgetError = true
-    private let visionUtility = VisionUtility()
-    private var subscriptions = Set<AnyCancellable>()
+    private var visionUtility: VisionUtility!
+    private var cancellable: AnyCancellable?
     
     private lazy var blurredView: UIVisualEffectView = {
         return UIVisualEffectView(effect: UIBlurEffect(style: .regular))
@@ -118,13 +118,9 @@ extension BinkScannerViewControllerDelegate {
         return button
     }()
 
-    public init(themeConfig: BinkThemeConfiguration) {
+    public init(themeConfig: BinkThemeConfiguration, visionUtility: VisionUtility) {
+        self.visionUtility = visionUtility
         super.init(nibName: nil, bundle: nil)
-//        let attributedText = NSAttributedString(string: themeConfig.backButtonTitle, attributes: [.font: themeConfig.navigationTitleFont, .foregroundColor: themeConfig.navigationBarTintColor])
-//        let label = UILabel()
-//        label.attributedText = attributedText
-//        let backButton = UIBarButtonItem(customView: label)
-//        navigationItem.backBarButtonItem = backButton
         navigationItem.backBarButtonItem = UIBarButtonItem(title: themeConfig.backButtonTitle, style: .plain, target: nil, action: nil)
     }
 
@@ -135,6 +131,11 @@ extension BinkScannerViewControllerDelegate {
     override public func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
+//        startScanning()
+    }
+    
+    open override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         configureSubscribers()
         startScanning()
     }
@@ -289,7 +290,9 @@ extension BinkScannerViewControllerDelegate {
     }
     
     private func configureSubscribers() {
-        visionUtility.subject.sink { completion in
+        visionUtility = VisionUtility()
+
+        cancellable = visionUtility.subject.sink { completion in
             switch completion {
             case .finished:
                 DispatchQueue.main.async {
@@ -301,8 +304,13 @@ extension BinkScannerViewControllerDelegate {
                     } completion: { [weak self] _ in
                         HapticFeedbackUtil.giveFeedback(forType: .notification(type: .success))
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
-                            guard let self = self else { return }
+                            guard let self = self, self.visionUtility.pan != nil else { return }
                             self.delegate?.binkScannerViewController(self, didScan: self.visionUtility.paymentCard)
+                            self.nameOnCardLabel.text = ""
+                            self.panLabel.text = ""
+                            self.expiryLabel.text = ""
+                            self.visionUtility = nil
+                            self.cancellable = nil
                         }
                     }
                 }
@@ -324,7 +332,6 @@ extension BinkScannerViewControllerDelegate {
                 }
             }
         }
-        .store(in: &subscriptions)
     }
     
     @objc private func enterManually() {
