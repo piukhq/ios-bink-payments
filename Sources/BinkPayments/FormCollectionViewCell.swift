@@ -255,8 +255,8 @@ class FormCollectionViewCell: UICollectionViewCell {
         
         switch config.fieldBorderStyle {
         case .box:
-            fieldContainerVStack.layer.borderColor = config.fieldBorderColor.cgColor
-            fieldContainerVStack.layer.borderWidth = config.fieldBorderWidth
+            stackBackgroundView.layer.borderColor = config.fieldBorderColor.cgColor
+            stackBackgroundView.layer.borderWidth = config.fieldBorderWidth
         case .underline:
             underlineView.isHidden = false
             underlineView.backgroundColor = config.fieldBorderColor

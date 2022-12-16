@@ -51,6 +51,7 @@ public class BinkThemeConfiguration {
     public var fieldBackgroundColor: UIColor = .quaternarySystemFill
     public var fieldTextColor: UIColor = .label
     
+    
     /// Font
     public var navigationTitleFont: UIFont = .systemFont(ofSize: 15, weight: .light)
     public var navigationBackButtonTitleFont: UIFont = .systemFont(ofSize: 13, weight: .light)
