@@ -247,7 +247,10 @@ class FormCollectionViewCell: UICollectionViewCell {
         case .header:
             titleLabel.text = fieldTitle
         case .inline:
-            textField.attributedPlaceholder = NSAttributedString(string: fieldTitle, attributes: [.foregroundColor : config.titleTextColor.withAlphaComponent(0.5)])
+            textField.attributedPlaceholder = NSAttributedString(string: fieldTitle, attributes: [
+                .foregroundColor: config.titleTextColor.withAlphaComponent(0.5),
+                .font: config.textfieldTitleFont
+            ])
         }
         
         switch config.fieldBorderStyle {

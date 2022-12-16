@@ -39,6 +39,8 @@ class BinkSwitchView: UIStackView {
         if let text = text {
             textview.text = text
             textview.font = themeConfig.textfieldTitleFont
+            textview.textColor = themeConfig.titleTextColor
+            textview.isUserInteractionEnabled = false
             addArrangedSubview(textview)
         }
     }
