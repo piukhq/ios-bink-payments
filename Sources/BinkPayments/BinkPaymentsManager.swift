@@ -10,8 +10,8 @@ import UIKit
 
 public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
     public static let shared = BinkPaymentsManager()
-    private var wallet = Wallet()
     public var themeConfig = BinkThemeConfiguration()
+    private let wallet = Wallet()
     var token: String!
     var environmentKey: String!
     var isDebug: Bool!

@@ -16,11 +16,7 @@ public protocol BinkScannerViewControllerDelegate: AnyObject {
     func binkScannerViewController(_ viewController: BinkScannerViewController, didScan paymentCard: PaymentAccountCreateModel)
 }
 
-extension BinkScannerViewControllerDelegate {
-    func binkScannerViewController(_ viewController: BinkScannerViewController, didScan paymentCard: PaymentAccountCreateModel) {}
-}
-
-@objc open class BinkScannerViewController: UIViewController, UINavigationControllerDelegate {
+open class BinkScannerViewController: UIViewController, UINavigationControllerDelegate {
     enum Constants {
         static let rectOfInterestInset: CGFloat = 25
         static let viewFrameRatio: CGFloat = 12 / 18
@@ -292,7 +288,8 @@ extension BinkScannerViewControllerDelegate {
     private func configureSubscribers() {
         visionUtility = VisionUtility()
 
-        cancellable = visionUtility.subject.sink { completion in
+        cancellable = visionUtility.subject.sink { [weak self] completion in
+            guard let self = self else { return }
             switch completion {
             case .finished:
                 DispatchQueue.main.async {
@@ -301,15 +298,14 @@ extension BinkScannerViewControllerDelegate {
                         self.nameOnCardLabel.text = self.visionUtility.paymentCard.nameOnCard ?? ""
                         self.nameOnCardLabel.alpha = 1
                         self.guideImageView.layer.addBinkAnimation(.shake)
-                    } completion: { [weak self] _ in
+                    } completion: { _ in
                         HapticFeedbackUtil.giveFeedback(forType: .notification(type: .success))
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
-                            guard let self = self, self.visionUtility.pan != nil else { return }
+                            guard self.visionUtility.pan != nil else { return }
                             self.delegate?.binkScannerViewController(self, didScan: self.visionUtility.paymentCard)
                             self.nameOnCardLabel.text = ""
                             self.panLabel.text = ""
                             self.expiryLabel.text = ""
-                            self.visionUtility = nil
                             self.cancellable = nil
                         }
                     }
@@ -317,17 +313,17 @@ extension BinkScannerViewControllerDelegate {
             case .failure(let error):
                 print("Received error: \(error)")
             }
-        } receiveValue: { paymentCard in
+        } receiveValue: { [weak self] paymentCard in
             DispatchQueue.main.async {
-                self.panLabel.text = paymentCard.fullPan
+                self?.panLabel.text = paymentCard.fullPan
                 if paymentCard.fullPan != nil {
-                    self.expiryLabel.text = paymentCard.formattedExpiryDate() ?? ""
+                    self?.expiryLabel.text = paymentCard.formattedExpiryDate() ?? ""
                 }
                 
                 UIView.animate(withDuration: 0.2, delay: 0, options: .curveEaseIn) {
-                    self.panLabel.alpha = 1
+                    self?.panLabel.alpha = 1
                     if let _ = paymentCard.formattedExpiryDate() {
-                        self.expiryLabel.alpha = 1
+                        self?.expiryLabel.alpha = 1
                     }
                 }
             }
