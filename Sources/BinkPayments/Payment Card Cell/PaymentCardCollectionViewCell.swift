@@ -8,56 +8,27 @@
 
 import UIKit
 
-class PaymentCardCollectionViewCell: WalletCardCollectionViewCell, UIGestureRecognizerDelegate {
+class PaymentCardCollectionViewCell: UICollectionViewCell, UIGestureRecognizerDelegate {
     @IBOutlet private weak var nameOnCardLabel: UILabel!
     @IBOutlet private weak var cardNumberLabel: UILabel!
     @IBOutlet private weak var providerLogoImageView: UIImageView!
     @IBOutlet private weak var providerWatermarkImageView: UIImageView!
-    
+    @IBOutlet private weak var containerView: UIView!
+
     private enum CardGradientKey: NSString {
         case visaGradient
         case mastercardGradient
         case amexGradient
         case unknownGradient
-        case swipeGradient
     }
     
     private var cardGradientLayer: CAGradientLayer?
-    private var startingOffset: CGFloat = 0
-    private var viewModel: PaymentCardCellViewModel!
-    
-    override var bounds: CGRect {
-        didSet {
-            setupShadow()
-        }
-    }
-    
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        processGradient(type: viewModel.paymentCardType)
-    }
-    
-    func configureWithViewModel(_ viewModel: PaymentCardCellViewModel) {
-        self.viewModel = viewModel
-        
-        nameOnCardLabel.text = viewModel.nameOnCardText
-        cardNumberLabel.attributedText = viewModel.cardNumberText
-        
-        configureForProvider(cardType: viewModel.paymentCardType)
-        
-        setLabelStyling()
-        setupShadow()
-        accessibilityIdentifier = viewModel.nameOnCardText
-    }
-    
+
     func configureWithAddViewModel(_ viewModel: PaymentAccountCreateModel) {
         nameOnCardLabel.text = viewModel.nameOnCard
         cardNumberLabel.attributedText = cardNumberAttributedString(for: viewModel.fullPan ?? "", type: viewModel.cardType)
-        
         configureForProvider(cardType: viewModel.cardType)
-        
         setLabelStyling()
-        setupShadow()
         layer.cornerRadius = 5
         layer.cornerCurve = .continuous
     }
@@ -65,10 +36,10 @@ class PaymentCardCollectionViewCell: WalletCardCollectionViewCell, UIGestureReco
     private func cardNumberAttributedString(for incompletePan: String, type: PaymentCardType?) -> NSAttributedString? {
         let unredacted = 4
         var stripped = incompletePan.replacingOccurrences(of: " ", with: "")
-        let cardNumberLength = 16 // Hardcoded, fix later
+        let cardNumberLength = 16
         let cardNumberLengthFromCardType = type?.lengthRange().length ?? cardNumberLength
         let lengthDiff = cardNumberLength - cardNumberLengthFromCardType
-        let whitespaceIndexLocations = [4, 11, 18] // Harcoded, fix later
+        let whitespaceIndexLocations = [4, 11, 18]
         
         // If the string is too long, cut it from the right
         if stripped.count > cardNumberLength {
