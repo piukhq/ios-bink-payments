@@ -10,7 +10,6 @@ import UIKit
 
 protocol FormCollectionViewCellDelegate: AnyObject {
     func formCollectionViewCell(_ cell: FormCollectionViewCell, didSelectField: UITextField)
-    func formCollectionViewCell(_ cell: FormCollectionViewCell, shouldResignTextField textField: UITextField)
     func formCollectionViewCellDidReceivePaymentScannerButtonTap(_ cell: FormCollectionViewCell)
 }
 
@@ -342,11 +341,6 @@ extension FormCollectionViewCell: UITextFieldDelegate {
         }
         
         self.delegate?.formCollectionViewCell(self, didSelectField: textField)
-    }
-    
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        self.delegate?.formCollectionViewCell(self, shouldResignTextField: textField)
-        return true
     }
 }
 

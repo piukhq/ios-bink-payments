@@ -149,16 +149,6 @@ class AddPaymentCardViewController: UIViewController {
             }
             .store(in: &subscriptions)
     }
-
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        
-        // This is due to strange layout issues on first appearance
-        if collectionView.contentSize.width > 0.0 {
-            hasSetupCell = true
-            card.configureWithAddViewModel(viewModel.paymentCard)
-        }
-    }
     
     private func configureLayout() {
         NSLayoutConstraint.activate([
@@ -254,8 +244,6 @@ extension AddPaymentCardViewController: FormCollectionViewCellDelegate {
         self.selectedCellYOrigin = cellOrigin.y
         selectedCellHeight = cell.frame.size.height + Constants.cellErrorLabelSafeSpacing
     }
-    
-    func formCollectionViewCell(_ cell: FormCollectionViewCell, shouldResignTextField textField: UITextField) {}
     
     func formCollectionViewCellDidReceivePaymentScannerButtonTap(_ cell: FormCollectionViewCell) {
         BinkPaymentsManager.shared.launchScanner(delegate: self)
