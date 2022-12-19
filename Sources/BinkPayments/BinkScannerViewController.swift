@@ -28,9 +28,7 @@ open class BinkScannerViewController: UIViewController, UINavigationControllerDe
         static let widgetViewTopPadding: CGFloat = 30
         static let widgetViewLeftRightPadding: CGFloat = 25
         static let widgetViewHeight: CGFloat = 100
-        static let closeButtonSize = CGSize(width: 44, height: 44)
         static let timerInterval: TimeInterval = 5.0
-        static let scanErrorThreshold: TimeInterval = 1.0
     }
 
     public weak var delegate: BinkScannerViewControllerDelegate?
@@ -41,8 +39,6 @@ open class BinkScannerViewController: UIViewController, UINavigationControllerDe
     private let schemeScanningQueue = DispatchQueue(label: "com.bink.wallet.scanning.loyalty.scheme.queue")
     private var rectOfInterest = CGRect.zero
     private var timer: Timer?
-    private var canPresentScanError = true
-    private var shouldAllowScanning = true
     private var shouldPresentWidgetError = true
     private var visionUtility: VisionUtility!
     private var cancellable: AnyCancellable?
@@ -127,7 +123,6 @@ open class BinkScannerViewController: UIViewController, UINavigationControllerDe
     override public func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
-//        startScanning()
     }
     
     open override func viewWillAppear(_ animated: Bool) {
@@ -303,9 +298,7 @@ open class BinkScannerViewController: UIViewController, UINavigationControllerDe
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
                             guard self.visionUtility.pan != nil else { return }
                             self.delegate?.binkScannerViewController(self, didScan: self.visionUtility.paymentCard)
-                            self.nameOnCardLabel.text = ""
-                            self.panLabel.text = ""
-                            self.expiryLabel.text = ""
+                            [self.nameOnCardLabel, self.panLabel, self.expiryLabel].forEach { $0.text = "" }
                             self.cancellable = nil
                         }
                     }
