@@ -42,7 +42,7 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
     }
     
     public func launchScanner(fullScreen: Bool = false, delegate: BinkScannerViewControllerDelegate) {
-        let binkScannerViewController = BinkScannerViewController(themeConfig: themeConfig)
+        let binkScannerViewController = BinkScannerViewController(themeConfig: themeConfig, visionUtility: VisionUtility())
         binkScannerViewController.delegate = delegate
         let navigationController = UINavigationController(rootViewController: binkScannerViewController)
 

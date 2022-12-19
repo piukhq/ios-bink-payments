@@ -10,7 +10,7 @@ import Combine
 import UIKit
 import Vision
 
-public class VisionUtility: ObservableObject {
+public class VisionUtility {
 
     // MARK: - Payment Card
     var pan: String?
