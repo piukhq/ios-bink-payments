@@ -13,7 +13,10 @@ let package = Package(
         // Products define the executables and libraries a package produces, and make them visible to other packages.
         .library(
             name: "BinkPayments",
-            targets: ["BinkPayments", "FrameworkTest"]),
+            targets: ["BinkPayments"]),
+        .library(
+            name: "FrameworkTest",
+            targets: ["FrameworkTest"])
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -23,15 +26,16 @@ let package = Package(
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
-        .target(
-            name: "BinkPayments",
-            dependencies: ["Alamofire", "AlamofireNetworkActivityLogger"]),
-        .testTarget(
-            name: "BinkPaymentsTests",
-            dependencies: ["BinkPayments"]),
         .binaryTarget(
             name: "FrameworkTest",
-            path: "FrameworkTest.xcframework"
-        )
+            url: "https://github.com/TickedActor/FrameworkTest/releases/download/v1.0.0/FrameworkTest.xcframework.zip",
+            checksum: "5bcca2cad7b862d65f73697cdbf2a41b7bd994b31c1b81317ad95f5f33db43d9"
+        ),
+        .target(
+            name: "BinkPayments",
+            dependencies: ["Alamofire", "AlamofireNetworkActivityLogger", "FrameworkTest"]),
+        .testTarget(
+            name: "BinkPaymentsTests",
+            dependencies: ["BinkPayments"])
     ]
 )
