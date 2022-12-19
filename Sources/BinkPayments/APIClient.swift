@@ -11,7 +11,6 @@ import Foundation
 class APIClient {
     private let session: Session
     private let networkReachabilityManager = NetworkReachabilityManager()
-    
     private let successStatusRange = 200...299
     private let noResponseStatus = 204
     private let clientErrorStatusRange = 400...499
@@ -26,7 +25,6 @@ class APIClient {
     init() {
         let configuration = URLSessionConfiguration.default
         configuration.timeoutIntervalForRequest = 10.0
-        
         session = Session(configuration: configuration)
     }
     
@@ -66,14 +64,8 @@ class APIClient {
         if !networkIsReachable && request.isUserDriven {
             completion(nil, .noInternetConnection)
         }
-        
-        var requestUrl: String?
-        if let params = request.queryParameters {
-            requestUrl = request.endpoint.urlString(withQueryParameters: params)
-        } else {
-            requestUrl = request.endpoint.urlString
-        }
-        guard let url = requestUrl else {
+   
+        guard let url = request.endpoint.urlString else {
             completion(nil, .invalidUrl)
             return
         }
@@ -98,7 +90,6 @@ struct NetworkResponseData {
 struct BinkNetworkRequest {
     var endpoint: APIEndpoint
     var method: HTTPMethod
-    var queryParameters: [String: String]?
     var headers: [BinkHTTPHeader]?
     var isUserDriven: Bool
 }
