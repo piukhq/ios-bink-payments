@@ -24,7 +24,6 @@ class CheckboxView: CustomView {
     private lazy var checkboxGesture = UITapGestureRecognizer(target: self, action: .handleCheckboxTap)
     private var themeConfig: BinkThemeConfiguration
 
-    
     init(checked: Bool, themeConfig: BinkThemeConfiguration, title: String? = nil, isOptional: Bool = false, hideCheckbox: Bool = false) {
         self.themeConfig = themeConfig
         self.checkedState = checked

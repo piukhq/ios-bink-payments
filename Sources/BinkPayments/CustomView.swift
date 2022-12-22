@@ -27,13 +27,9 @@ open class CustomView: UIView {
     
     func xibSetup() {
         view = loadViewFromNib()
-        
         view.frame = bounds
-        
         view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        
         configureUI()
-        
         addSubview(view)
     }
     
@@ -49,7 +45,6 @@ open class CustomView: UIView {
         guard let viewFromNib = view else { fatalError("Cannot create view from nib") }
         return viewFromNib
     }
-    
     
     open func configureUI() {}
 }

@@ -13,10 +13,6 @@ protocol FormCollectionViewCellDelegate: AnyObject {
     func formCollectionViewCellDidReceivePaymentScannerButtonTap(_ cell: FormCollectionViewCell)
 }
 
-extension FormCollectionViewCellDelegate {
-    func formCollectionViewCellDidReceivePaymentScannerButtonTap(_ cell: FormCollectionViewCell) {}
-}
-
 class FormCollectionViewCell: UICollectionViewCell {
     private weak var delegate: FormCollectionViewCellDelegate?
     // MARK: - Helpers
@@ -107,7 +103,7 @@ class FormCollectionViewCell: UICollectionViewCell {
         return view
     }()
     
-    /// The bar that represents the field's state using colour
+    /// The underline border
     private lazy var underlineView: UIView = {
         let view = UIView()
         view.backgroundColor = .clear
@@ -148,7 +144,7 @@ class FormCollectionViewCell: UICollectionViewCell {
         return bar
     }()
     
-    private var preferredWidth: CGFloat = 300 // This has to be a non zero value, chose 300 because of the movie 300.
+    private var preferredWidth: CGFloat = 300
     
     override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
         let layoutAttributes = super.preferredLayoutAttributesFitting(layoutAttributes)
@@ -171,10 +167,6 @@ class FormCollectionViewCell: UICollectionViewCell {
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-
-    deinit {
-        NotificationCenter.default.removeObserver(self)
     }
     
     // MARK: - Layout
@@ -206,6 +198,7 @@ class FormCollectionViewCell: UICollectionViewCell {
         textField.autocapitalizationType = field.fieldType.capitalization()
         textField.clearButtonMode = .whileEditing
         textField.accessibilityIdentifier = field.title
+        textField.returnKeyType = .done
         formField = field
         
         // Remove when we drop iOS 13 - add validation view to fieldContainerVStack
@@ -307,10 +300,6 @@ class FormCollectionViewCell: UICollectionViewCell {
         return true
     }
     
-    enum ControlState {
-        case inactive, active, valid, invalid
-    }
-    
     private func configureStateForFieldValidity(_ field: FormField) {
         let textfieldIsEmpty = textField.text?.isEmpty ?? false
 
@@ -339,8 +328,12 @@ extension FormCollectionViewCell: UITextFieldDelegate {
         if let multipleChoiceInput = textField.inputView as? FormMultipleChoiceInput {
             textField.text = (pickerSelectedChoice?.isEmpty ?? false) ? multipleChoiceInput.fullContentString : pickerSelectedChoice
         }
-        
+
         self.delegate?.formCollectionViewCell(self, didSelectField: textField)
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
     }
 }
 
