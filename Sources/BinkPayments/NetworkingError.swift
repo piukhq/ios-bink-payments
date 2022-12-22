@@ -9,9 +9,7 @@ import Foundation
 
 enum BinkErrorDomain: Int {
     case networking
-    case configuration
     case walletService
-    case userService
 }
 
 protocol BinkError: Error {
