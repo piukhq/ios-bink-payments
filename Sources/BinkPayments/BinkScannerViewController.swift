@@ -294,7 +294,7 @@ open class BinkScannerViewController: UIViewController, UINavigationControllerDe
                         self.nameOnCardLabel.alpha = 1
                         self.guideImageView.layer.addBinkAnimation(.shake)
                     } completion: { _ in
-                        HapticFeedbackUtil.giveFeedback(forType: .notification(type: .success))
+                        HapticFeedbackUtil.giveFeedback(forType: .success)
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
                             guard self.visionUtility.pan != nil else { return }
                             self.delegate?.binkScannerViewController(self, didScan: self.visionUtility.paymentCard)

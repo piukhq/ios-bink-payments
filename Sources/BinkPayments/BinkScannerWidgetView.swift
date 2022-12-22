@@ -90,7 +90,7 @@ class BinkScannerWidgetView: UIView {
 
     private func error(state: WidgetState) {
         layer.addBinkAnimation(.shake)
-        HapticFeedbackUtil.giveFeedback(forType: .notification(type: .error))
+        HapticFeedbackUtil.giveFeedback(forType: .error)
         setState(state)
     }
 
