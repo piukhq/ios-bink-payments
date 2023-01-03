@@ -22,9 +22,7 @@ open class StackScrollView: UIScrollView {
     // MARK: - Properties
     
     private let stackView: UIStackView
-    
     private var stackViewTopConstraint = NSLayoutConstraint()
-    
     private var lastContentInset: UIEdgeInsets?
     
     public var arrangedSubviews: [UIView] {

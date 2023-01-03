@@ -10,32 +10,21 @@ import CommonCrypto
 
 extension String {
     var sha256: String {
-        return HMAC.hash(inp: self, algo: HMACAlgo.SHA256)
+        return HMAC.hash(inp: self)
     }
 
     public enum HMAC {
-        static func hash(inp: String, algo: HMACAlgo) -> String {
+        static func hash(inp: String) -> String {
             guard let stringData = inp.data(using: String.Encoding.utf8, allowLossyConversion: false) else {
                 fatalError("Failed to hash")
             }
-            return hexStringFromData(input: digest(input: stringData as NSData, algo: algo))
+            return hexStringFromData(input: digest(input: stringData as NSData))
         }
         
-        private static func digest(input: NSData, algo: HMACAlgo) -> NSData {
-            let digestLength = algo.digestLength()
+        private static func digest(input: NSData) -> NSData {
+            let digestLength = Int(CC_SHA256_DIGEST_LENGTH)
             var hash = [UInt8](repeating: 0, count: digestLength)
-            switch algo {
-            case .SHA1:
-                CC_SHA1(input.bytes, UInt32(input.length), &hash)
-            case .SHA224:
-                CC_SHA224(input.bytes, UInt32(input.length), &hash)
-            case .SHA256:
-                CC_SHA256(input.bytes, UInt32(input.length), &hash)
-            case .SHA384:
-                CC_SHA384(input.bytes, UInt32(input.length), &hash)
-            case .SHA512:
-                CC_SHA512(input.bytes, UInt32(input.length), &hash)
-            }
+            CC_SHA256(input.bytes, UInt32(input.length), &hash)
             return NSData(bytes: hash, length: digestLength)
         }
         
@@ -57,26 +46,5 @@ extension String {
         return String((0..<length).map { _ in
             return letters.randomElement()!
         })
-    }
-}
-
-enum HMACAlgo {
-case SHA1, SHA224, SHA256, SHA384, SHA512
-
-    func digestLength() -> Int {
-        var result: CInt = 0
-        switch self {
-        case .SHA1:
-            result = CC_SHA1_DIGEST_LENGTH
-        case .SHA224:
-            result = CC_SHA224_DIGEST_LENGTH
-        case .SHA256:
-            result = CC_SHA256_DIGEST_LENGTH
-        case .SHA384:
-            result = CC_SHA384_DIGEST_LENGTH
-        case .SHA512:
-            result = CC_SHA512_DIGEST_LENGTH
-        }
-        return Int(result)
     }
 }
