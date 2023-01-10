@@ -68,7 +68,7 @@ public class BinkThemeConfiguration {
     /// Situate the textfield header / prompt above the textfield or as the textfield placeholder.
     open var fieldPromptStyle: FieldPromptStyle = .header
     
-    /// Choose between a border surrounding the textfield or an underline beneth the textfield's content.
+    /// Choose between a border surrounding the textfield or an underline beneath the textfield's content.
     open var fieldBorderStyle: FieldBorderStyle = .underline
     
     /// The width of the textfield's border or underline.
