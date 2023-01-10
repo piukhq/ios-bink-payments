@@ -7,6 +7,7 @@
 
 import UIKit
 
+/// Initialise a BinkThemeConfiguration object and override any properties to match your application's theme.
 public class BinkThemeConfiguration {
     public enum FieldPromptStyle {
         case header
@@ -26,40 +27,57 @@ public class BinkThemeConfiguration {
     public init() {}
     
     
-    /// Colors
-    public var primaryColor: UIColor = .darkGray
-    public var backgroundColor: UIColor = .secondarySystemBackground
-    public var titleTextColor: UIColor = .label
-    public var navigationBarTintColor: UIColor = .label
-    public var navigationBarTitleTextColor: UIColor = .label
-    public var navigationBarBackgroundEffect: UIBlurEffect? = .init(style: .light)
-    public var navigationBarBackgroundAlpha: CGFloat = 0.6
+    // Colors
+    
+    /// The background color of navigation bars, checkboxes and switches.
+    open var primaryColor: UIColor = .darkGray
+    
+    /// The view controller background color
+    open var backgroundColor: UIColor = .secondarySystemBackground
+    
+    /// The textfield, switch and checkbox text color.
+    open var titleTextColor: UIColor = .label
+    
+    /// This applies to the back button, the back button title and close button color on the navigation bar.
+    open var navigationBarTintColor: UIColor = .label
+    
+    /// The text color of the view controller's title in the navigation bar.
+    open var navigationBarTitleTextColor: UIColor = .label
+    
+    /// The blur effect applied to the navigation bar.
+    open var navigationBarBackgroundEffect: UIBlurEffect? = .init(style: .light)
+    
+    /// The alpha value applied to the navigation bar.
+    open var navigationBarBackgroundAlpha: CGFloat = 0.6
     
    
-    /// Text
-    public var navigationTitle: String = ""
-    public var backButtonTitle: String = ""
+    // Text
+    open var navigationTitle: String = ""
+    open var backButtonTitle: String = ""
     
     
-    /// Textfield
-    public var fieldPromptCapitalisationStyle: FieldAutoCapitalisationType = .sentences
-    public var fieldPromptStyle: FieldPromptStyle = .header
-    public var fieldBorderStyle: FieldBorderStyle = .underline
-    public var fieldBorderWidth: CGFloat = 2
-    public var fieldBorderColor: UIColor = .systemGray2
-    public var fieldCursorColor: UIColor = .systemGray
-    public var fieldBackgroundColor: UIColor = .quaternarySystemFill
-    public var fieldTextColor: UIColor = .label
+    // Textfield
+    open var fieldPromptCapitalisationStyle: FieldAutoCapitalisationType = .sentences
+    
+    /// Situate the textfield header / prompt above the textfield or as the textfield placeholder.
+    open var fieldPromptStyle: FieldPromptStyle = .header
+    
+    open var fieldBorderStyle: FieldBorderStyle = .underline
+    open var fieldBorderWidth: CGFloat = 2
+    open var fieldBorderColor: UIColor = .systemGray2
+    open var fieldCursorColor: UIColor = .systemGray
+    open var fieldBackgroundColor: UIColor = .quaternarySystemFill
+    open var fieldTextColor: UIColor = .label
     
     
-    /// Font
-    public var navigationTitleFont: UIFont = .systemFont(ofSize: 15, weight: .light)
-    public var navigationBackButtonTitleFont: UIFont = .systemFont(ofSize: 13, weight: .light)
-    public var textfieldTitleFont: UIFont = .systemFont(ofSize: 14, weight: .regular)
-    public var textfieldFont: UIFont = .systemFont(ofSize: 14, weight: .regular)
-    public var validationLabelFont: UIFont = .systemFont(ofSize: 13, weight: .light)
+    // Font
+    open var navigationTitleFont: UIFont = .systemFont(ofSize: 15, weight: .light)
+    open var navigationBackButtonTitleFont: UIFont = .systemFont(ofSize: 13, weight: .light)
+    open var textfieldTitleFont: UIFont = .systemFont(ofSize: 14, weight: .regular)
+    open var textfieldFont: UIFont = .systemFont(ofSize: 14, weight: .regular)
+    open var validationLabelFont: UIFont = .systemFont(ofSize: 13, weight: .light)
 
     
-    /// Images
-    public var backIndicatorImage: UIImage?
+    // Images
+    open var backIndicatorImage: UIImage?
 }
