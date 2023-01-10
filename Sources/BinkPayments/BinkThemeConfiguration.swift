@@ -52,32 +52,61 @@ public class BinkThemeConfiguration {
     
    
     // Text
+    
+    /// Navigation bar title text.
     open var navigationTitle: String = ""
+    
+    /// Navigation bar back button text.
     open var backButtonTitle: String = ""
     
     
     // Textfield
+    
+    /// Capitalise the first word in each sentance or every character.
     open var fieldPromptCapitalisationStyle: FieldAutoCapitalisationType = .sentences
     
     /// Situate the textfield header / prompt above the textfield or as the textfield placeholder.
     open var fieldPromptStyle: FieldPromptStyle = .header
     
+    /// Choose between a border surrounding the textfield or an underline beneth the textfield's content.
     open var fieldBorderStyle: FieldBorderStyle = .underline
+    
+    /// The width of the textfield's border or underline.
     open var fieldBorderWidth: CGFloat = 2
+    
+    /// The color of the textfield's border or underline.
     open var fieldBorderColor: UIColor = .systemGray2
+    
+    /// The color of the textfield's cursor.
     open var fieldCursorColor: UIColor = .systemGray
+    
+    /// The color of the textfield's background.
     open var fieldBackgroundColor: UIColor = .quaternarySystemFill
+    
+    /// The color of the textfield's text.
     open var fieldTextColor: UIColor = .label
     
     
     // Font
+    
+    /// The font for the navigation bar's title
     open var navigationTitleFont: UIFont = .systemFont(ofSize: 15, weight: .light)
+    
+    /// The font for the navigations bar's back button title.
     open var navigationBackButtonTitleFont: UIFont = .systemFont(ofSize: 13, weight: .light)
+    
+    /// The font for the textfield's title (header) or placeholder (inline).
     open var textfieldTitleFont: UIFont = .systemFont(ofSize: 14, weight: .regular)
+    
+    /// The font for the textfield's text.
     open var textfieldFont: UIFont = .systemFont(ofSize: 14, weight: .regular)
+    
+    /// The font for the validation label (error message).
     open var validationLabelFont: UIFont = .systemFont(ofSize: 13, weight: .light)
 
     
     // Images
+    
+    /// The image for the navigation bar's back button
     open var backIndicatorImage: UIImage?
 }
