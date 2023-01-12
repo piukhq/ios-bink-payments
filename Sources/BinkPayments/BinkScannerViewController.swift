@@ -16,15 +16,11 @@ public protocol BinkScannerViewControllerDelegate: AnyObject {
     func binkScannerViewController(_ viewController: BinkScannerViewController, didScan paymentCard: PaymentAccountCreateModel)
 }
 
-extension BinkScannerViewControllerDelegate {
-    func binkScannerViewController(_ viewController: BinkScannerViewController, didScan paymentCard: PaymentAccountCreateModel) {}
-}
-
-@objc open class BinkScannerViewController: UIViewController, UINavigationControllerDelegate {
+open class BinkScannerViewController: UIViewController, UINavigationControllerDelegate {
     enum Constants {
         static let rectOfInterestInset: CGFloat = 25
         static let viewFrameRatio: CGFloat = 12 / 18
-        static let maskedAreaY: CGFloat = 100
+        static let maskedAreaY: CGFloat = 150
         static let maskedAreaCornerRadius: CGFloat = 8
         static let guideImageInset = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
         static let explainerLabelPadding: CGFloat = 25
@@ -32,9 +28,7 @@ extension BinkScannerViewControllerDelegate {
         static let widgetViewTopPadding: CGFloat = 30
         static let widgetViewLeftRightPadding: CGFloat = 25
         static let widgetViewHeight: CGFloat = 100
-        static let closeButtonSize = CGSize(width: 44, height: 44)
         static let timerInterval: TimeInterval = 5.0
-        static let scanErrorThreshold: TimeInterval = 1.0
     }
 
     public weak var delegate: BinkScannerViewControllerDelegate?
@@ -45,11 +39,9 @@ extension BinkScannerViewControllerDelegate {
     private let schemeScanningQueue = DispatchQueue(label: "com.bink.wallet.scanning.loyalty.scheme.queue")
     private var rectOfInterest = CGRect.zero
     private var timer: Timer?
-    private var canPresentScanError = true
-    private var shouldAllowScanning = true
     private var shouldPresentWidgetError = true
-    private let visionUtility = VisionUtility()
-    private var subscriptions = Set<AnyCancellable>()
+    private var visionUtility: VisionUtility!
+    private var cancellable: AnyCancellable?
     
     private lazy var blurredView: UIVisualEffectView = {
         return UIVisualEffectView(effect: UIBlurEffect(style: .regular))
@@ -107,22 +99,21 @@ extension BinkScannerViewControllerDelegate {
         var widget = BinkScannerWidgetView()
         widget.addTarget(self, selector: #selector(enterManually))
         widget.translatesAutoresizingMaskIntoConstraints = false
+        widget.backgroundColor = .secondarySystemBackground
         return widget
     }()
     
 
-    private lazy var cancelButton: UIButton = {
-        let button = UIButton(type: .custom)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.setImage(UIImage(named: "close", in: .module, with: nil), for: .normal)
-        button.addTarget(self, action: #selector(close), for: .touchUpInside)
-        button.tintColor = .systemPink
-        view.addSubview(button)
+    private lazy var cancelButton: UIBarButtonItem = {
+        let image = UIImage(named: "close", in: .module, with: nil)
+        let button = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(close))
         return button
     }()
 
-    public init() {
+    public init(themeConfig: BinkThemeConfiguration, visionUtility: VisionUtility) {
+        self.visionUtility = visionUtility
         super.init(nibName: nil, bundle: nil)
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: themeConfig.backButtonTitle, style: .plain, target: nil, action: nil)
     }
 
     required public init?(coder: NSCoder) {
@@ -132,6 +123,10 @@ extension BinkScannerViewControllerDelegate {
     override public func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
+    }
+    
+    open override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         configureSubscribers()
         startScanning()
     }
@@ -169,6 +164,7 @@ extension BinkScannerViewControllerDelegate {
         view.addSubview(panLabel)
         view.addSubview(expiryLabel)
         view.addSubview(nameOnCardLabel)
+        navigationItem.rightBarButtonItem = cancelButton
         
         NSLayoutConstraint.activate([
             explainerLabel.topAnchor.constraint(equalTo: guideImageView.bottomAnchor, constant: Constants.explainerLabelPadding),
@@ -184,11 +180,7 @@ extension BinkScannerViewControllerDelegate {
             expiryLabel.topAnchor.constraint(equalTo: panLabel.bottomAnchor),
             expiryLabel.centerXAnchor.constraint(equalTo: panLabel.centerXAnchor),
             nameOnCardLabel.leadingAnchor.constraint(equalTo: guideImageView.leadingAnchor, constant: 25),
-            nameOnCardLabel.bottomAnchor.constraint(equalTo: guideImageView.bottomAnchor, constant: -10),
-            cancelButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 4),
-            cancelButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -4),
-            cancelButton.heightAnchor.constraint(equalToConstant: Constants.closeButtonSize.height),
-            cancelButton.widthAnchor.constraint(equalToConstant: Constants.closeButtonSize.width)
+            nameOnCardLabel.bottomAnchor.constraint(equalTo: guideImageView.bottomAnchor, constant: -10)
         ])
     }
     
@@ -289,7 +281,10 @@ extension BinkScannerViewControllerDelegate {
     }
     
     private func configureSubscribers() {
-        visionUtility.subject.sink { completion in
+        visionUtility = VisionUtility()
+
+        cancellable = visionUtility.subject.sink { [weak self] completion in
+            guard let self = self else { return }
             switch completion {
             case .finished:
                 DispatchQueue.main.async {
@@ -297,35 +292,35 @@ extension BinkScannerViewControllerDelegate {
                         self.stopScanning()
                         self.nameOnCardLabel.text = self.visionUtility.paymentCard.nameOnCard ?? ""
                         self.nameOnCardLabel.alpha = 1
-                        self.guideImageView.tintColor = .systemPink
                         self.guideImageView.layer.addBinkAnimation(.shake)
-                    } completion: { [weak self] _ in
-                        HapticFeedbackUtil.giveFeedback(forType: .notification(type: .success))
+                    } completion: { _ in
+                        HapticFeedbackUtil.giveFeedback(forType: .success)
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
-                            guard let self = self else { return }
+                            guard self.visionUtility.pan != nil else { return }
                             self.delegate?.binkScannerViewController(self, didScan: self.visionUtility.paymentCard)
+                            [self.nameOnCardLabel, self.panLabel, self.expiryLabel].forEach { $0.text = "" }
+                            self.cancellable = nil
                         }
                     }
                 }
             case .failure(let error):
                 print("Received error: \(error)")
             }
-        } receiveValue: { paymentCard in
+        } receiveValue: { [weak self] paymentCard in
             DispatchQueue.main.async {
-                self.panLabel.text = paymentCard.fullPan
+                self?.panLabel.text = paymentCard.fullPan
                 if paymentCard.fullPan != nil {
-                    self.expiryLabel.text = paymentCard.formattedExpiryDate() ?? ""
+                    self?.expiryLabel.text = paymentCard.formattedExpiryDate() ?? ""
                 }
                 
                 UIView.animate(withDuration: 0.2, delay: 0, options: .curveEaseIn) {
-                    self.panLabel.alpha = 1
+                    self?.panLabel.alpha = 1
                     if let _ = paymentCard.formattedExpiryDate() {
-                        self.expiryLabel.alpha = 1
+                        self?.expiryLabel.alpha = 1
                     }
                 }
             }
         }
-        .store(in: &subscriptions)
     }
     
     @objc private func enterManually() {

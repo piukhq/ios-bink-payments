@@ -82,7 +82,6 @@ class BinkScannerWidgetView: UIView {
     func configure() {
         clipsToBounds = true
         layer.cornerRadius = Constants.cornerRadius
-        backgroundColor = .systemPink.withAlphaComponent(0.8)
         titleLabel.font = .systemFont(ofSize: 18, weight: .medium)
         explainerLabel.font = .systemFont(ofSize: 16, weight: .light)
         explainerLabel.numberOfLines = 2
@@ -91,7 +90,7 @@ class BinkScannerWidgetView: UIView {
 
     private func error(state: WidgetState) {
         layer.addBinkAnimation(.shake)
-        HapticFeedbackUtil.giveFeedback(forType: .notification(type: .error))
+        HapticFeedbackUtil.giveFeedback(forType: .error)
         setState(state)
     }
 

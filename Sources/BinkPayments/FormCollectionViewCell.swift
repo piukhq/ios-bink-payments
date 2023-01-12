@@ -10,12 +10,7 @@ import UIKit
 
 protocol FormCollectionViewCellDelegate: AnyObject {
     func formCollectionViewCell(_ cell: FormCollectionViewCell, didSelectField: UITextField)
-    func formCollectionViewCell(_ cell: FormCollectionViewCell, shouldResignTextField textField: UITextField)
     func formCollectionViewCellDidReceivePaymentScannerButtonTap(_ cell: FormCollectionViewCell)
-}
-
-extension FormCollectionViewCellDelegate {
-    func formCollectionViewCellDidReceivePaymentScannerButtonTap(_ cell: FormCollectionViewCell) {}
 }
 
 class FormCollectionViewCell: UICollectionViewCell {
@@ -26,68 +21,40 @@ class FormCollectionViewCell: UICollectionViewCell {
         static let titleLabelHeight: CGFloat = 20.0
         static let textFieldHeight: CGFloat = 24.0
         static let validationLabelHeight: CGFloat = 20.0
-        static let cornerRadius: CGFloat = 32
+        static let cornerRadius: CGFloat = 5
     }
 
     // MARK: - Properties
     
     /// The parent stack view that is pinned to the content view of the cell. Contains all other views.
     private lazy var containerStack: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [fieldContainerVStack, validationMessagesVStack])
+        let stackView = UIStackView(arrangedSubviews: [titleLabel, fieldContainerVStack, validationMessagesVStack])
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
+        stackView.spacing = 5
         contentView.addSubview(stackView)
         return stackView
     }()
     
     /// The white background visual field view that contains all user interacion elements
     private lazy var fieldContainerVStack: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [fieldContentHStack])
+        let stackView = UIStackView(arrangedSubviews: [textFieldHStack])
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
-        stackView.backgroundColor = .clear
         stackView.layer.cornerCurve = .continuous
         stackView.layer.cornerRadius = Constants.cornerRadius
         stackView.clipsToBounds = true
         let gestureRecognizer = UITapGestureRecognizer(target: self, action: .handleCellTap)
         stackView.addGestureRecognizer(gestureRecognizer)
         stackView.isUserInteractionEnabled = true
-        return stackView
-    }()
-    
-    private lazy var stackBackgroundView: UIView = {
-        // Remove when we drop iOS 13 - add validation view to fieldContainerVStack
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .quaternarySystemFill
-        view.layer.cornerRadius = Constants.cornerRadius
-        view.layer.cornerCurve = .continuous
-        view.addSubview(validationView)
-        view.clipsToBounds = true
-        return view
-    }()
-    
-    /// Contains title label, text field, camera icon and validation icon
-    private lazy var fieldContentHStack: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [fieldLabelsVStack])
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.axis = .horizontal
-        stackView.layoutMargins = UIEdgeInsets(top: 10, left: 20, bottom: 10, right: 20)
+        stackView.layoutMargins = UIEdgeInsets(top: 12, left: 10, bottom: 12, right: 20)
         stackView.isLayoutMarginsRelativeArrangement = true
         return stackView
     }()
-    
-    /// The view that contains the title label and text field
-    private lazy var fieldLabelsVStack: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [titleLabel, textFieldHStack])
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.axis = .vertical
-        return stackView
-    }()
-    
-    /// The view that contains the text field, camera icon and the validation icon
+
+    /// The view that contains the text field and camera icon
     private lazy var textFieldHStack: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [textField, textFieldRightView, validationIconImageView])
+        let stackView = UIStackView(arrangedSubviews: [textField, textFieldRightView])
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .horizontal
         stackView.distribution = .fillProportionally
@@ -98,7 +65,6 @@ class FormCollectionViewCell: UICollectionViewCell {
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = .systemFont(ofSize: 12, weight: .light)
         label.heightAnchor.constraint(equalToConstant: Constants.titleLabelHeight).isActive = true
         label.setContentCompressionResistancePriority(.required, for: .vertical)
         return label
@@ -107,7 +73,6 @@ class FormCollectionViewCell: UICollectionViewCell {
     lazy var textField: UITextField = {
         let field = UITextField()
         field.translatesAutoresizingMaskIntoConstraints = false
-        field.font = .systemFont(ofSize: 14, weight: .regular)
         field.delegate = self
         field.heightAnchor.constraint(equalToConstant: Constants.textFieldHeight).isActive = true
         field.addTarget(self, action: .textFieldUpdated, for: .editingChanged)
@@ -115,18 +80,7 @@ class FormCollectionViewCell: UICollectionViewCell {
         field.smartQuotesType = .no // This stops the "smart" apostrophe setting. The default breaks field regex validation
         return field
     }()
-    
-    lazy var validationIconImageView: UIImageView = {
-        let imageView = UIImageView(image: UIImage(named: "icon-check", in: .module, with: nil))
-        imageView.contentMode = .scaleAspectFit
-        NSLayoutConstraint.activate([
-            imageView.widthAnchor.constraint(equalToConstant: 20)
-        ])
-        imageView.transform = CGAffineTransform(translationX: -4, y: 0)
-        imageView.isHidden = true
-        return imageView
-    }()
-    
+ 
     /// Camera icon
     lazy var textFieldRightView: UIView = {
         let cameraButton = UIButton(type: .custom)
@@ -138,12 +92,22 @@ class FormCollectionViewCell: UICollectionViewCell {
         return cameraButton
     }()
     
-    /// The bar that represents the field's state using colour
-    private lazy var validationView: UIView = {
+    private lazy var stackBackgroundView: UIView = {
+        // Remove when we drop iOS 13 - add validation view to fieldContainerVStack
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.layer.cornerRadius = Constants.cornerRadius
+        view.layer.cornerCurve = .continuous
+        view.addSubview(underlineView)
+        view.clipsToBounds = true
+        return view
+    }()
+    
+    /// The underline border
+    private lazy var underlineView: UIView = {
         let view = UIView()
         view.backgroundColor = .clear
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.heightAnchor.constraint(equalToConstant: 2).isActive = true
         return view
     }()
     
@@ -160,12 +124,10 @@ class FormCollectionViewCell: UICollectionViewCell {
     }()
     
     /// The label that describes a validation error
-    private lazy var validationLabel: PaddedLabelView = {
-        let label = PaddedLabelView()
+    private lazy var validationLabel: UILabel = {
+        let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 0
-        label.leftInset = 20
-        label.font = .systemFont(ofSize: 13, weight: .light)
         label.text = "Invalid entry"
         label.isHidden = true
         label.textColor = .systemRed
@@ -182,7 +144,7 @@ class FormCollectionViewCell: UICollectionViewCell {
         return bar
     }()
     
-    private var preferredWidth: CGFloat = 300 // This has to be a non zero value, chose 300 because of the movie 300.
+    private var preferredWidth: CGFloat = 300
     
     override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
         let layoutAttributes = super.preferredLayoutAttributesFitting(layoutAttributes)
@@ -194,6 +156,7 @@ class FormCollectionViewCell: UICollectionViewCell {
     
     private weak var formField: FormField?
     private var pickerSelectedChoice: String?
+    private var themeConfig: BinkThemeConfiguration!
     
     // MARK: - Initialisation
     
@@ -204,10 +167,6 @@ class FormCollectionViewCell: UICollectionViewCell {
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-
-    deinit {
-        NotificationCenter.default.removeObserver(self)
     }
     
     // MARK: - Layout
@@ -223,23 +182,23 @@ class FormCollectionViewCell: UICollectionViewCell {
             containerStack.rightAnchor.constraint(equalTo: contentView.rightAnchor),
             topConstraint,
             bottomConstraint,
-            validationView.leftAnchor.constraint(equalTo: stackBackgroundView.leftAnchor),
-            validationView.rightAnchor.constraint(equalTo: stackBackgroundView.rightAnchor),
-            validationView.bottomAnchor.constraint(equalTo: stackBackgroundView.bottomAnchor)
+            underlineView.leftAnchor.constraint(equalTo: stackBackgroundView.leftAnchor),
+            underlineView.rightAnchor.constraint(equalTo: stackBackgroundView.rightAnchor),
+            underlineView.bottomAnchor.constraint(equalTo: stackBackgroundView.bottomAnchor)
         ])
     }
     
     // MARK: - Public Methods
 
-    func configure(with field: FormField, delegate: FormCollectionViewCellDelegate?) {
-        titleLabel.text = field.title
+    func configure(with field: FormField, themeConfig: BinkThemeConfiguration, delegate: FormCollectionViewCellDelegate?) {
+        self.themeConfig = themeConfig
         textField.text = field.forcedValue
-        textField.placeholder = field.placeholder
         textField.keyboardType = field.fieldType.keyboardType()
         textField.autocorrectionType = field.fieldType.autoCorrection()
         textField.autocapitalizationType = field.fieldType.capitalization()
         textField.clearButtonMode = .whileEditing
         textField.accessibilityIdentifier = field.title
+        textField.returnKeyType = .done
         formField = field
         
         // Remove when we drop iOS 13 - add validation view to fieldContainerVStack
@@ -258,11 +217,43 @@ class FormCollectionViewCell: UICollectionViewCell {
         }
         
         self.delegate = delegate
-        configureStateForFieldValidity(field)
+        configureTheme(field)
     }
     
     func setWidth(_ width: CGFloat) {
         preferredWidth = width
+    }
+    
+    private func configureTheme(_ field: FormField) {
+        let config = themeConfig ?? BinkThemeConfiguration()
+        titleLabel.textColor = config.titleTextColor
+        titleLabel.font = config.textfieldTitleFont
+        textField.textColor = config.fieldTextColor
+        textField.tintColor = config.fieldCursorColor
+        textField.font = config.textfieldFont
+        validationLabel.font = config.validationLabelFont
+        stackBackgroundView.backgroundColor = config.fieldBackgroundColor
+        let fieldTitle = config.fieldPromptCapitalisationStyle == .allCharacters ? field.title.uppercased() : field.title
+        
+        switch config.fieldPromptStyle {
+        case .header:
+            titleLabel.text = fieldTitle
+        case .inline:
+            textField.attributedPlaceholder = NSAttributedString(string: fieldTitle, attributes: [
+                .foregroundColor: config.titleTextColor.withAlphaComponent(0.5),
+                .font: config.textfieldTitleFont
+            ])
+        }
+        
+        switch config.fieldBorderStyle {
+        case .box:
+            stackBackgroundView.layer.borderColor = config.fieldBorderColor.cgColor
+            stackBackgroundView.layer.borderWidth = config.fieldBorderWidth
+        case .underline:
+            underlineView.isHidden = false
+            underlineView.backgroundColor = config.fieldBorderColor
+            underlineView.heightAnchor.constraint(equalToConstant: config.fieldBorderWidth).isActive = true
+        }
     }
     
     // MARK: - Actions
@@ -309,48 +300,16 @@ class FormCollectionViewCell: UICollectionViewCell {
         return true
     }
     
-    enum ControlState {
-        case inactive, active, valid, invalid
-    }
-    
     private func configureStateForFieldValidity(_ field: FormField) {
         let textfieldIsEmpty = textField.text?.isEmpty ?? false
 
-        if field.isValid() && !textfieldIsEmpty {
-            setState(.valid)
-        } else if !field.isValid() && !textfieldIsEmpty {
-            setState(.invalid)
-        } else {
-            setState(.inactive)
-        }
-    }
-    
-    func setState(_ state: ControlState) {
-        var validationLabelSpacing: CGFloat = validationLabel.isHidden ? 0 : 4
-        var validationIconHidden = true
-        
-        switch state {
-        case .inactive:
-            validationView.backgroundColor = .clear
-            validationLabel.isHidden = true
-            validationLabelSpacing = 0
-        case .active:
-            validationView.backgroundColor = .systemBlue
-        case .valid:
-            validationView.backgroundColor = .okGreen
-            validationIconHidden = false
-            validationLabelSpacing = 0
-            validationLabel.isHidden = true
-        case .invalid:
-            validationView.backgroundColor = .systemRed
-            validationLabelSpacing = 4
+        if !field.isValid() && !textfieldIsEmpty {
             validationLabel.isHidden = false
+        } else {
+            validationLabel.isHidden = true
         }
         
-        guard let field = formField else { return }
         validationLabel.text = field.validationErrorMessage != nil ? field.validationErrorMessage : "Invalid input"
-        validationIconImageView.isHidden = validationIconHidden
-        containerStack.setCustomSpacing(validationLabelSpacing, after: fieldContainerVStack)
     }
 }
 
@@ -369,15 +328,12 @@ extension FormCollectionViewCell: UITextFieldDelegate {
         if let multipleChoiceInput = textField.inputView as? FormMultipleChoiceInput {
             textField.text = (pickerSelectedChoice?.isEmpty ?? false) ? multipleChoiceInput.fullContentString : pickerSelectedChoice
         }
-        
-        setState(.active)
-        
+
         self.delegate?.formCollectionViewCell(self, didSelectField: textField)
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        self.delegate?.formCollectionViewCell(self, shouldResignTextField: textField)
-        return true
+        textField.resignFirstResponder()
     }
 }
 

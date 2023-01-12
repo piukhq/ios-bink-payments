@@ -12,7 +12,7 @@ class AddPaymentCardViewController: UIViewController {
     // MARK: - Helpers
     
     private enum Constants {
-        static let horizontalInset: CGFloat = 10
+        static let horizontalInset: CGFloat = 20
         static let bottomInset: CGFloat = 150.0
         static let postCollectionViewPadding: CGFloat = 25.0
         static let preCollectionViewPadding: CGFloat = 10.0
@@ -38,8 +38,7 @@ class AddPaymentCardViewController: UIViewController {
         stackView.margin = UIEdgeInsets(top: 0, left: Constants.horizontalInset, bottom: 0, right: Constants.horizontalInset)
         stackView.distribution = .fill
         stackView.alignment = .fill
-        stackView.backgroundColor = .systemBackground
-        stackView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: Constants.bottomInset, right: 0)
+        stackView.contentInset = UIEdgeInsets(top: 20, left: 0, bottom: Constants.bottomInset, right: 0)
         stackView.customPadding(Constants.postCollectionViewPadding, after: collectionView)
         stackView.customPadding(Constants.preCollectionViewPadding, before: collectionView)
         view.addSubview(stackView)
@@ -71,6 +70,12 @@ class AddPaymentCardViewController: UIViewController {
         return button
     }()
     
+    private lazy var cancelButton: UIBarButtonItem = {
+        let image = UIImage(named: "close", in: .module, with: nil)
+        let button = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(close))
+        return button
+    }()
+    
     private lazy var card: PaymentCardCollectionViewCell = {
         let cell: PaymentCardCollectionViewCell = .fromNib()
         return cell
@@ -87,10 +92,12 @@ class AddPaymentCardViewController: UIViewController {
     private var hasSetupCell = false
     private var selectedCellYOrigin: CGFloat = 0.0
     private var selectedCellHeight: CGFloat = 0.0
+    private var themeConfig: BinkThemeConfiguration
     public var viewModel: AddPaymentCardViewModel
     
-    public init(viewModel: AddPaymentCardViewModel) {
+    init(viewModel: AddPaymentCardViewModel, themeConfig: BinkThemeConfiguration) {
         self.viewModel = viewModel
+        self.themeConfig = themeConfig
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -101,8 +108,24 @@ class AddPaymentCardViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureLayout()
+        configureTheme()
         configureSubscribers()
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        
+        let switchView = BinkSwitchView(themeConfig: themeConfig, text: "Switch me please")
+        stackScrollView.add(arrangedSubview: switchView)
+        
+        let checkbox = CheckboxView(checked: true, themeConfig: themeConfig, title: "Check this")
+        stackScrollView.add(arrangedSubview: checkbox)
+    }
+    
+    private func configureTheme() {
+        stackScrollView.backgroundColor = themeConfig.backgroundColor
+        
+        let attributedText = NSAttributedString(string: themeConfig.navigationTitle, attributes: [.font: themeConfig.navigationTitleFont, .foregroundColor: themeConfig.navigationBarTitleTextColor])
+        let label = UILabel()
+        label.attributedText = attributedText
+        navigationItem.titleView = label
     }
     
     private func configureSubscribers() {
@@ -126,16 +149,6 @@ class AddPaymentCardViewController: UIViewController {
             }
             .store(in: &subscriptions)
     }
-
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        
-        // This is due to strange layout issues on first appearance
-        if collectionView.contentSize.width > 0.0 {
-            hasSetupCell = true
-            card.configureWithAddViewModel(viewModel.paymentCard)
-        }
-    }
     
     private func configureLayout() {
         NSLayoutConstraint.activate([
@@ -155,6 +168,8 @@ class AddPaymentCardViewController: UIViewController {
             card.heightAnchor.constraint(equalToConstant: Constants.cardHeight),
             card.widthAnchor.constraint(equalTo: collectionView.widthAnchor)
         ])
+        
+        navigationItem.rightBarButtonItem = cancelButton
     }
     
     @objc func addButtonTapped() {
@@ -199,6 +214,10 @@ class AddPaymentCardViewController: UIViewController {
             }
         }
     }
+    
+    @objc private func close() {
+        dismiss(animated: true)
+    }
 }
 
 extension AddPaymentCardViewController: UICollectionViewDataSource, UICollectionViewDelegate {
@@ -214,7 +233,7 @@ extension AddPaymentCardViewController: UICollectionViewDataSource, UICollection
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell: FormCollectionViewCell = collectionView.dequeue(indexPath: indexPath)
         let field = viewModel.fields[indexPath.item]
-        cell.configure(with: field, delegate: self)
+        cell.configure(with: field, themeConfig: themeConfig, delegate: self)
         return cell
     }
 }
@@ -225,8 +244,6 @@ extension AddPaymentCardViewController: FormCollectionViewCellDelegate {
         self.selectedCellYOrigin = cellOrigin.y
         selectedCellHeight = cell.frame.size.height + Constants.cellErrorLabelSafeSpacing
     }
-    
-    func formCollectionViewCell(_ cell: FormCollectionViewCell, shouldResignTextField textField: UITextField) {}
     
     func formCollectionViewCellDidReceivePaymentScannerButtonTap(_ cell: FormCollectionViewCell) {
         BinkPaymentsManager.shared.launchScanner(delegate: self)

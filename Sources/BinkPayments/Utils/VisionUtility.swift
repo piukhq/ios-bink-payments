@@ -10,9 +10,7 @@ import Combine
 import UIKit
 import Vision
 
-public class VisionUtility: ObservableObject {
-    private let requestHandler = VNSequenceRequestHandler()
-    private var timer: Timer?
+public class VisionUtility {
 
     // MARK: - Payment Card
     var pan: String?
@@ -65,6 +63,13 @@ public class VisionUtility: ObservableObject {
         }
     }
     
+    func reset() {
+        pan = nil
+        expiryYear = nil
+        expiryMonth = nil
+        name = nil
+    }
+    
     private func scheduleTimer() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
             guard let self = self else { return }
@@ -91,7 +96,7 @@ public class VisionUtility: ObservableObject {
     
     private func extractExpiryDate(observations: [VNRecognizedTextObservation]) -> (String, String)? {
         for text in observations.flatMap({ $0.topCandidates(1) }) {
-            if text.confidence == 1, let expiry = likelyExpiry(text.string) {
+            if text.confidence >= 0.5, let expiry = likelyExpiry(text.string) {
                 guard let expiryMonth = Int(expiry.0) else { return nil }
                 guard let expiryYear = Int("20" + expiry.1) else { return nil }
                 guard let date = Date.makeDate(year: expiryYear, month: expiryMonth, day: 01, hr: 12, min: 00, sec: 00) else { return nil }

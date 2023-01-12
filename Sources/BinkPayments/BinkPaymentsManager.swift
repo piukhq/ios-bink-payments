@@ -10,7 +10,8 @@ import UIKit
 
 public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
     public static let shared = BinkPaymentsManager()
-    private var wallet = Wallet()
+    public var themeConfig = BinkThemeConfiguration()
+    private let wallet = Wallet()
     var token: String!
     var environmentKey: String!
     var isDebug: Bool!
@@ -40,10 +41,30 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
         wallet.fetch()
     }
     
-    public func launchScanner(delegate: BinkScannerViewControllerDelegate) {
-        let binkScannerViewController = BinkScannerViewController()
+    public func launchScanner(fullScreen: Bool = false, delegate: BinkScannerViewControllerDelegate) {
+        let binkScannerViewController = BinkScannerViewController(themeConfig: themeConfig, visionUtility: VisionUtility())
         binkScannerViewController.delegate = delegate
-        currentViewController?.present(binkScannerViewController, animated: true)
+        let navigationController = UINavigationController(rootViewController: binkScannerViewController)
+
+        if fullScreen {
+            navigationController.modalPresentationStyle = .fullScreen
+        }
+        
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.setBackIndicatorImage(themeConfig.backIndicatorImage, transitionMaskImage: themeConfig.backIndicatorImage)
+        appearance.buttonAppearance.normal.titleTextAttributes = [.font: themeConfig.navigationBackButtonTitleFont, .foregroundColor: themeConfig.navigationBarTintColor]
+
+        navigationController.navigationBar.tintColor = themeConfig.navigationBarTintColor
+        navigationController.navigationBar.standardAppearance = appearance
+        navigationController.navigationBar.scrollEdgeAppearance = appearance
+
+        navigationController.navigationBar.standardAppearance.backgroundEffect = themeConfig.navigationBarBackgroundEffect
+        navigationController.navigationBar.standardAppearance.backgroundColor = themeConfig.primaryColor.withAlphaComponent(themeConfig.navigationBarBackgroundAlpha)
+        navigationController.navigationBar.scrollEdgeAppearance?.backgroundEffect = themeConfig.navigationBarBackgroundEffect
+        navigationController.navigationBar.scrollEdgeAppearance?.backgroundColor = themeConfig.primaryColor.withAlphaComponent(themeConfig.navigationBarBackgroundAlpha)
+
+        currentViewController?.present(navigationController, animated: true)
     }
     
     public func launchDebugScreen(paymentCard: PaymentAccountCreateModel) {
@@ -52,9 +73,8 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
     }
     
     public func launchAddPaymentCardScreen(_ paymentCard: PaymentAccountCreateModel? = nil) {
-        let addPaymentCardViewController = AddPaymentCardViewController(viewModel: AddPaymentCardViewModel(paymentCard: paymentCard))
-        let navigationController = UINavigationController(rootViewController: addPaymentCardViewController)
-        currentViewController?.show(navigationController, sender: nil)
+        let addPaymentCardViewController = AddPaymentCardViewController(viewModel: AddPaymentCardViewModel(paymentCard: paymentCard), themeConfig: themeConfig)
+        currentViewController?.show(addPaymentCardViewController, sender: nil)
     }
     
     public func loyaltyCard(from id: Int) -> LoyaltyCardModel? {

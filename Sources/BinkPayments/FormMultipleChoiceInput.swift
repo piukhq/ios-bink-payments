@@ -36,11 +36,6 @@ class FormMultipleChoiceInput: UIInputView {
         picker.translatesAutoresizingMaskIntoConstraints = false
         picker.dataSource = self
         picker.delegate = self
-        defer {
-            if prepopulateDefaults {
-                sections.enumerated().forEach { component, _ in pickerSelected(component, index: 0) }
-            }
-        }
         addSubview(picker)
         return picker
     }()
@@ -73,18 +68,15 @@ class FormMultipleChoiceInput: UIInputView {
     }
 
     weak var delegate: FormMultipleChoiceInputDelegate?
-    let prepopulateDefaults: Bool
     
     // MARK: - Initialisation
     
-    public init(with sections: [[FormPickerData]], delegate: FormMultipleChoiceInputDelegate, prepopulateDefaults: Bool = false) {
+    public init(with sections: [[FormPickerData]], delegate: FormMultipleChoiceInputDelegate) {
         self.sections = sections
         self.delegate = delegate
-        self.prepopulateDefaults = prepopulateDefaults
         super.init(frame: CGRect(x: 0, y: 0, width: 0, height: 250), inputViewStyle: .keyboard)
         allowsSelfSizing = true
         configureAutolayout()
-        
         fullContentString = sections.first?.first?.title ?? ""
     }
     
@@ -95,15 +87,11 @@ class FormMultipleChoiceInput: UIInputView {
     // MARK: - Configuration
     
     private func configureAutolayout() {
-        let safeArea = safeAreaLayoutGuide
-        
-        let common = [
-            pickerView.leftAnchor.constraint(equalTo: safeArea.leftAnchor),
-            pickerView.rightAnchor.constraint(equalTo: safeArea.rightAnchor),
-            pickerView.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor)
-        ]
-        
-        NSLayoutConstraint.activate(common)
+        NSLayoutConstraint.activate([
+            pickerView.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor),
+            pickerView.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor),
+            pickerView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor)
+        ])
     }
     
     // MARK: - Actions
@@ -113,17 +101,6 @@ class FormMultipleChoiceInput: UIInputView {
             selectedContent[index] = row
         }
     }
-    
-    @objc fileprivate func doneInputView() {
-        endEditing(true)
-        //        textfield.resignFirstResponder()
-    }
-}
-
-// MARK: - Selectors
-
-private extension Selector {
-    static let done = #selector(FormMultipleChoiceInput.doneInputView)
 }
 
 // MARK: - UIPickerViewDataSource
