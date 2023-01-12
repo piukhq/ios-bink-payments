@@ -8,7 +8,6 @@
 import Combine
 import UIKit
 
-
 class AddPaymentCardViewModel {
     private enum Constants {
         static let expiryYearsInTheFuture = 50
@@ -18,12 +17,21 @@ class AddPaymentCardViewModel {
     @Published var fullFormIsValid = false
     @Published var refreshForm = false
     
+    private let repository = PaymentWalletRepository()
     var fields: [FormField] = []
 
     init(paymentCard: PaymentCardCreateModel? = nil) {
-        self.paymentCard = paymentCard ?? PaymentCardCreateModel(fullPan: nil, nameOnCard: nil, month: nil, year: nil)
+        self.paymentCard = paymentCard ?? PaymentCardCreateModel(fullPan: nil, nameOnCard: nil, month: nil, year: nil, cardNickname: nil)
         setupfields(paymentCard: self.paymentCard)
         checkFormValidity()
+    }
+    
+    func addPaymentCard(onSuccess: @escaping () -> Void, onError: @escaping (() -> Void)) {
+        repository.addPaymentCard(paymentCard, onSuccess: { _ in
+            onSuccess()
+        }) { _ in
+            onError()
+        }
     }
     
     func refreshDataSource() {

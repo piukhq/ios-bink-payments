@@ -5,12 +5,14 @@
 //  Created by Ricardo Silva on 13/09/2022.
 //
 
+import AlamofireNetworkActivityLogger
 import UIKit
 
 public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
     public static let shared = BinkPaymentsManager()
-    private var token: String!
-    private var environmentKey: String!
+    var token: String!
+    var environmentKey: String!
+    var isDebug: Bool!
     
     private var currentViewController: UIViewController? {
         return UIViewController.topMostViewController()
@@ -18,12 +20,21 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
 
     private override init() {}
     
-    public func configure(token: String!, environmentKey: String!) {
+    public func configure(token: String!, environmentKey: String!, isDebug: Bool) {
         assert(!token.isEmpty && !environmentKey.isEmpty, "Bink Payments SDK Error - Not Initialised due to missing token/environment key")
         
         self.token = token
         self.environmentKey = environmentKey
+        self.isDebug = isDebug
         print("Bink Payments SDK Initialised")
+        
+        #if DEBUG
+        NetworkActivityLogger.shared.level = .debug
+        NetworkActivityLogger.shared.startLogging()
+        if !isDebug {
+            print("Warning: You are running a DEBUG session but not in Test Mode!")
+        }
+        #endif
     }
     
     public func launchScanner(delegate: BinkScannerViewControllerDelegate) {

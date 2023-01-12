@@ -158,9 +158,20 @@ class AddPaymentCardViewController: UIViewController {
     }
     
     @objc func addButtonTapped() {
-        dismiss(animated: true) { [weak self] in
-            guard let paymentCard = self?.viewModel.paymentCard else { return }
-            BinkPaymentsManager.shared.launchDebugScreen(paymentCard: paymentCard)
+        addButton.isEnabled = false
+        viewModel.addPaymentCard { [weak self] in
+            let ac = UIAlertController(title: "Success", message: "Payment card successfully added to Bink", preferredStyle: .alert)
+            let okAction = UIAlertAction(title: "OK", style: .default) { _ in
+                self?.dismiss(animated: true)
+            }
+            ac.addAction(okAction)
+            self?.navigationController?.present(ac, animated: true)
+        } onError: { [weak self] in
+            let ac = UIAlertController(title: "Error Adding Card", message: "There was a problem adding your payment card. Please try again.", preferredStyle: .alert)
+            let okAction = UIAlertAction(title: "OK", style: .cancel)
+            ac.addAction(okAction)
+            self?.navigationController?.present(ac, animated: true)
+            self?.addButton.isEnabled = true
         }
     }
     

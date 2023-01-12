@@ -23,7 +23,7 @@ public class VisionUtility: ObservableObject {
     public init() {}
     
     var paymentCard: PaymentCardCreateModel {
-        return PaymentCardCreateModel(fullPan: pan, nameOnCard: name, month: expiryMonth, year: expiryYear)
+        return PaymentCardCreateModel(fullPan: pan, nameOnCard: name, month: expiryMonth, year: expiryYear, cardNickname: nil)
     }
     
     var ocrComplete: Bool {
@@ -43,19 +43,19 @@ public class VisionUtility: ObservableObject {
             if pan == nil, let validatedPanText = recognizedTexts.first(where: { PaymentCardType.validate(fullPan: $0.string) }) {
                 self.pan = validatedPanText.string
                 self.scheduleTimer()
-                self.subject.send(PaymentCardCreateModel(fullPan: self.pan, nameOnCard: self.name, month: self.expiryMonth, year: self.expiryYear))
+                self.subject.send(PaymentCardCreateModel(fullPan: self.pan, nameOnCard: self.name, month: self.expiryMonth, year: self.expiryYear, cardNickname: nil))
             }
             
             if expiryMonth == nil || expiryYear == nil, let (month, year) = self.extractExpiryDate(observations: observations) {
                 self.expiryMonth = Int(month)
                 self.expiryYear = Int("20\(year)")
-                self.subject.send(PaymentCardCreateModel(fullPan: self.pan, nameOnCard: self.name, month: self.expiryMonth, year: self.expiryYear))
+                self.subject.send(PaymentCardCreateModel(fullPan: self.pan, nameOnCard: self.name, month: self.expiryMonth, year: self.expiryYear, cardNickname: nil))
             }
             
             for text in recognizedTexts {
                 if text.confidence == 1, let name = self.likelyName(text: text.string) {
                     self.name = name
-                    self.subject.send(PaymentCardCreateModel(fullPan: self.pan, nameOnCard: self.name, month: self.expiryMonth, year: self.expiryYear))
+                    self.subject.send(PaymentCardCreateModel(fullPan: self.pan, nameOnCard: self.name, month: self.expiryMonth, year: self.expiryYear, cardNickname: nil))
                 }
             }
             

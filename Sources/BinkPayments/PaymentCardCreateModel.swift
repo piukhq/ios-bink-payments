@@ -14,12 +14,14 @@ public class PaymentCardCreateModel: Codable {
     var year: Int?
     var cardType: PaymentCardType?
     var uuid = UUID().uuidString
+    var cardNickname: String?
     
-    public init(fullPan: String?, nameOnCard: String?, month: Int?, year: Int?) {
+    public init(fullPan: String?, nameOnCard: String?, month: Int?, year: Int?, cardNickname: String?) {
         self.fullPan = fullPan
         self.nameOnCard = nameOnCard
         self.month = month
         self.year = year
+        self.cardNickname = cardNickname
         
         if let fullPan = fullPan {
             setType(with: fullPan)
