@@ -50,7 +50,7 @@ class PaymentCardCollectionViewCell: WalletCardCollectionViewCell, UIGestureReco
         accessibilityIdentifier = viewModel.nameOnCardText
     }
     
-    func configureWithAddViewModel(_ viewModel: PaymentCardCreateModel) {
+    func configureWithAddViewModel(_ viewModel: PaymentAccountCreateModel) {
         nameOnCardLabel.text = viewModel.nameOnCard
         cardNumberLabel.attributedText = cardNumberAttributedString(for: viewModel.fullPan ?? "", type: viewModel.cardType)
         

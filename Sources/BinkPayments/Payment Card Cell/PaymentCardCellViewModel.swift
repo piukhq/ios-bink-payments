@@ -9,9 +9,9 @@
 import UIKit
 
 struct PaymentCardCellViewModel {
-    private let paymentCard: PaymentCardCreateModel
+    private let paymentCard: PaymentAccountCreateModel
 
-    init(paymentCard: PaymentCardCreateModel) {
+    init(paymentCard: PaymentAccountCreateModel) {
         self.paymentCard = paymentCard
     }
 

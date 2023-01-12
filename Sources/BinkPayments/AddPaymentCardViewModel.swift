@@ -13,15 +13,15 @@ class AddPaymentCardViewModel {
         static let expiryYearsInTheFuture = 50
     }
      
-    @Published var paymentCard: PaymentCardCreateModel
+    @Published var paymentCard: PaymentAccountCreateModel
     @Published var fullFormIsValid = false
     @Published var refreshForm = false
     
     private let repository = PaymentWalletRepository()
     var fields: [FormField] = []
 
-    init(paymentCard: PaymentCardCreateModel? = nil) {
-        self.paymentCard = paymentCard ?? PaymentCardCreateModel(fullPan: nil, nameOnCard: nil, month: nil, year: nil, cardNickname: nil)
+    init(paymentCard: PaymentAccountCreateModel? = nil) {
+        self.paymentCard = paymentCard ?? PaymentAccountCreateModel(fullPan: nil, nameOnCard: nil, month: nil, year: nil, cardNickname: nil)
         setupfields(paymentCard: self.paymentCard)
         checkFormValidity()
     }
@@ -44,7 +44,7 @@ class AddPaymentCardViewModel {
         fullFormIsValid = fields.allSatisfy { $0.isValid() }
     }
 
-    private func setupfields(paymentCard: PaymentCardCreateModel) {
+    private func setupfields(paymentCard: PaymentAccountCreateModel) {
         let updatedBlock: FormField.ValueUpdatedBlock = { [weak self] field, newValue in
             guard let self = self else { return }
             self.textField(changed: newValue, for: field)

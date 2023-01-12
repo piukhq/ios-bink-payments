@@ -238,7 +238,7 @@ extension AddPaymentCardViewController: BinkScannerViewControllerDelegate {
         dismiss(animated: true)
     }
     
-    func binkScannerViewController(_ viewController: BinkScannerViewController, didScan paymentCard: PaymentCardCreateModel) {
+    func binkScannerViewController(_ viewController: BinkScannerViewController, didScan paymentCard: PaymentAccountCreateModel) {
         dismiss(animated: true) { [weak self] in
             paymentCard.month = paymentCard.month ?? self?.viewModel.paymentCard.month
             paymentCard.year = paymentCard.year ?? self?.viewModel.paymentCard.year
