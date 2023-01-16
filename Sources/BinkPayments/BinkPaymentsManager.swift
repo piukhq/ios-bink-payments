@@ -16,18 +16,38 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
     var environmentKey: String!
     var isDebug: Bool!
     
+    public enum TrustedCredentialType: String {
+        case add
+        case authorise
+    }
+    
     private var currentViewController: UIViewController? {
         return UIViewController.topMostViewController()
+    }
+    
+    private var plistURL: URL {
+        let documentDirectoryURL = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+        return documentDirectoryURL.appendingPathComponent("config.plist")
     }
 
     private override init() {}
     
-    public func configure(token: String!, environmentKey: String!, isDebug: Bool) {
+    public func configure(token: String!, environmentKey: String!, testLoyaltyPlanID: Int, productionLoyaltyPlanID: Int, trustedCredentialType: TrustedCredentialType, isDebug: Bool) {
         assert(!token.isEmpty && !environmentKey.isEmpty, "Bink Payments SDK Error - Not Initialised due to missing token/environment key")
         
         self.token = token
         self.environmentKey = environmentKey
         self.isDebug = isDebug
+        
+        let configDictionary: [String: Any] = [
+            "testPlanID" : testLoyaltyPlanID,
+            "productionPlanID": productionLoyaltyPlanID,
+            "trustedCredentialType": trustedCredentialType.rawValue
+        ]
+        
+        let plistData = try? PropertyListSerialization.data(fromPropertyList: configDictionary, format: .xml, options: 0)
+        try? plistData?.write(to: plistURL)
+        
         print("Bink Payments SDK Initialised")
         
         #if DEBUG
@@ -39,6 +59,10 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
         #endif
         
         wallet.fetch()
+    }
+    
+    func configuration(testLoyaltyPlanID: String, productionLoyaltyPlanID: String, trustedCredentialType: TrustedCredentialType) {
+        
     }
     
     public func launchScanner(fullScreen: Bool = false, delegate: BinkScannerViewControllerDelegate) {
