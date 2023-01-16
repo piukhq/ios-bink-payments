@@ -8,6 +8,17 @@
 import AlamofireNetworkActivityLogger
 import UIKit
 
+public struct ConfigFile: Decodable {
+    public enum TrustedCredentialType: String, Decodable {
+        case add
+        case authorise
+    }
+    
+    var testLoyaltyPlanID: String
+    var productionLoyaltyPlanID: String
+    var trustedCredentialType: TrustedCredentialType
+}
+
 public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
     public static let shared = BinkPaymentsManager()
     public var themeConfig = BinkThemeConfiguration()
@@ -16,9 +27,17 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
     var environmentKey: String!
     var isDebug: Bool!
     
-    public enum TrustedCredentialType: String {
-        case add
-        case authorise
+    public var configFile: ConfigFile? {
+        if let data = try? Data(contentsOf: plistURL) {
+            if let plist = try? PropertyListSerialization.propertyList(from: data, format: nil) as? [String: String] {
+                return ConfigFile(
+                    testLoyaltyPlanID: plist["testPlanID"] ?? "",
+                    productionLoyaltyPlanID: plist["productionPlanID"] ?? "",
+                    trustedCredentialType: ConfigFile.TrustedCredentialType(rawValue: plist["trustedCredentialType"] ?? "") ?? .add)
+            }
+            
+        }
+        return nil
     }
     
     private var currentViewController: UIViewController? {
@@ -32,7 +51,7 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
 
     private override init() {}
     
-    public func configure(token: String!, environmentKey: String!, testLoyaltyPlanID: Int, productionLoyaltyPlanID: Int, trustedCredentialType: TrustedCredentialType, isDebug: Bool) {
+    public func configure(token: String!, environmentKey: String!, configFile: ConfigFile, isDebug: Bool) {
         assert(!token.isEmpty && !environmentKey.isEmpty, "Bink Payments SDK Error - Not Initialised due to missing token/environment key")
         
         self.token = token
@@ -40,9 +59,9 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
         self.isDebug = isDebug
         
         let configDictionary: [String: Any] = [
-            "testPlanID" : testLoyaltyPlanID,
-            "productionPlanID": productionLoyaltyPlanID,
-            "trustedCredentialType": trustedCredentialType.rawValue
+            "testPlanID" : configFile.testLoyaltyPlanID,
+            "productionPlanID": configFile.productionLoyaltyPlanID,
+            "trustedCredentialType": configFile.trustedCredentialType.rawValue
         ]
         
         let plistData = try? PropertyListSerialization.data(fromPropertyList: configDictionary, format: .xml, options: 0)
@@ -59,10 +78,6 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
         #endif
         
         wallet.fetch()
-    }
-    
-    func configuration(testLoyaltyPlanID: String, productionLoyaltyPlanID: String, trustedCredentialType: TrustedCredentialType) {
-        
     }
     
     public func launchScanner(fullScreen: Bool = false, delegate: BinkScannerViewControllerDelegate) {
