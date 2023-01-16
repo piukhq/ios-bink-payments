@@ -31,16 +31,17 @@ class Wallet: WalletService {
     func configurePLLState(for loyaltyCard: LoyaltyCardModel) -> LoyaltyCardPLLState {
         var pllState = LoyaltyCardPLLState(linked: [], unlinked: [], timeChecked: lastWalletUpdate)
 
-        loyaltyCard.pllLinks?.forEach({ pllLink in
-            if let paymentAccount = paymentAccounts?.first(where: { $0.apiId == pllLink.paymentAccountID }) {
-                if pllLink.status?.state == "active" {
+        for paymentAccount in paymentAccounts ?? [] {
+            if let loyaltyCardPllLink = loyaltyCard.pllLinks?.first(where: { $0.paymentAccountID == paymentAccount.apiId }) {
+                if loyaltyCardPllLink.status?.state == "active" {
                     pllState.linked.append(paymentAccount)
                 } else {
                     pllState.unlinked.append(paymentAccount)
                 }
+            } else {
+                pllState.unlinked.append(paymentAccount)
             }
-        })
-        
+        }
         return pllState
     }
     
