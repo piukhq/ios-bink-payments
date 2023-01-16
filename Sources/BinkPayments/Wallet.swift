@@ -10,6 +10,7 @@ import Foundation
 class Wallet: WalletService {
     private(set) var paymentAccounts: [PaymentAccountResponseModel]?
     private(set) var loyaltyCards: [LoyaltyCardModel]?
+    private(set) var plans: [LoyaltyPlanModel]?
     
     var lastWalletUpdate: Date?
     
@@ -20,6 +21,11 @@ class Wallet: WalletService {
                 self.paymentAccounts = response.paymentAccounts
                 self.loyaltyCards = response.loyaltyCards
                 self.lastWalletUpdate = Date()
+                self.getLoyaltyPlans { result in
+                    self.plans = try? result.get()
+                    print(self.plans)
+                    
+                }
                 completion?()
                 print("Wallet fetch complete")
             case .failure(let error):
@@ -48,16 +54,17 @@ class Wallet: WalletService {
     func configurePLLState(for paymentAccount: PaymentAccountResponseModel) -> PaymentAccountPLLState {
         var pllState = PaymentAccountPLLState(linked: [], unlinked: [], timeChecked: lastWalletUpdate)
         
-        paymentAccount.pllLinks?.forEach({ pllLink in
-            if let loyaltyCard = loyaltyCards?.first(where: { $0.apiId == pllLink.loyaltyCardID }) {
-                if pllLink.status?.state == "active" {
+        for loyaltyCard in loyaltyCards ?? [] {
+            if let paymentAccountPllLink = paymentAccount.pllLinks?.first(where: { $0.loyaltyCardID == loyaltyCard.apiId }) {
+                if paymentAccountPllLink.status?.state == "active" {
                     pllState.linked.append(loyaltyCard)
                 } else {
                     pllState.unlinked.append(loyaltyCard)
                 }
+            } else {
+                pllState.unlinked.append(loyaltyCard)
             }
-        })
-        
+        }        
         return pllState
     }
 }
