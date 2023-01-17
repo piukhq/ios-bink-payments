@@ -8,17 +8,6 @@
 import AlamofireNetworkActivityLogger
 import UIKit
 
-public struct ConfigFile: Decodable {
-    public enum TrustedCredentialType: String, Decodable {
-        case add
-        case authorise
-    }
-    
-    var testLoyaltyPlanID: String
-    var productionLoyaltyPlanID: String
-    var trustedCredentialType: TrustedCredentialType
-}
-
 public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
     public static let shared = BinkPaymentsManager()
     public var themeConfig = BinkThemeConfiguration()
@@ -27,13 +16,13 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
     var environmentKey: String!
     var isDebug: Bool!
     
-    public var configFile: ConfigFile? {
+    public var config: Configuration? {
         if let data = try? Data(contentsOf: plistURL) {
             if let plist = try? PropertyListSerialization.propertyList(from: data, format: nil) as? [String: String] {
-                return ConfigFile(
+                return Configuration(
                     testLoyaltyPlanID: plist["testPlanID"] ?? "",
                     productionLoyaltyPlanID: plist["productionPlanID"] ?? "",
-                    trustedCredentialType: ConfigFile.TrustedCredentialType(rawValue: plist["trustedCredentialType"] ?? "") ?? .add)
+                    trustedCredentialType: Configuration.TrustedCredentialType(rawValue: plist["trustedCredentialType"] ?? "") ?? .add)
             }
             
         }
@@ -51,17 +40,17 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
 
     private override init() {}
     
-    public func configure(token: String!, environmentKey: String!, configFile: ConfigFile, isDebug: Bool) {
+    public func configure(token: String!, environmentKey: String!, configuration: Configuration, isDebug: Bool) {
         assert(!token.isEmpty && !environmentKey.isEmpty, "Bink Payments SDK Error - Not Initialised due to missing token/environment key")
         
         self.token = token
         self.environmentKey = environmentKey
         self.isDebug = isDebug
         
-        let configDictionary: [String: Any] = [
-            "testPlanID" : configFile.testLoyaltyPlanID,
-            "productionPlanID": configFile.productionLoyaltyPlanID,
-            "trustedCredentialType": configFile.trustedCredentialType.rawValue
+        let configDictionary: [String: String] = [
+            "testPlanID" : configuration.testLoyaltyPlanID,
+            "productionPlanID": configuration.productionLoyaltyPlanID,
+            "trustedCredentialType": configuration.trustedCredentialType.rawValue
         ]
         
         let plistData = try? PropertyListSerialization.data(fromPropertyList: configDictionary, format: .xml, options: 0)
