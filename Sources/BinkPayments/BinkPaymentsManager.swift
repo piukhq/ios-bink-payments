@@ -16,7 +16,7 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
     var environmentKey: String!
     var isDebug: Bool!
     
-    public var config: Configuration? {
+    var config: Configuration? {
         if let data = try? Data(contentsOf: plistURL) {
             if let plist = try? PropertyListSerialization.propertyList(from: data, format: nil) as? [String: String] {
                 return Configuration(
@@ -29,13 +29,13 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
         return nil
     }
     
-    private var currentViewController: UIViewController? {
-        return UIViewController.topMostViewController()
-    }
-    
     private var plistURL: URL {
         let documentDirectoryURL = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
         return documentDirectoryURL.appendingPathComponent("config.plist")
+    }
+    
+    private var currentViewController: UIViewController? {
+        return UIViewController.topMostViewController()
     }
 
     private override init() {}
