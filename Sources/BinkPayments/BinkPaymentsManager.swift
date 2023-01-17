@@ -16,18 +16,46 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
     var environmentKey: String!
     var isDebug: Bool!
     
+    var config: Configuration? {
+        if let data = try? Data(contentsOf: plistURL) {
+            if let plist = try? PropertyListSerialization.propertyList(from: data, format: nil) as? [String: String] {
+                return Configuration(
+                    testLoyaltyPlanID: plist["testPlanID"] ?? "",
+                    productionLoyaltyPlanID: plist["productionPlanID"] ?? "",
+                    trustedCredentialType: Configuration.TrustedCredentialType(rawValue: plist["trustedCredentialType"] ?? "") ?? .add)
+            }
+            
+        }
+        return nil
+    }
+    
+    private var plistURL: URL {
+        let documentDirectoryURL = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+        return documentDirectoryURL.appendingPathComponent("config.plist")
+    }
+    
     private var currentViewController: UIViewController? {
         return UIViewController.topMostViewController()
     }
 
     private override init() {}
     
-    public func configure(token: String!, environmentKey: String!, isDebug: Bool) {
+    public func configure(token: String!, environmentKey: String!, configuration: Configuration, isDebug: Bool) {
         assert(!token.isEmpty && !environmentKey.isEmpty, "Bink Payments SDK Error - Not Initialised due to missing token/environment key")
         
         self.token = token
         self.environmentKey = environmentKey
         self.isDebug = isDebug
+        
+        let configDictionary: [String: String] = [
+            "testPlanID" : configuration.testLoyaltyPlanID,
+            "productionPlanID": configuration.productionLoyaltyPlanID,
+            "trustedCredentialType": configuration.trustedCredentialType.rawValue
+        ]
+        
+        let plistData = try? PropertyListSerialization.data(fromPropertyList: configDictionary, format: .xml, options: 0)
+        try? plistData?.write(to: plistURL)
+        
         print("Bink Payments SDK Initialised")
         
         #if DEBUG
