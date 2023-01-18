@@ -10,6 +10,7 @@ import BinkPayments
 
 struct ContentView: View {
     let viewModel = ViewModel()
+    @State private var showAlert = false
     
     var body: some View {
         ZStack {
@@ -20,7 +21,7 @@ struct ContentView: View {
                 }
                 
                 BinkButton(text: "Show Payment Cards") {
-                    
+                    showAlert = true
                 }
                 
                 BinkButton(text: "Set Loyalty Card") {
@@ -32,7 +33,7 @@ struct ContentView: View {
                 }
                 
                 BinkButton(text: "Show Loyalty Card") {
-                    
+                    showAlert = true
                 }
                 
                 BinkButton(text: "Am I PLL Linked?") {
@@ -45,6 +46,7 @@ struct ContentView: View {
                 
             }
             .padding()
+            .alert("Coming Soon", isPresented: $showAlert) {}
         }
     }
 }
