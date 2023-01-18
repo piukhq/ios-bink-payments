@@ -11,7 +11,7 @@ import UIKit
 import AVFoundation
 import Vision
 
-public protocol BinkScannerViewControllerDelegate: AnyObject {
+protocol BinkScannerViewControllerDelegate: AnyObject {
     func binkScannerViewControllerShouldEnterManually(_ viewController: BinkScannerViewController, completion: (() -> Void)?)
     func binkScannerViewController(_ viewController: BinkScannerViewController, didScan paymentCard: PaymentAccountCreateModel)
 }
@@ -31,7 +31,7 @@ open class BinkScannerViewController: UIViewController, UINavigationControllerDe
         static let timerInterval: TimeInterval = 5.0
     }
 
-    public weak var delegate: BinkScannerViewControllerDelegate?
+    weak var delegate: BinkScannerViewControllerDelegate?
     private var session = AVCaptureSession()
     private var captureOutput: AVCaptureOutput?
     private var videoPreviewLayer: AVCaptureVideoPreviewLayer?
