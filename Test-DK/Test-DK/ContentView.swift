@@ -11,42 +11,49 @@ import BinkPayments
 struct ContentView: View {
     let viewModel = ViewModel()
     @State private var showAlert = false
+    @State private var viewSelection: Int? = nil
     
     var body: some View {
-        ZStack {
-            Color.black.opacity(0.95)
-            VStack {
-                BinkButton(text: "Add Payment Card") {
-                    viewModel.paymentsManager.launchScanner()
-                }
-                
-                BinkButton(text: "Show Payment Cards") {
-                    showAlert = true
-                }
-                
-                BinkButton(text: "Set Loyalty Card") {
+        NavigationView {
+            ZStack {
+                Color.black.opacity(0.95)
+                VStack {
+                    BinkButton(text: "Add Payment Card") {
+                        viewModel.paymentsManager.launchScanner()
+                    }
+                    
+                    BinkButton(text: "Show Payment Cards") {
+                        showAlert = true
+                    }
+                    
+                    BinkButton(text: "Set Loyalty Card") {
+                        viewSelection = 2
+                    }
+                    
+                    BinkButton(text: "Replace Loyalty Card") {
+                        
+                    }
+                    
+                    BinkButton(text: "Show Loyalty Card") {
+                        showAlert = true
+                    }
+                    
+                    BinkButton(text: "Am I PLL Linked?") {
+                        viewSelection = 0
+                    }
+                    
+                    BinkButton(text: "Trigger Token Refresh") {
+                        viewSelection = 1
+                    }
+                    
+                    NavigationLink(destination: PllStatusView(), tag: 0, selection: $viewSelection) { EmptyView() }
+                    NavigationLink(destination: Text("Bello"), tag: 1, selection: $viewSelection) { EmptyView() }
+                    NavigationLink(destination: Text("Yooooo"), tag: 2, selection: $viewSelection) { EmptyView() }
                     
                 }
-                
-                BinkButton(text: "Replace Loyalty Card") {
-                    
-                }
-                
-                BinkButton(text: "Show Loyalty Card") {
-                    showAlert = true
-                }
-                
-                BinkButton(text: "Am I PLL Linked?") {
-                    
-                }
-                
-                BinkButton(text: "Trigger Token Refresh") {
-                    
-                }
-                
+                .padding()
+                .alert("Coming Soon", isPresented: $showAlert) {}
             }
-            .padding()
-            .alert("Coming Soon", isPresented: $showAlert) {}
         }
     }
 }
