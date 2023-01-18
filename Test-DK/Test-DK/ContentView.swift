@@ -12,20 +12,64 @@ struct ContentView: View {
     let viewModel = ViewModel()
     
     var body: some View {
-        VStack {
-            Button {
-                viewModel.paymentsManager.launchScanner(delegate: viewModel)
-            } label: {
-                Text("Add Payment Card")
+        ZStack {
+            Color.black.opacity(0.95)
+            VStack {
+                BinkButton(text: "Add Payment Card") {
+                    viewModel.paymentsManager.launchScanner()
+                }
+                
+                BinkButton(text: "Show Payment Cards") {
+                    
+                }
+                
+                BinkButton(text: "Set Loyalty Card") {
+                    
+                }
+                
+                BinkButton(text: "Replace Loyalty Card") {
+                    
+                }
+                
+                BinkButton(text: "Show Loyalty Card") {
+                    
+                }
+                
+                BinkButton(text: "Am I PLL Linked?") {
+                    
+                }
+                
+                BinkButton(text: "Trigger Token Refresh") {
+                    
+                }
+                
             }
+            .padding()
         }
-        .padding()
     }
 }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
+    }
+}
+
+struct BinkButton: View {
+    var text: String
+    var action: () -> ()
+    
+    var body: some View {
+        Button {
+            action()
+        } label: {
+            Text(text)
+                .frame(minWidth: 0, maxWidth: .infinity)
+
+        }
+        .buttonStyle(.borderedProminent)
+        .controlSize(.large)
+        .tint(.pink)
     }
 }
 
@@ -41,16 +85,4 @@ class ViewModel {
             configuration: config,
             isDebug: true)
     }
-}
-
-extension ViewModel: BinkScannerViewControllerDelegate {
-    func binkScannerViewControllerShouldEnterManually(_ viewController: BinkPayments.BinkScannerViewController, completion: (() -> Void)?) {
-        paymentsManager.launchAddPaymentCardScreen()
-    }
-    
-    func binkScannerViewController(_ viewController: BinkPayments.BinkScannerViewController, didScan paymentCard: BinkPayments.PaymentAccountCreateModel) {
-        print("Did scan")
-    }
-    
-    
 }
