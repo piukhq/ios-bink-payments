@@ -12,6 +12,7 @@ struct ContentView: View {
     let viewModel = ViewModel()
     @State private var showAlert = false
     @State private var viewSelection: Int? = nil
+//    @State private var pllStatusSelection = true
     
     var body: some View {
         NavigationView {
@@ -46,13 +47,20 @@ struct ContentView: View {
                         viewSelection = 1
                     }
                     
-                    NavigationLink(destination: PllStatusView(), tag: 0, selection: $viewSelection) { EmptyView() }
+                    NavigationLink(destination: PllStatusView(viewModel: PllStatusViewModel(paymentManager: viewModel.paymentsManager)), tag: 0, selection: $viewSelection) { EmptyView() }
                     NavigationLink(destination: Text("Bello"), tag: 1, selection: $viewSelection) { EmptyView() }
                     NavigationLink(destination: Text("Yooooo"), tag: 2, selection: $viewSelection) { EmptyView() }
                     
                 }
                 .padding()
                 .alert("Coming Soon", isPresented: $showAlert) {}
+//                .alert(isPresented: $pllStatusSelection) {
+//                    Alert(
+//                        title: Text(""),
+//                        primaryButton: .default(Text("Loyalty")),
+//                        secondaryButton: .default(Text("Payment"))
+//                        )
+//                }
             }
         }
     }
