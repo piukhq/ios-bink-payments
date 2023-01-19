@@ -11,7 +11,8 @@ enum APIEndpoint {
     case createPaymentAccount
     case spreedly
     case wallet
-    
+    case renew
+
     var headers: [BinkHTTPHeader] {
         var headers: [BinkHTTPHeader] = [.defaultUserAgent, .defaultContentType]
         headers.append(.defaultAccept)
@@ -83,6 +84,8 @@ enum APIEndpoint {
             return "https://core.spreedly.com/v1/payment_methods?environment_key=\(BinkPaymentsManager.shared.environmentKey ?? "")"
         case .wallet:
             return "/v2/wallet"
+        case .renew:
+            return "/v2/token"
         }
     }
 }
