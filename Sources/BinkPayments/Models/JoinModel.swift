@@ -9,9 +9,9 @@ import Foundation
 
 
 // MARK: - Join
-struct JoinModel: Codable {
-    let loyaltyCardID, loyaltyPlanID: Int?
-    let status: StatusModel?
+public struct JoinModel: Codable {
+    public let loyaltyCardID, loyaltyPlanID: Int?
+    public let status: StatusModel?
 
     enum CodingKeys: String, CodingKey {
         case loyaltyCardID = "loyalty_card_id"

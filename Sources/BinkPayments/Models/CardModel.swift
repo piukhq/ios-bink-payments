@@ -7,12 +7,12 @@
 
 import Foundation
 
-struct CardModel: Codable {
-    let apiId: Int?
-    let barcode: String?
-    let barcodeType: Int?
-    let cardNumber, colour: String?
-    let textColour: String?
+public struct CardModel: Codable {
+    public let apiId: Int?
+    public let barcode: String?
+    public let barcodeType: Int?
+    public let cardNumber, colour: String?
+    public let textColour: String?
 
     enum CodingKeys: String, CodingKey {
         case apiId = "id"

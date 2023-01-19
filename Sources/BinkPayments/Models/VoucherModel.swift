@@ -7,19 +7,19 @@
 
 import Foundation
 
-struct VoucherModel: Codable {
-    var apiId: Int?
-    let state: VoucherState?
-    let earnType: String?
-    let rewardText: String?
-    let headline: String?
-    let voucherCode: String?
-    let barcodeType: Int?
-    let progressDisplayText: String?
-    let bodyText: String?
-    let termsAndConditions: String?
-    let issuedDate, expiryDate: Int?
-    let redeemedDate: Int?
+public struct VoucherModel: Codable {
+    public var apiId: Int?
+    public let state: VoucherState?
+    public let earnType: String?
+    public let rewardText: String?
+    public let headline: String?
+    public let voucherCode: String?
+    public let barcodeType: Int?
+    public let progressDisplayText: String?
+    public let bodyText: String?
+    public let termsAndConditions: String?
+    public let issuedDate, expiryDate: Int?
+    public let redeemedDate: Int?
 
     enum CodingKeys: String, CodingKey {
         case apiId = "id"
@@ -39,14 +39,14 @@ struct VoucherModel: Codable {
 }
 
 
-enum VoucherState: String, Codable {
+public enum VoucherState: String, Codable {
     case redeemed
     case issued
     case inProgress = "inprogress"
     case expired
     case cancelled
 
-    var sort: Int {
+    public var sort: Int {
         switch self {
         case .issued:
             return 0
