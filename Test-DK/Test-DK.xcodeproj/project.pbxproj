@@ -7,12 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		CE16D94D2977EE150015189F /* BinkPayments in Frameworks */ = {isa = PBXBuildFile; productRef = CE16D94C2977EE150015189F /* BinkPayments */; };
 		CE8D07D6297865E0009E023A /* PllStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8D07D5297865E0009E023A /* PllStatusView.swift */; };
 		CEDDDFD729771068008734F4 /* Test_DKApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDDDFD629771068008734F4 /* Test_DKApp.swift */; };
 		CEDDDFD929771068008734F4 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDDDFD829771068008734F4 /* ContentView.swift */; };
 		CEDDDFDB2977106B008734F4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CEDDDFDA2977106B008734F4 /* Assets.xcassets */; };
 		CEDDDFDE2977106B008734F4 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CEDDDFDD2977106B008734F4 /* Preview Assets.xcassets */; };
+		CEE8EE3829797B2200E0F9D7 /* BinkPayments in Frameworks */ = {isa = PBXBuildFile; productRef = CEE8EE3729797B2200E0F9D7 /* BinkPayments */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,7 +29,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CE16D94D2977EE150015189F /* BinkPayments in Frameworks */,
+				CEE8EE3829797B2200E0F9D7 /* BinkPayments in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -89,7 +89,7 @@
 			);
 			name = "Test-DK";
 			packageProductDependencies = (
-				CE16D94C2977EE150015189F /* BinkPayments */,
+				CEE8EE3729797B2200E0F9D7 /* BinkPayments */,
 			);
 			productName = "Test-DK";
 			productReference = CEDDDFD329771068008734F4 /* Test-DK.app */;
@@ -120,7 +120,7 @@
 			);
 			mainGroup = CEDDDFCA29771068008734F4;
 			packageReferences = (
-				CE16D94B2977EE150015189F /* XCRemoteSwiftPackageReference "ios-bink-payments" */,
+				CEE8EE3629797B2200E0F9D7 /* XCRemoteSwiftPackageReference "ios-bink-payments" */,
 			);
 			productRefGroup = CEDDDFD429771068008734F4 /* Products */;
 			projectDirPath = "";
@@ -355,7 +355,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		CE16D94B2977EE150015189F /* XCRemoteSwiftPackageReference "ios-bink-payments" */ = {
+		CEE8EE3629797B2200E0F9D7 /* XCRemoteSwiftPackageReference "ios-bink-payments" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "git@github.com:binkhq/ios-bink-payments.git";
 			requirement = {
@@ -366,9 +366,9 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		CE16D94C2977EE150015189F /* BinkPayments */ = {
+		CEE8EE3729797B2200E0F9D7 /* BinkPayments */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = CE16D94B2977EE150015189F /* XCRemoteSwiftPackageReference "ios-bink-payments" */;
+			package = CEE8EE3629797B2200E0F9D7 /* XCRemoteSwiftPackageReference "ios-bink-payments" */;
 			productName = BinkPayments;
 		};
 /* End XCSwiftPackageProductDependency section */

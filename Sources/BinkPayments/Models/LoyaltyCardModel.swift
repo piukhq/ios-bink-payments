@@ -8,14 +8,14 @@
 import Foundation
 
 public struct LoyaltyCardModel: Codable {
-    let apiId: Int?
-    let loyaltyPlanID: Int?
-    let status: StatusModel?
-    let balance: LoyaltyCardBalanceModel?
-    let transactions: [LoyaltyCardTransactionModel]?
-    let vouchers: [VoucherModel]?
-    let card: CardModel?
-    let pllLinks: [LoyaltyCardPllLinkModel]?
+    public let apiId: Int?
+    public let loyaltyPlanID: Int?
+    public let status: StatusModel?
+    public let balance: LoyaltyCardBalanceModel?
+    public let transactions: [LoyaltyCardTransactionModel]?
+    public let vouchers: [VoucherModel]?
+    public let card: CardModel?
+    public let pllLinks: [LoyaltyCardPllLinkModel]?
 
     enum CodingKeys: String, CodingKey {
         case apiId = "id"

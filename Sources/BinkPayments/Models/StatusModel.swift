@@ -7,18 +7,18 @@
 
 import Foundation
 
-enum MembershipCardStatus: String, Codable {
+public enum MembershipCardStatus: String, Codable {
     case authorised
     case unauthorised
     case pending
     case failed
 }
 
-struct StatusModel: Codable {
-    let apiId: Int?
-    let state: MembershipCardStatus?
-    let slug: String?
-    let statusDescription: String?
+public struct StatusModel: Codable {
+    public let apiId: Int?
+    public let state: MembershipCardStatus?
+    public let slug: String?
+    public let statusDescription: String?
 
     enum CodingKeys: String, CodingKey {
         case apiId = "id"

@@ -29,9 +29,14 @@ struct PllStatusView: View {
             }
             
             Spacer()
-            VStack {
-//                ForEach(viewmo, content: <#T##(Binding<Identifiable>) -> _#>)
-                
+            
+            if viewModel.showLinkedPaymentCards {
+                VStack {
+                    ForEach(viewModel.loyaltyCardPllState.linked, id: \.apiId) { paymentAccount in
+                        Text(paymentAccount.nameOnCard ?? "")
+                    }
+                    
+                }
             }
         }
         .padding()
@@ -46,8 +51,9 @@ struct PllStatusView_Previews: PreviewProvider {
 
 class PllStatusViewModel: ObservableObject {
     private let paymentManager: BinkPaymentsManager
+    var loyaltyCardPllState: LoyaltyCardPLLState!
     
-    @Published var loyaltyCardPllState: LoyaltyCardPLLState!
+    @Published var showLinkedPaymentCards = false
 
     init(paymentManager: BinkPaymentsManager) {
         self.paymentManager = paymentManager
@@ -59,7 +65,7 @@ class PllStatusViewModel: ObservableObject {
                 
             }
             
-            
+            showLinkedPaymentCards = true
         }
     }
 }

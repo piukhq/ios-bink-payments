@@ -7,11 +7,11 @@
 
 import Foundation
 
-struct LoyaltyCardTransactionModel: Codable {
-    let apiId: String?
-    let timestamp: Double?
-    let transactionDescription: String?
-    let displayValue: String?
+public struct LoyaltyCardTransactionModel: Codable {
+    public let apiId: String?
+    public let timestamp: Double?
+    public let transactionDescription: String?
+    public let displayValue: String?
 
     enum CodingKeys: String, CodingKey {
         case apiId = "id"
