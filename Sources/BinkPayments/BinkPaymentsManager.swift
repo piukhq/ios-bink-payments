@@ -13,6 +13,7 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
     public var themeConfig = BinkThemeConfiguration()
     private let wallet = Wallet()
     var token: String!
+    var refreshToken: String!
     var environmentKey: String!
     var isDebug: Bool!
     
@@ -42,11 +43,12 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
     
     
     // MARK: - Public Methods
-    
-    public func configure(token: String!, environmentKey: String!, configuration: Configuration, isDebug: Bool) {
+
+    public func configure(token: String!, refreshToken: String!, environmentKey: String!, configuration: Configuration, isDebug: Bool) {
         assert(!token.isEmpty && !environmentKey.isEmpty, "Bink Payments SDK Error - Not Initialised due to missing token/environment key")
         
         self.token = token
+        self.refreshToken = refreshToken
         self.environmentKey = environmentKey
         self.isDebug = isDebug
         
