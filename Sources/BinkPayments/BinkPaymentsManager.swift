@@ -47,8 +47,8 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
     public func configure(token: String!, refreshToken: String!, environmentKey: String!, configuration: Configuration, isDebug: Bool) {
         assert(!token.isEmpty && !refreshToken.isEmpty && !environmentKey.isEmpty, "Bink Payments SDK Error - Not Initialised due to missing token/environment key")
         
-        self.token = token
-        self.refreshToken = refreshToken
+        self.token = TokenKeychainManager.getToken(service: KeychainConstants.accessTokenService) ?? token
+        self.refreshToken = TokenKeychainManager.getToken(service: KeychainConstants.refreshTokenService) ?? refreshToken
         self.environmentKey = environmentKey
         self.isDebug = isDebug
         
