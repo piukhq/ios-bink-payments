@@ -7,16 +7,16 @@
 
 import Foundation
 
-class CredentialsModel: Codable {
-    let order: Int?
-    let displayLabel: String?
-    let validation: String?
-    let credentialDescription, credentialSlug: String?
-    let type: String?
-    let isSensitive: Bool?
-    let choice: [String]?
-    let alternative: CredentialsModel?
-    var value: String?
+public class CredentialsModel: Codable {
+    public let order: Int?
+    public let displayLabel: String?
+    public let validation: String?
+    public let credentialDescription, credentialSlug: String?
+    public let type: String?
+    public let isSensitive: Bool?
+    public let choice: [String]?
+    public let alternative: CredentialsModel?
+    public var value: String?
 
     enum CodingKeys: String, CodingKey {
         case order

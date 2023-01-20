@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct ContentModel: Codable {
-    let column: String?
-    let value: String?
+public struct ContentModel: Codable {
+    public let column: String?
+    public let value: String?
 }

@@ -7,12 +7,12 @@
 
 import Foundation
 
-struct ConsentsModel: Codable {
-    let consentSlug: String?
-    let isAcceptanceRequired: Bool?
-    let order: Int?
-    let entDescription, name: String?
-    let url: String?
+public struct ConsentsModel: Codable {
+    public let consentSlug: String?
+    public let isAcceptanceRequired: Bool?
+    public let order: Int?
+    public let entDescription, name: String?
+    public let url: String?
 
     enum CodingKeys: String, CodingKey {
         case consentSlug = "consent_slug"

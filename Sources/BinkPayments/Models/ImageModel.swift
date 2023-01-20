@@ -8,12 +8,12 @@
 import CoreData
 import Foundation
 
-struct ImageModel: Codable {
-    let apiId: Int?
-    let type: Int?
-    let url: String?
-    let imageDescription: String?
-    let encoding: String?
+public struct ImageModel: Codable {
+    public let apiId: Int?
+    public let type: Int?
+    public let url: String?
+    public let imageDescription: String?
+    public let encoding: String?
 
     enum CodingKeys: String, CodingKey {
         case apiId = "id"

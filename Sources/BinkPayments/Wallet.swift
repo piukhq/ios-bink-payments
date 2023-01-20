@@ -10,7 +10,6 @@ import Foundation
 class Wallet: WalletService {
     private(set) var paymentAccounts: [PaymentAccountResponseModel]?
     private(set) var loyaltyCards: [LoyaltyCardModel]?
-    private(set) var plans: [LoyaltyPlanModel]?
     
     var lastWalletUpdate: Date?
     
@@ -21,11 +20,6 @@ class Wallet: WalletService {
                 self.paymentAccounts = response.paymentAccounts
                 self.loyaltyCards = response.loyaltyCards
                 self.lastWalletUpdate = Date()
-                self.getLoyaltyPlans { result in
-                    self.plans = try? result.get()
-                    print(self.plans)
-                    
-                }
                 completion?()
                 print("Wallet fetch complete")
             case .failure(let error):

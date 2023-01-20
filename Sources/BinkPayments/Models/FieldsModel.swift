@@ -7,10 +7,10 @@
 
 import Foundation
 
-struct FieldsModel: Codable {
-    let credentials: [CredentialsModel]?
-    let planDocuments: [PlanDocumentModel]?
-    let consents: [ConsentsModel]?
+public struct FieldsModel: Codable {
+    public let credentials: [CredentialsModel]?
+    public let planDocuments: [PlanDocumentModel]?
+    public let consents: [ConsentsModel]?
 
     enum CodingKeys: String, CodingKey {
         case credentials

@@ -8,10 +8,10 @@
 import Foundation
 
 // MARK: - Balance
-struct LoyaltyCardBalanceModel: Codable {
-    let apiId: Int?
-    let updatedAt: Int?
-    let currentDisplayValue: String?
+public struct LoyaltyCardBalanceModel: Codable {
+    public let apiId: Int?
+    public let updatedAt: Int?
+    public let currentDisplayValue: String?
 
     enum CodingKeys: String, CodingKey {
         case apiId = "id"

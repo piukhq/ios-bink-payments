@@ -7,11 +7,11 @@
 
 import Foundation
 
-struct LoyaltyPlanFeaturesModel: Codable {
-    let hasPoints, hasTransactions: Bool?
-    let planType, barcodeType: Int?
-    let colour: String?
-    let journeys: [JourneyModel]?
+public struct LoyaltyPlanFeaturesModel: Codable {
+    public let hasPoints, hasTransactions: Bool?
+    public let planType, barcodeType: Int?
+    public let colour: String?
+    public let journeys: [JourneyModel]?
 
     enum CodingKeys: String, CodingKey {
         case hasPoints = "has_points"

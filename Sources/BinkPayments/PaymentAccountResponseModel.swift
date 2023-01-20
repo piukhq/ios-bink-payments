@@ -8,15 +8,15 @@
 import Foundation
 
 public struct PaymentAccountResponseModel: Codable {
-    var apiId: Int?
-    let status: String?
-    let expiryMonth: String?
-    let expiryYear: String?
-    let nameOnCard: String?
-    let cardNickname: String?
-    var firstSix: String?
-    let lastFour: String?
-    let pllLinks: [PaymentAccountPllLink]?
+    public var apiId: Int?
+    public let status: String?
+    public let expiryMonth: String?
+    public let expiryYear: String?
+    public let nameOnCard: String?
+    public let cardNickname: String?
+    public var firstSix: String?
+    public let lastFour: String?
+    public let pllLinks: [PaymentAccountPllLink]?
 
     enum CodingKeys: String, CodingKey {
         case expiryMonth = "expiry_month"
@@ -32,11 +32,11 @@ public struct PaymentAccountResponseModel: Codable {
 }
 
 // MARK: - PaymentAccountPllLink
-struct PaymentAccountPllLink: Codable {
-    let apiId: Int?
-    let loyaltyCardID: Int?
-    let loyaltyPlan: String?
-    let status: PLLStatus?
+public struct PaymentAccountPllLink: Codable {
+    public let apiId: Int?
+    public let loyaltyCardID: Int?
+    public let loyaltyPlan: String?
+    public let status: PLLStatus?
 
     enum CodingKeys: String, CodingKey {
         case apiId = "id"
@@ -46,8 +46,8 @@ struct PaymentAccountPllLink: Codable {
     }
 }
 
-struct PLLStatus: Codable {
-    let state: String?
-    let slug: String?
-    let description: String?
+public struct PLLStatus: Codable {
+    public let state: String?
+    public let slug: String?
+    public let description: String?
 }

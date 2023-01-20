@@ -7,17 +7,17 @@
 
 import Foundation
 
-struct JourneyModel: Codable {
-    let type: Int?
-    let description: String?
+public struct JourneyModel: Codable {
+    public let type: Int?
+    public let description: String?
 }
 
-struct JourneyFieldsModel: Codable {
-    let loyaltyPlanID: Int?
-    let registerGhostCardFields: FieldsModel?
-    let joinFields: FieldsModel?
-    let addFields: FieldsModel?
-    let authoriseFields: FieldsModel?
+public struct JourneyFieldsModel: Codable {
+    public let loyaltyPlanID: Int?
+    public let registerGhostCardFields: FieldsModel?
+    public let joinFields: FieldsModel?
+    public let addFields: FieldsModel?
+    public let authoriseFields: FieldsModel?
 
     enum CodingKeys: String, CodingKey {
         case loyaltyPlanID = "loyalty_plan_id"

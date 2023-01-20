@@ -9,14 +9,14 @@ import Foundation
 
 
 public struct LoyaltyCardPLLState {
-    var linked: [PaymentAccountResponseModel]
-    var unlinked: [PaymentAccountResponseModel]
-    var timeChecked: Date?
+    public var linked: [PaymentAccountResponseModel]
+    public var unlinked: [PaymentAccountResponseModel]
+    public var timeChecked: Date?
 }
 
 
 public struct PaymentAccountPLLState {
-    var linked: [LoyaltyCardModel]
-    var unlinked: [LoyaltyCardModel]
-    var timeChecked: Date?
+    public var linked: [LoyaltyCardModel]
+    public var unlinked: [LoyaltyCardModel]
+    public var timeChecked: Date?
 }

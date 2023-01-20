@@ -23,16 +23,17 @@ typealias ServiceCompletionResultRawResponseHandler<ObjectType: Any, ErrorType: 
 class WalletService {
     private let apiClient = APIClient()
 
-    func getLoyaltyPlans(completion: @escaping ServiceCompletionResultHandler<[LoyaltyPlanModel], WalletServiceError>) {
-        let request = BinkNetworkRequest(endpoint: .plans, method: .get, headers: nil, isUserDriven: true)
-        apiClient.performRequest(request, expecting: [Safe<LoyaltyPlanModel>].self) { (result, rawResponse) in
+    func getLoyaltyPlan(for Id: String, completion: @escaping ServiceCompletionResultHandler<LoyaltyPlanModel?, WalletServiceError>) {
+        let request = BinkNetworkRequest(endpoint: .plan(Id: Id), method: .get, headers: nil, isUserDriven: true)
+        apiClient.performRequest(request, expecting: Safe<LoyaltyPlanModel>.self) { (result, rawResponse) in
             switch result {
             case .success(let response):
-                let safeResponse = response.compactMap { $0.value }
-
+                let safeResponse = response.value
+//                let safeResponse = response.compactMap { $0.value }
+                
                 completion(.success(safeResponse))
             case .failure(let error):
-                completion(.failure(.failedToGetLoyaltyPlans(error)))
+                completion(.failure(.failedToGetLoyaltyPlan(error)))
             }
         }
     }

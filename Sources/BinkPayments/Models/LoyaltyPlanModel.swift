@@ -8,14 +8,14 @@
 import CoreData
 import Foundation
 
-struct LoyaltyPlanModel: Codable {
-    let apiId: Int?
-    let planPopularity: Int?
-    let planFeatures: LoyaltyPlanFeaturesModel?
-    let images: [ImageModel]?
-    let planDetails: LoyaltyPlanDetailsModel?
-    let journeyFields: JourneyFieldsModel?
-    let content: [ContentModel]?
+public struct LoyaltyPlanModel: Codable {
+    public let apiId: Int?
+    public let planPopularity: Int?
+    public let planFeatures: LoyaltyPlanFeaturesModel?
+    public let images: [ImageModel]?
+    public let planDetails: LoyaltyPlanDetailsModel?
+    public let journeyFields: JourneyFieldsModel?
+    public let content: [ContentModel]?
 
     enum CodingKeys: String, CodingKey {
         case apiId = "loyalty_plan_id"

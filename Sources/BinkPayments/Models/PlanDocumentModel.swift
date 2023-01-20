@@ -7,12 +7,12 @@
 
 import Foundation
 
-struct PlanDocumentModel: Codable {
-    let name: String?
-    let url: String?
-    let isAcceptanceRequired: Bool?
-    let order: Int?
-    let planDocumentDescription: String?
+public struct PlanDocumentModel: Codable {
+    public let name: String?
+    public let url: String?
+    public let isAcceptanceRequired: Bool?
+    public let order: Int?
+    public let planDocumentDescription: String?
 
     enum CodingKeys: String, CodingKey {
         case name, url

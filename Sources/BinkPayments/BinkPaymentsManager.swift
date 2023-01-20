@@ -11,10 +11,29 @@ import UIKit
 public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
     public static let shared = BinkPaymentsManager()
     public var themeConfig = BinkThemeConfiguration()
+    public var loyaltyPlan: LoyaltyPlanModel?
     private let wallet = Wallet()
     var token: String!
     var environmentKey: String!
     var isDebug: Bool!
+    
+    var config: Configuration? {
+        if let data = try? Data(contentsOf: plistURL) {
+            if let plist = try? PropertyListSerialization.propertyList(from: data, format: nil) as? [String: String] {
+                return Configuration(
+                    testLoyaltyPlanID: plist["testPlanID"] ?? "",
+                    productionLoyaltyPlanID: plist["productionPlanID"] ?? "",
+                    trustedCredentialType: Configuration.TrustedCredentialType(rawValue: plist["trustedCredentialType"] ?? "") ?? .add)
+            }
+            
+        }
+        return nil
+    }
+    
+    private var plistURL: URL {
+        let documentDirectoryURL = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+        return documentDirectoryURL.appendingPathComponent("config.plist")
+    }
     
     private var currentViewController: UIViewController? {
         return UIViewController.topMostViewController()
@@ -22,12 +41,25 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
 
     private override init() {}
     
-    public func configure(token: String!, environmentKey: String!, isDebug: Bool) {
+    
+    // MARK: - Public Methods
+    
+    public func configure(token: String!, environmentKey: String!, configuration: Configuration, isDebug: Bool) {
         assert(!token.isEmpty && !environmentKey.isEmpty, "Bink Payments SDK Error - Not Initialised due to missing token/environment key")
         
         self.token = token
         self.environmentKey = environmentKey
         self.isDebug = isDebug
+        
+        let configDictionary: [String: String] = [
+            "testPlanID" : configuration.testLoyaltyPlanID,
+            "productionPlanID": configuration.productionLoyaltyPlanID,
+            "trustedCredentialType": configuration.trustedCredentialType.rawValue
+        ]
+        
+        let plistData = try? PropertyListSerialization.data(fromPropertyList: configDictionary, format: .xml, options: 0)
+        try? plistData?.write(to: plistURL)
+        
         print("Bink Payments SDK Initialised")
         
         #if DEBUG
@@ -39,32 +71,28 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
         #endif
         
         wallet.fetch()
+        
+        let planID = isDebug ? configuration.testLoyaltyPlanID : configuration.productionLoyaltyPlanID
+        wallet.getLoyaltyPlan(for: planID) { result in
+            switch result {
+            case .success(let loyaltyPlan):
+                self.loyaltyPlan = loyaltyPlan
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
     }
     
-    public func launchScanner(fullScreen: Bool = false, delegate: BinkScannerViewControllerDelegate) {
+    public func launchScanner(fullScreen: Bool = false) {
         let binkScannerViewController = BinkScannerViewController(themeConfig: themeConfig, visionUtility: VisionUtility())
-        binkScannerViewController.delegate = delegate
+        binkScannerViewController.delegate = self
         let navigationController = UINavigationController(rootViewController: binkScannerViewController)
 
         if fullScreen {
             navigationController.modalPresentationStyle = .fullScreen
         }
         
-        let appearance = UINavigationBarAppearance()
-        appearance.configureWithOpaqueBackground()
-        appearance.setBackIndicatorImage(themeConfig.backIndicatorImage, transitionMaskImage: themeConfig.backIndicatorImage)
-        appearance.buttonAppearance.normal.titleTextAttributes = [.font: themeConfig.navigationBackButtonTitleFont, .foregroundColor: themeConfig.navigationBarTintColor]
-
-        navigationController.navigationBar.tintColor = themeConfig.navigationBarTintColor
-        navigationController.navigationBar.standardAppearance = appearance
-        navigationController.navigationBar.scrollEdgeAppearance = appearance
-
-        navigationController.navigationBar.standardAppearance.backgroundEffect = themeConfig.navigationBarBackgroundEffect
-        navigationController.navigationBar.standardAppearance.backgroundColor = themeConfig.primaryColor.withAlphaComponent(themeConfig.navigationBarBackgroundAlpha)
-        navigationController.navigationBar.scrollEdgeAppearance?.backgroundEffect = themeConfig.navigationBarBackgroundEffect
-        navigationController.navigationBar.scrollEdgeAppearance?.backgroundColor = themeConfig.primaryColor.withAlphaComponent(themeConfig.navigationBarBackgroundAlpha)
-
-        currentViewController?.present(navigationController, animated: true)
+        configureScannerViewController(with: navigationController)
     }
     
     public func launchDebugScreen(paymentCard: PaymentAccountCreateModel) {
@@ -107,5 +135,46 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
         }
         
         return pllState
+    }
+    
+    
+    // MARK: - Private & Internal Methods
+    
+    func launchScanner(delegate: BinkScannerViewControllerDelegate) {
+        let binkScannerViewController = BinkScannerViewController(themeConfig: themeConfig, visionUtility: VisionUtility())
+        binkScannerViewController.delegate = delegate
+        let navigationController = UINavigationController(rootViewController: binkScannerViewController)
+        configureScannerViewController(with: navigationController)
+    }
+    
+    private func configureScannerViewController(with navigationController: UINavigationController) {
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.setBackIndicatorImage(themeConfig.backIndicatorImage, transitionMaskImage: themeConfig.backIndicatorImage)
+        appearance.buttonAppearance.normal.titleTextAttributes = [.font: themeConfig.navigationBackButtonTitleFont, .foregroundColor: themeConfig.navigationBarTintColor]
+
+        navigationController.navigationBar.tintColor = themeConfig.navigationBarTintColor
+        navigationController.navigationBar.standardAppearance = appearance
+        navigationController.navigationBar.scrollEdgeAppearance = appearance
+
+        navigationController.navigationBar.standardAppearance.backgroundEffect = themeConfig.navigationBarBackgroundEffect
+        navigationController.navigationBar.standardAppearance.backgroundColor = themeConfig.primaryColor.withAlphaComponent(themeConfig.navigationBarBackgroundAlpha)
+        navigationController.navigationBar.scrollEdgeAppearance?.backgroundEffect = themeConfig.navigationBarBackgroundEffect
+        navigationController.navigationBar.scrollEdgeAppearance?.backgroundColor = themeConfig.primaryColor.withAlphaComponent(themeConfig.navigationBarBackgroundAlpha)
+
+        currentViewController?.present(navigationController, animated: true)
+    }
+}
+
+
+// MARK: - Extensions
+
+extension BinkPaymentsManager: BinkScannerViewControllerDelegate {
+    func binkScannerViewControllerShouldEnterManually(_ viewController: BinkScannerViewController, completion: (() -> Void)?) {
+        launchAddPaymentCardScreen()
+    }
+    
+    func binkScannerViewController(_ viewController: BinkScannerViewController, didScan paymentCard: PaymentAccountCreateModel) {
+        launchAddPaymentCardScreen(paymentCard)
     }
 }
