@@ -7,10 +7,10 @@
 
 import Foundation
 
-enum KeychainConstants {
-    static let accessTokenService = "accessTokenService"
-    static let refreshTokenService = "refreshTokenService"
-    static let account = "com.bink.sdk"
+enum KeychainService: String {
+    case accessTokenService = "accessTokenService"
+    case refreshTokenService = "refreshTokenService"
+    case account = "com.bink.sdk"
 }
 
 class TokenKeychainManager {
@@ -19,15 +19,15 @@ class TokenKeychainManager {
         case unknown(OSStatus)
     }
     
-    static func saveToken(service: String, token: String) throws {
+    static func saveToken(service: KeychainService, token: String) throws {
         guard let tokenData = token.data(using: .utf8) else {
             throw KeychainError.badData
         }
         
         var query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
-            kSecAttrAccount as String: KeychainConstants.account,
-            kSecAttrService as String: service
+            kSecAttrAccount as String: KeychainService.account.rawValue,
+            kSecAttrService as String: service.rawValue
         ]
         
         /// Can't insert dupes so we remove before inserting
@@ -45,11 +45,11 @@ class TokenKeychainManager {
         }
     }
     
-    static func getToken(service: String) -> String? {
+    static func getToken(service: KeychainService) -> String? {
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
-            kSecAttrAccount as String: KeychainConstants.account,
-            kSecAttrService as String: service,
+            kSecAttrAccount as String: KeychainService.account.rawValue,
+            kSecAttrService as String: service.rawValue,
             kSecMatchLimit as String: kSecMatchLimitOne,
             kSecReturnAttributes as String: true,
             kSecReturnData as String: true

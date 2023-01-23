@@ -214,10 +214,10 @@ extension APIClient: RequestInterceptor {
                     return
                 }
                 BinkPaymentsManager.shared.token = safeResponse.accessToken
-                try? TokenKeychainManager.saveToken(service: KeychainConstants.accessTokenService, token: BinkPaymentsManager.shared.token)
+                try? TokenKeychainManager.saveToken(service: .accessTokenService, token: BinkPaymentsManager.shared.token)
                 
                 BinkPaymentsManager.shared.refreshToken = safeResponse.refreshToken
-                try? TokenKeychainManager.saveToken(service: KeychainConstants.refreshTokenService, token: BinkPaymentsManager.shared.refreshToken)
+                try? TokenKeychainManager.saveToken(service: .refreshTokenService, token: BinkPaymentsManager.shared.refreshToken)
                 
                 completion(.retry)
             case .failure(let error):
