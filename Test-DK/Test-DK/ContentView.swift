@@ -42,7 +42,7 @@ struct ContentView: View {
                     }
                     
                     BinkButton(text: "Trigger Token Refresh") {
-                        viewSelection = 1
+//                        BinkPaymentsManager.shared.configure(token: "ExpiredToken", environmentKey: "1Lf7DiKgkcx5Anw7QxWdDxaKtTa", configuration: Configuration(testLoyaltyPlanID: "105", productionLoyaltyPlanID: "105", trustedCredentialType: .authorise), isDebug: true)
                     }
                     
                     NavigationLink(destination: PllStatusView(), tag: 0, selection: $viewSelection) { EmptyView() }
