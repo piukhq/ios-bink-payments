@@ -23,6 +23,18 @@ typealias ServiceCompletionResultRawResponseHandler<ObjectType: Any, ErrorType: 
 class WalletService {
     private let apiClient = APIClient()
 
+    func getLoyaltyPlan(for Id: String, completion: @escaping ServiceCompletionResultHandler<LoyaltyPlanModel?, WalletServiceError>) {
+        let request = BinkNetworkRequest(endpoint: .plan(Id: Id), method: .get, headers: nil, isUserDriven: true)
+        apiClient.performRequest(request, expecting: Safe<LoyaltyPlanModel>.self) { (result, rawResponse) in
+            switch result {
+            case .success(let response):
+                completion(.success(response.value))
+            case .failure(let error):
+                completion(.failure(.failedToGetLoyaltyPlan(error)))
+            }
+        }
+    }
+    
     func getSpreedlyToken(withRequest model: SpreedlyRequest, completion: @escaping ServiceCompletionResultHandler<SpreedlyResponse, WalletServiceError>) {
         let request = BinkNetworkRequest(endpoint: .spreedly, method: .post, headers: nil, isUserDriven: true)
         apiClient.performRequestWithBody(request, body: model, expecting: Safe<SpreedlyResponse>.self) { (result, rawResponse) in
