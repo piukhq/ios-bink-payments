@@ -12,7 +12,6 @@ struct ContentView: View {
     let viewModel = ViewModel()
     @State private var showAlert = false
     @State private var viewSelection: Int? = nil
-//    @State private var pllStatusSelection = true
     
     var body: some View {
         NavigationView {
@@ -53,13 +52,6 @@ struct ContentView: View {
                 }
                 .padding()
                 .alert("Coming Soon", isPresented: $showAlert) {}
-//                .alert(isPresented: $pllStatusSelection) {
-//                    Alert(
-//                        title: Text(""),
-//                        primaryButton: .default(Text("Loyalty")),
-//                        secondaryButton: .default(Text("Payment"))
-//                        )
-//                }
             }
         }
     }
@@ -93,10 +85,10 @@ class ViewModel {
     let paymentsManager = BinkPaymentsManager.shared
 
     init() {
-        let config = Configuration(testLoyaltyPlanID: "203", productionLoyaltyPlanID: "203", trustedCredentialType: .add)
+        let config = Configuration(testLoyaltyPlanID: "105", productionLoyaltyPlanID: "105", trustedCredentialType: .add)
         
         paymentsManager.configure(
-            token: "eyJhbGciOiJIUzUxMiIsImtpZCI6ImFjY2Vzcy1zZWNyZXQtMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEyMTk5MiwiY2hhbm5lbCI6ImNvbS5sbG95ZHMuYXBpMiIsImlzX3Rlc3RlciI6ZmFsc2UsImlzX3RydXN0ZWRfY2hhbm5lbCI6ZmFsc2UsImlhdCI6MTY3NDQ2NjY3NywiZXhwIjoxNjc0NDcwMjc3fQ.4cVWiZjCH2ISHjWV8vnpFmSNg-btsr4CFg4JdYE8RUK2hJDWXlTdUMRweaX-EiQcLCNCSErCijaBy34XExX06Q",
+            token: "eyJhbGciOiJIUzUxMiIsImtpZCI6ImFjY2Vzcy1zZWNyZXQtMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEyMTk5MiwiY2hhbm5lbCI6ImNvbS5sbG95ZHMuYXBpMiIsImlzX3Rlc3RlciI6ZmFsc2UsImlzX3RydXN0ZWRfY2hhbm5lbCI6ZmFsc2UsImlhdCI6MTY3NDQ3MTI3NiwiZXhwIjoxNjc0NDc0ODc2fQ.HmTGnDIQ7ZoiOvhAtiMAEfIK2wijgCrQZBSUawdCbWJ2kBIdzhA97ZFSYEOTp8FOl8JH1uPY6-Kcxymv-UpKVQ",
             environmentKey: "1Lf7DiKgkcx5Anw7QxWdDxaKtTa",
             configuration: config,
             isDebug: true)
