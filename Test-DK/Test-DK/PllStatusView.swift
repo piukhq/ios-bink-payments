@@ -15,7 +15,7 @@ struct PllStatusView: View {
     }
     
     @State private var statusType: PllStatusType = .loyalty
-    @ObservedObject var viewModel: PllStatusViewModel
+    @ObservedObject var viewModel = PllStatusViewModel()
     
     var body: some View {
         VStack {
@@ -99,6 +99,6 @@ struct PllStatusView: View {
 
 struct PllStatusView_Previews: PreviewProvider {
     static var previews: some View {
-        PllStatusView(viewModel: PllStatusViewModel(paymentManager: BinkPaymentsManager.shared))
+        PllStatusView()
     }
 }

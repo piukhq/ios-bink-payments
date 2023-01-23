@@ -45,7 +45,7 @@ struct ContentView: View {
                         viewSelection = 1
                     }
                     
-                    NavigationLink(destination: PllStatusView(viewModel: PllStatusViewModel(paymentManager: viewModel.paymentsManager)), tag: 0, selection: $viewSelection) { EmptyView() }
+                    NavigationLink(destination: PllStatusView(), tag: 0, selection: $viewSelection) { EmptyView() }
                     NavigationLink(destination: Text("Bello"), tag: 1, selection: $viewSelection) { EmptyView() }
                     NavigationLink(destination: Text("Yooooo"), tag: 2, selection: $viewSelection) { EmptyView() }
                     
@@ -88,7 +88,7 @@ class ViewModel {
         let config = Configuration(testLoyaltyPlanID: "105", productionLoyaltyPlanID: "105", trustedCredentialType: .add)
         
         paymentsManager.configure(
-            token: "eyJhbGciOiJIUzUxMiIsImtpZCI6ImFjY2Vzcy1zZWNyZXQtMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEyMTk5MiwiY2hhbm5lbCI6ImNvbS5sbG95ZHMuYXBpMiIsImlzX3Rlc3RlciI6ZmFsc2UsImlzX3RydXN0ZWRfY2hhbm5lbCI6ZmFsc2UsImlhdCI6MTY3NDQ3MTI3NiwiZXhwIjoxNjc0NDc0ODc2fQ.HmTGnDIQ7ZoiOvhAtiMAEfIK2wijgCrQZBSUawdCbWJ2kBIdzhA97ZFSYEOTp8FOl8JH1uPY6-Kcxymv-UpKVQ",
+            token: "eyJhbGciOiJIUzUxMiIsImtpZCI6ImFjY2Vzcy1zZWNyZXQtMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEyMTk5MiwiY2hhbm5lbCI6ImNvbS5sbG95ZHMuYXBpMiIsImlzX3Rlc3RlciI6ZmFsc2UsImlzX3RydXN0ZWRfY2hhbm5lbCI6ZmFsc2UsImlhdCI6MTY3NDQ3NTA2NSwiZXhwIjoxNjc0NDc4NjY1fQ.Mj_2MVE-WzWsVi_b7Q8cOPL6ul0e6f_EWOHG897TvhxCbAW9WYRurwsSw_tcO0a2JZjbL8d3tkk4SvcImGtX-A",
             environmentKey: "1Lf7DiKgkcx5Anw7QxWdDxaKtTa",
             configuration: config,
             isDebug: true)

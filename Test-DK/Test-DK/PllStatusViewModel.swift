@@ -10,15 +10,11 @@ import Foundation
 
 
 class PllStatusViewModel: ObservableObject {
-    private let paymentManager: BinkPaymentsManager
+    private let paymentManager = BinkPaymentsManager.shared
     
     @Published var loyaltyCardPllState: LoyaltyCardPLLState!
     @Published var paymentAccountPllState: PaymentAccountPLLState!
 
-    init(paymentManager: BinkPaymentsManager) {
-        self.paymentManager = paymentManager
-    }
-    
     func linkedPaymentCardsForLoyaltyCard() {
         let loyaltyCardId = 254957
         paymentAccountPllState = nil
