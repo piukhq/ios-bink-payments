@@ -17,7 +17,6 @@ struct ContentView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                Color.black.opacity(0.95)
                 VStack {
                     BinkButton(text: "Add Payment Card") {
                         viewModel.paymentsManager.launchScanner()
@@ -97,7 +96,7 @@ class ViewModel {
         let config = Configuration(testLoyaltyPlanID: "203", productionLoyaltyPlanID: "203", trustedCredentialType: .add)
         
         paymentsManager.configure(
-            token: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6ImFjY2Vzcy1zZWNyZXQtMiJ9.eyJzdWIiOjM4MjgzLCJjaGFubmVsIjoiY29tLmJpbmsud2FsbGV0IiwiaWF0IjoxNjUxMTUyOTU5LCJleHAiOjE2ODI2ODg5NTl9.mvcKT3eALLCOENFIWl39Zo6t5Jux8RVuMH0-nawnjNPjv5tGALlpM6-gNcPtdXEB6_ZL_uJAmaJZNT4h1V-yYw",
+            token: "eyJhbGciOiJIUzUxMiIsImtpZCI6ImFjY2Vzcy1zZWNyZXQtMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEyMTk5MiwiY2hhbm5lbCI6ImNvbS5sbG95ZHMuYXBpMiIsImlzX3Rlc3RlciI6ZmFsc2UsImlzX3RydXN0ZWRfY2hhbm5lbCI6ZmFsc2UsImlhdCI6MTY3NDQ2NjY3NywiZXhwIjoxNjc0NDcwMjc3fQ.4cVWiZjCH2ISHjWV8vnpFmSNg-btsr4CFg4JdYE8RUK2hJDWXlTdUMRweaX-EiQcLCNCSErCijaBy34XExX06Q",
             environmentKey: "1Lf7DiKgkcx5Anw7QxWdDxaKtTa",
             configuration: config,
             isDebug: true)
