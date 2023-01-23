@@ -88,7 +88,7 @@ class ViewModel {
         let config = Configuration(testLoyaltyPlanID: "105", productionLoyaltyPlanID: "105", trustedCredentialType: .add)
         
         paymentsManager.configure(
-            token: "eyJhbGciOiJIUzUxMiIsImtpZCI6ImFjY2Vzcy1zZWNyZXQtMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEyMTk5MiwiY2hhbm5lbCI6ImNvbS5sbG95ZHMuYXBpMiIsImlzX3Rlc3RlciI6ZmFsc2UsImlzX3RydXN0ZWRfY2hhbm5lbCI6ZmFsc2UsImlhdCI6MTY3NDQ3NTA2NSwiZXhwIjoxNjc0NDc4NjY1fQ.Mj_2MVE-WzWsVi_b7Q8cOPL6ul0e6f_EWOHG897TvhxCbAW9WYRurwsSw_tcO0a2JZjbL8d3tkk4SvcImGtX-A",
+            token: "eyJhbGciOiJIUzUxMiIsImtpZCI6ImFjY2Vzcy1zZWNyZXQtMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEyMTk5MiwiY2hhbm5lbCI6ImNvbS5sbG95ZHMuYXBpMiIsImlzX3Rlc3RlciI6ZmFsc2UsImlzX3RydXN0ZWRfY2hhbm5lbCI6ZmFsc2UsImlhdCI6MTY3NDQ4OTgxNywiZXhwIjoxNjc0NDkzNDE3fQ.XVM7QdFaD1vRfbmxhXqO6hadxF0qY-NFXCUKkRlyP63xlJd8XvU0OFMFkyAN7omujNsPBbbY5WhqSgEYJfKv8g",
             environmentKey: "1Lf7DiKgkcx5Anw7QxWdDxaKtTa",
             configuration: config,
             isDebug: true)

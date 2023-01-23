@@ -24,10 +24,12 @@ struct PllStatusView: View {
                 viewModel.linkedPaymentCardsForLoyaltyCard()
             }
             
-            BinkButton(text: "Pll Status for Payment Account") {
-                statusType = .payment
-                viewModel.linkedLoyaltyCardsForPaymentCard()
-            }
+            Text("Tap loyalty card to see linked payment accounts")
+            
+//            BinkButton(text: "Pll Status for Payment Account") {
+//                statusType = .payment
+//                viewModel.linkedLoyaltyCardsForPaymentCard()
+//            }
             
             Spacer()
 
