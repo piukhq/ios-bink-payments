@@ -76,7 +76,7 @@ enum WalletServiceError: BinkError {
     case failedToAddPaymentCard
     case failedToDecodeWallet
     case failedToGetWallet
-    case failedToGetLoyaltyPlans(NetworkingError)
+    case failedToGetLoyaltyPlan(NetworkingError)
     case customError(String)
     case failedToRenewToken
 
@@ -96,10 +96,10 @@ enum WalletServiceError: BinkError {
             return "Failed to get wallet"
         case .customError(let message):
             return message
-        case .failedToGetLoyaltyPlans:
-            return "Failed to get loyalty plans"
         case .failedToRenewToken:
             return "Failed to renew token"
+        case .failedToGetLoyaltyPlan:
+            return "Failed to get loyalty plan"
         }
     }
 }

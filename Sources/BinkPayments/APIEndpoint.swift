@@ -13,6 +13,8 @@ enum APIEndpoint {
     case wallet
     case renew
 
+    case plan(Id: String)
+    
     var headers: [BinkHTTPHeader] {
         var headers: [BinkHTTPHeader] = [.defaultUserAgent, .defaultContentType]
         headers.append(.defaultAccept)
@@ -86,6 +88,8 @@ enum APIEndpoint {
             return "/v2/wallet"
         case .renew:
             return "/v2/token"
+        case .plan(let Id):
+            return "/v2/loyalty_plans/\(Id)"
         }
     }
 }

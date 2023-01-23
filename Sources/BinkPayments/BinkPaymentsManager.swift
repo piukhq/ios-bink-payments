@@ -11,6 +11,7 @@ import UIKit
 public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
     public static let shared = BinkPaymentsManager()
     public var themeConfig = BinkThemeConfiguration()
+    public var loyaltyPlan: LoyaltyPlanModel?
     private let wallet = Wallet()
     var token: String!
     var refreshToken: String!
@@ -78,6 +79,16 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
         #endif
         
         wallet.fetch()
+        
+        let planID = isDebug ? configuration.testLoyaltyPlanID : configuration.productionLoyaltyPlanID
+        wallet.getLoyaltyPlan(for: planID) { result in
+            switch result {
+            case .success(let loyaltyPlan):
+                self.loyaltyPlan = loyaltyPlan
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
     }
     
     public func launchScanner(fullScreen: Bool = false) {
