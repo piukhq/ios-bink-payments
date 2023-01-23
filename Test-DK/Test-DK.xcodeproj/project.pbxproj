@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		CE39BDA8297E9D4C00FC5CEA /* LoyaltyCardsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE39BDA7297E9D4C00FC5CEA /* LoyaltyCardsView.swift */; };
+		CE39BDA8297E9D4C00FC5CEA /* PaymentAccountsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE39BDA7297E9D4C00FC5CEA /* PaymentAccountsView.swift */; };
 		CE39BDAA297E9D6F00FC5CEA /* PllStatusViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE39BDA9297E9D6F00FC5CEA /* PllStatusViewModel.swift */; };
 		CE8D07D6297865E0009E023A /* PllStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8D07D5297865E0009E023A /* PllStatusView.swift */; };
 		CEDDDFD729771068008734F4 /* Test_DKApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDDDFD629771068008734F4 /* Test_DKApp.swift */; };
@@ -18,7 +18,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		CE39BDA7297E9D4C00FC5CEA /* LoyaltyCardsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoyaltyCardsView.swift; sourceTree = "<group>"; };
+		CE39BDA7297E9D4C00FC5CEA /* PaymentAccountsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentAccountsView.swift; sourceTree = "<group>"; };
 		CE39BDA9297E9D6F00FC5CEA /* PllStatusViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PllStatusViewModel.swift; sourceTree = "<group>"; };
 		CE8D07D5297865E0009E023A /* PllStatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PllStatusView.swift; sourceTree = "<group>"; };
 		CEDDDFD329771068008734F4 /* Test-DK.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Test-DK.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -63,7 +63,7 @@
 				CEDDDFD829771068008734F4 /* ContentView.swift */,
 				CE8D07D5297865E0009E023A /* PllStatusView.swift */,
 				CE39BDA9297E9D6F00FC5CEA /* PllStatusViewModel.swift */,
-				CE39BDA7297E9D4C00FC5CEA /* LoyaltyCardsView.swift */,
+				CE39BDA7297E9D4C00FC5CEA /* PaymentAccountsView.swift */,
 				CEDDDFDA2977106B008734F4 /* Assets.xcassets */,
 				CEDDDFDC2977106B008734F4 /* Preview Content */,
 			);
@@ -157,7 +157,7 @@
 				CEDDDFD929771068008734F4 /* ContentView.swift in Sources */,
 				CE8D07D6297865E0009E023A /* PllStatusView.swift in Sources */,
 				CEDDDFD729771068008734F4 /* Test_DKApp.swift in Sources */,
-				CE39BDA8297E9D4C00FC5CEA /* LoyaltyCardsView.swift in Sources */,
+				CE39BDA8297E9D4C00FC5CEA /* PaymentAccountsView.swift in Sources */,
 				CE39BDAA297E9D6F00FC5CEA /* PllStatusViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
