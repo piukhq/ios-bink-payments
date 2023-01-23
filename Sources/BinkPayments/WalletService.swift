@@ -28,10 +28,7 @@ class WalletService {
         apiClient.performRequest(request, expecting: Safe<LoyaltyPlanModel>.self) { (result, rawResponse) in
             switch result {
             case .success(let response):
-                let safeResponse = response.value
-//                let safeResponse = response.compactMap { $0.value }
-                
-                completion(.success(safeResponse))
+                completion(.success(response.value))
             case .failure(let error):
                 completion(.failure(.failedToGetLoyaltyPlan(error)))
             }
