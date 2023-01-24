@@ -13,7 +13,7 @@ struct ContentView: View {
     @State private var showAlert = false
     @State private var showTriggerTokenRefreshAlert = false
     @State private var showTokenRefreshSuccessAlert = false
-    @State private var viewSelection: Int? = nil
+//    @State private var viewSelection: Int? = nil
     
     var body: some View {
         NavigationView {
@@ -28,29 +28,33 @@ struct ContentView: View {
                     }
                     
                     BinkButton(text: "Set Loyalty Card") {
-                        viewSelection = 2
-                    }
-                    
-                    BinkButton(text: "Replace Loyalty Card") {
-                        
-                    }
-                    
-                    BinkButton(text: "Show Loyalty Card") {
                         showAlert = true
                     }
-                    
-                    BinkButton(text: "Am I PLL Linked?") {
-                        viewSelection = 0
+
+                    NavigationLink {
+                        LoyaltyCardView()
+                    } label: {
+                        NavigationLinkView(text: "Replace Loyalty Card")
                     }
+                    .padding(.bottom, -1)
+
+                    NavigationLink {
+                        LoyaltyCardView()
+                    } label: {
+                        NavigationLinkView(text: "Show Loyalty Card")
+                    }
+                    .padding(.bottom, -1)
+    
+                    NavigationLink {
+                        PllStatusView()
+                    } label: {
+                        NavigationLinkView(text: "Am I PLL Linked?")
+                    }
+                    .padding(.bottom, -1)
                     
                     BinkButton(text: "Trigger Token Refresh") {
                         showTriggerTokenRefreshAlert = true
                     }
-                    
-                    NavigationLink(destination: PllStatusView(), tag: 0, selection: $viewSelection) { EmptyView() }
-                    NavigationLink(destination: Text("Bello"), tag: 1, selection: $viewSelection) { EmptyView() }
-                    NavigationLink(destination: Text("Yooooo"), tag: 2, selection: $viewSelection) { EmptyView() }
-                    
                 }
                 .padding()
                 
@@ -68,6 +72,7 @@ struct ContentView: View {
                 }
             }
         }
+        .navigationTitle("SEAN")
     }
 }
 
@@ -77,13 +82,28 @@ struct ContentView_Previews: PreviewProvider {
     }
 }
 
+struct NavigationLinkView: View {
+    var text: String
+    
+    var body: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 8)
+                .foregroundColor(.pink)
+                .frame(height: 50)
+                .padding(0)
+            Text(text)
+                .foregroundColor(.white)
+        }
+    }
+}
+
 struct BinkButton: View {
     var text: String
-    var action: () -> ()
+    var action: (() -> ())?
     
     var body: some View {
         Button {
-            action()
+            action?()
         } label: {
             Text(text)
                 .frame(minWidth: 0, maxWidth: .infinity)
