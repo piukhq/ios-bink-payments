@@ -38,7 +38,7 @@ class APIClient {
                 completion?(.failure(.invalidRequest), nil)
                 return
             }
-            session.request(validatedRequest.requestUrl, method: request.method, headers: validatedRequest.headers).cacheResponse(using: ResponseCacher.doNotCache).response { [weak self] response in
+            session.request(validatedRequest.requestUrl, method: request.method, headers: validatedRequest.headers, interceptor: self).validate().cacheResponse(using: ResponseCacher.doNotCache).response { [weak self] response in
                 self?.handleResponse(response, endpoint: request.endpoint, expecting: responseType, isUserDriven: request.isUserDriven, completion: completion)
             }
         }
@@ -54,7 +54,7 @@ class APIClient {
                 completion?(.failure(.invalidRequest), nil)
                 return
             }
-            session.request(validatedRequest.requestUrl, method: request.method, parameters: body, encoder: JSONParameterEncoder.default, headers: validatedRequest.headers).cacheResponse(using: ResponseCacher.doNotCache).response { [weak self] response in
+            session.request(validatedRequest.requestUrl, method: request.method, parameters: body, encoder: JSONParameterEncoder.default, headers: validatedRequest.headers, interceptor: self).validate().cacheResponse(using: ResponseCacher.doNotCache).response { [weak self] response in
                 self?.handleResponse(response, endpoint: request.endpoint, expecting: responseType, isUserDriven: request.isUserDriven, completion: completion)
             }
         }
@@ -174,6 +174,55 @@ private extension APIClient {
             }
         } catch {
             completion?(.failure(.decodingError), networkResponseData)
+        }
+    }
+}
+
+extension APIClient: RequestInterceptor {
+    func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Result<URLRequest, Error>) -> Void) {
+        var urlRequest = urlRequest
+
+        guard urlRequest.url?.absoluteString.hasPrefix("https://core.spreedly.com") == false else {
+            /// spreedly does not require auth
+            return completion(.success(urlRequest))
+        }
+
+        guard urlRequest.url?.absoluteString.contains("token") == false else {
+            urlRequest.setValue("bearer " + BinkPaymentsManager.shared.refreshToken, forHTTPHeaderField: "Authorization")
+            return completion(.success(urlRequest))
+        }
+
+        /// default auth header
+        urlRequest.setValue("bearer " + BinkPaymentsManager.shared.token, forHTTPHeaderField: "Authorization")
+
+        completion(.success(urlRequest))
+    }
+
+    func retry(_ request: Request, for session: Session, dueTo error: Error, completion: @escaping (RetryResult) -> Void) {
+        guard let response = request.task?.response as? HTTPURLResponse, (response.statusCode == 401) else {
+            /// was not 401 so bail out
+            return completion(.doNotRetryWithError(error))
+        }
+
+        let model = RenewTokenRequestModel(grantType: "refresh_token", scope: ["user"])
+        let binkRequest = BinkNetworkRequest(endpoint: .renew, method: .post, headers: [.defaultContentType], isUserDriven: false)
+        self.performRequestWithBody(binkRequest, body: model, expecting: Safe<RenewTokenResponse>.self) { (result, rawResponse) in
+            switch result {
+            case .success(let response):
+                guard let safeResponse = response.value else {
+                    completion(.doNotRetry)
+                    return
+                }
+                BinkPaymentsManager.shared.token = safeResponse.accessToken
+                try? TokenKeychainManager.saveToken(service: .accessTokenService, token: BinkPaymentsManager.shared.token)
+                
+                BinkPaymentsManager.shared.refreshToken = safeResponse.refreshToken
+                try? TokenKeychainManager.saveToken(service: .refreshTokenService, token: BinkPaymentsManager.shared.refreshToken)
+                
+                completion(.retry)
+            case .failure(let error):
+                completion(.doNotRetryWithError(error))
+            }
         }
     }
 }

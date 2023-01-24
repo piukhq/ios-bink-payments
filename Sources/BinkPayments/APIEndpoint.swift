@@ -11,6 +11,8 @@ enum APIEndpoint {
     case createPaymentAccount
     case spreedly
     case wallet
+    case renew
+
     case plan(Id: String)
     
     var headers: [BinkHTTPHeader] {
@@ -84,6 +86,8 @@ enum APIEndpoint {
             return "https://core.spreedly.com/v1/payment_methods?environment_key=\(BinkPaymentsManager.shared.environmentKey ?? "")"
         case .wallet:
             return "/v2/wallet"
+        case .renew:
+            return "/v2/token"
         case .plan(let Id):
             return "/v2/loyalty_plans/\(Id)"
         }

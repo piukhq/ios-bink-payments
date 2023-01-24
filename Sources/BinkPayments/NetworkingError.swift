@@ -78,7 +78,8 @@ enum WalletServiceError: BinkError {
     case failedToGetWallet
     case failedToGetLoyaltyPlan(NetworkingError)
     case customError(String)
-    
+    case failedToRenewToken
+
     var domain: BinkErrorDomain {
         return .walletService
     }
@@ -95,6 +96,8 @@ enum WalletServiceError: BinkError {
             return "Failed to get wallet"
         case .customError(let message):
             return message
+        case .failedToRenewToken:
+            return "Failed to renew token"
         case .failedToGetLoyaltyPlan:
             return "Failed to get loyalty plan"
         }
