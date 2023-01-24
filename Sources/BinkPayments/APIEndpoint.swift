@@ -12,8 +12,8 @@ enum APIEndpoint {
     case spreedly
     case wallet
     case renew
-
     case plan(Id: String)
+    case loyaltyCardAddTrusted
     
     var headers: [BinkHTTPHeader] {
         var headers: [BinkHTTPHeader] = [.defaultUserAgent, .defaultContentType]
@@ -90,6 +90,8 @@ enum APIEndpoint {
             return "/v2/token"
         case .plan(let Id):
             return "/v2/loyalty_plans/\(Id)"
+        case .loyaltyCardAddTrusted:
+            return "/v2/loyalty_cards/add_trusted"
         }
     }
 }

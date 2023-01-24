@@ -48,6 +48,6 @@ struct MerchantFields: Codable {
     }
 }
 
-struct LoyaltyCardtTrustedResponseModel: Codable {
+struct LoyaltyCardTrustedResponseModel: Codable {
     let id: Int
 }
