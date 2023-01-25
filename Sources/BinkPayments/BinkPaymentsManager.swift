@@ -168,8 +168,8 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
     }
     
     public func replace(loyaltyIdentity: String, completion: (() -> Void)? = nil) {
-        guard !loyaltyIdentity.isEmpty else {return}        
-        guard let loyaltyCardId = wallet.loyaltyCard?.apiId else {return}
+        guard !loyaltyIdentity.isEmpty else { return }
+        guard let loyaltyCardId = wallet.loyaltyCard?.apiId else { return }
         
         let model = LoyaltyCardUpdateTrustedRequestModel(account: Account(authoriseFields: AuthoriseFields(credentials: [Credential(credentialSlug: "email", value: email)]), merchantFields: MerchantFields(accountID: loyaltyIdentity)))
         wallet.updateLoyaltyCardTrusted(forLoyaltyCardId: loyaltyCardId, model: model) { [weak self] result, _ in
