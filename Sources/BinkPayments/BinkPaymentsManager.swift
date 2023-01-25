@@ -94,7 +94,15 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
             }
         }
         
-        self.setLoyaltyCard(loyaltyID: "trusted_tested")
+        self.setLoyaltyCard(loyaltyID: "trusted_tested") { [weak self] result in
+            self?.wallet.fetch()
+        }
+    }
+    
+    public func fetchWallet(completion: (() -> Void)? = nil) {
+        wallet.fetch() {
+            completion?()
+        }
     }
     
     public func launchScanner(fullScreen: Bool = false) {
@@ -151,14 +159,15 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
         return pllState
     }
     
-    public func setLoyaltyCard(loyaltyID: String) {
+    public func setLoyaltyCard(loyaltyID: String, completion: ((Int) -> Void)? = nil) {
         /// testing adding a card
         let model = LoyaltyCardAddTrustedRequestModel(loyaltyPlanID: Int(planID) ?? 0, account: Account(authoriseFields: AuthoriseFields(credentials: [Credential(credentialSlug: "email", value: email)]), merchantFields: MerchantFields(accountID: loyaltyID)))
-        wallet.addLoyaltyCardTrusted(withRequestModel: model) { [weak self] result, _  in
+        wallet.addLoyaltyCardTrusted(withRequestModel: model) { result, _  in
             switch result {
             case .success(let response):
-                print(response)
-                self?.wallet.fetch()
+                //print(response)
+                //self?.wallet.fetch()
+                completion?(response.id)
             case .failure(let error):
                 print(error.localizedDescription)
             }
