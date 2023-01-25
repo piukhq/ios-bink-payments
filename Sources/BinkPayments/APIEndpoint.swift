@@ -14,6 +14,7 @@ enum APIEndpoint {
     case renew
     case plan(Id: String)
     case loyaltyCardAddTrusted
+    case loyaltyCardUpdateTrusted(id: String)
     
     var headers: [BinkHTTPHeader] {
         var headers: [BinkHTTPHeader] = [.defaultUserAgent, .defaultContentType]
@@ -47,7 +48,7 @@ enum APIEndpoint {
     }
     
     var allowedMethods: [HTTPMethod] {
-        return [.get,.post]
+        return [.get, .post, .put]
     }
     
     private var authRequired: Bool {
@@ -92,6 +93,8 @@ enum APIEndpoint {
             return "/v2/loyalty_plans/\(Id)"
         case .loyaltyCardAddTrusted:
             return "/v2/loyalty_cards/add_trusted"
+        case .loyaltyCardUpdateTrusted(let id):
+            return "/v2/loyalty_cards/\(id)/add_trusted"
         }
     }
 }
