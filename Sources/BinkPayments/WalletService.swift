@@ -74,12 +74,28 @@ class WalletService {
             switch result {
             case .success(let response):
                 guard let safeResponse = response.value else {
-                    completion(.failure(.customError("Failed to decode loyalty card id")), rawResponse)
+                    completion(.failure(.customError("Failed to decode response for added loyalty card")), rawResponse)
                     return
                 }
                 completion(.success(safeResponse), rawResponse)
             case .failure:
                 completion(.failure(.failedToAddLoyaltyTrusted), rawResponse)
+            }
+        }
+    }
+    
+    func updateLoyaltyCardTrusted(forLoyaltyCardId id: Int, model: LoyaltyCardUpdateTrustedRequestModel, completion: @escaping ServiceCompletionResultRawResponseHandler<LoyaltyCardTrustedResponseModel, WalletServiceError>) {
+        let binkNetworkRequest = BinkNetworkRequest(endpoint: .loyaltyCardUpdateTrusted(id: String(id)), method: .put, headers: nil, isUserDriven: true)
+        apiClient.performRequestWithBody(binkNetworkRequest, body: model, expecting: Safe<LoyaltyCardTrustedResponseModel>.self) { (result, rawResponse) in
+            switch result {
+            case .success(let response):
+                guard let safeResponse = response.value else {
+                    completion(.failure(.customError("Failed to decode response for updated loyalty card")), rawResponse)
+                    return
+                }
+                completion(.success(safeResponse), rawResponse)
+            case .failure:
+                completion(.failure(.failedToUpdateLoyaltyTrusted), rawResponse)
             }
         }
     }

@@ -17,6 +17,10 @@ struct LoyaltyCardAddTrustedRequestModel: Codable {
     }
 }
 
+struct LoyaltyCardUpdateTrustedRequestModel: Codable {
+    let account: Account
+}
+
 struct Account: Codable {
     let authoriseFields: AuthoriseFields
     let merchantFields: MerchantFields
