@@ -24,7 +24,7 @@ class AddPaymentCardViewController: UIViewController {
         static let buttonHeight: CGFloat = 50
         static let bottomPadding: CGFloat = 16
         static let bottomSafePadding: CGFloat = {
-            let window = UIApplication.shared.connectedScenes.flatMap { ($0 as? UIWindowScene)?.windows ?? [] }.first { $0.isKeyWindow }
+            let window = UIApplication.shared.getKeyWindow
             let safeAreaBottom = window?.safeAreaInsets.bottom ?? 0
             return bottomPadding + safeAreaBottom
         }()
@@ -62,8 +62,14 @@ class AddPaymentCardViewController: UIViewController {
         button.backgroundColor = .systemPink
         button.setTitle("Add Card", for: .normal)
         button.layer.cornerRadius = Constants.buttonCornerRadius
-        button.layer.cornerCurve = .continuous
-        button.tintColor = .label
+        if #available(iOS 13.0, *) {
+            button.layer.cornerCurve = .continuous
+        }
+        if #available(iOS 13.0, *) {
+            button.tintColor = .white
+        } else {
+            button.tintColor = .white
+        }
         button.isEnabled = false
         button.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
         view.addSubview(button)
@@ -71,7 +77,7 @@ class AddPaymentCardViewController: UIViewController {
     }()
     
     private lazy var cancelButton: UIBarButtonItem = {
-        let image = UIImage(named: "close", in: .module, with: nil)
+        let image = UIImage(named: "close", in: .module, compatibleWith: nil)
         let button = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(close))
         return button
     }()
@@ -88,7 +94,7 @@ class AddPaymentCardViewController: UIViewController {
         return layout
     }()
     
-    private var subscriptions = Set<AnyCancellable>()
+    //private var subscriptions = Set<AnyCancellable>()
     private var hasSetupCell = false
     private var selectedCellYOrigin: CGFloat = 0.0
     private var selectedCellHeight: CGFloat = 0.0
@@ -107,10 +113,12 @@ class AddPaymentCardViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         configureLayout()
         configureTheme()
-        configureSubscribers()
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        
+        viewModel.initialSetup(formDelegate: self)
         
         let switchView = BinkSwitchView(themeConfig: themeConfig, text: "Switch me please")
         stackScrollView.add(arrangedSubview: switchView)
@@ -126,28 +134,6 @@ class AddPaymentCardViewController: UIViewController {
         let label = UILabel()
         label.attributedText = attributedText
         navigationItem.titleView = label
-    }
-    
-    private func configureSubscribers() {
-        viewModel.$paymentCard
-            .sink() { [weak self] in
-                self?.card.configureWithAddViewModel($0)
-            }
-            .store(in: &subscriptions)
-        
-        viewModel.$fullFormIsValid
-            .sink() { [weak self] in
-                self?.addButton.isEnabled = $0
-                self?.collectionView.collectionViewLayout.invalidateLayout()
-                self?.stackScrollView.contentInset.bottom = Constants.bottomInset
-            }
-            .store(in: &subscriptions)
-        
-        viewModel.$refreshForm
-            .sink() { [weak self] _ in
-                self?.collectionView.reloadData()
-            }
-            .store(in: &subscriptions)
     }
     
     private func configureLayout() {
@@ -246,10 +232,13 @@ extension AddPaymentCardViewController: FormCollectionViewCellDelegate {
     }
     
     func formCollectionViewCellDidReceivePaymentScannerButtonTap(_ cell: FormCollectionViewCell) {
-        BinkPaymentsManager.shared.launchScanner(delegate: self)
+        if #available(iOS 13.0, *) {
+            BinkPaymentsManager.shared.launchScanner(delegate: self)
+        }
     }
 }
 
+@available(iOS 13.0, *)
 extension AddPaymentCardViewController: BinkScannerViewControllerDelegate {
     func binkScannerViewControllerShouldEnterManually(_ viewController: BinkPayments.BinkScannerViewController, completion: (() -> Void)?) {
         dismiss(animated: true)
@@ -263,5 +252,21 @@ extension AddPaymentCardViewController: BinkScannerViewControllerDelegate {
             self?.viewModel.paymentCard = paymentCard
             self?.viewModel.refreshDataSource()
         }
+    }
+}
+
+extension AddPaymentCardViewController: PaymentCardFormDelegate {
+    func updateOnCardChanges(paymentCard: PaymentAccountCreateModel) {
+        card.configureWithAddViewModel(paymentCard)
+    }
+    
+    func updatedOnFormValidation(valid: Bool) {
+        addButton.isEnabled = valid
+        collectionView.collectionViewLayout.invalidateLayout()
+        stackScrollView.contentInset.bottom = Constants.bottomInset
+    }
+    
+    func refreshForm() {
+        collectionView.reloadData()
     }
 }

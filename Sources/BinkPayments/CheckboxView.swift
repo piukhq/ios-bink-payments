@@ -62,7 +62,7 @@ class CheckboxView: CustomView {
     private func configureCheckboxButton(forState checked: Bool, animated: Bool = true) {
         let animationBlock = {
             self.checkboxButton.backgroundColor = checked ? self.themeConfig.primaryColor : self.themeConfig.fieldBackgroundColor
-            self.checkboxButton.setImage(checked ? UIImage(systemName: "checkmark") : nil, for: .normal)
+            self.checkboxButton.setImage(checked ? UIImage(named: "checkmark", in: .module, compatibleWith: nil) : nil, for: .normal)
             self.checkboxButton.layer.borderColor = checked ? nil : self.themeConfig.fieldBorderColor.cgColor
             self.checkboxButton.layer.borderWidth = checked ? 0 : 2
         }

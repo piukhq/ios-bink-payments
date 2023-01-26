@@ -86,7 +86,7 @@ class FormCollectionViewCell: UICollectionViewCell {
     /// Camera icon
     lazy var textFieldRightView: UIView = {
         let cameraButton = UIButton(type: .custom)
-        cameraButton.setImage(UIImage(named: "scanIcon", in: .module, with: nil), for: .normal)
+        cameraButton.setImage(UIImage(named: "scanIcon", in: .module, compatibleWith: nil), for: .normal)
         cameraButton.imageView?.contentMode = .scaleAspectFill
         cameraButton.addTarget(self, action: .handleScanButtonTap, for: .touchUpInside)
         cameraButton.translatesAutoresizingMaskIntoConstraints = false

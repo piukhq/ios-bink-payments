@@ -140,11 +140,11 @@ public extension Collection {
 
 extension UIColor {
     convenience init(hexString: String, alpha: CGFloat = 1.0) {
-        let hexString: String = hexString.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
-        let scanner = Scanner(string: hexString)
+        var hexString: String = hexString.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
         if hexString.hasPrefix("#") {
-            //scanner.currentIndex = hexString.index(hexString.startIndex, offsetBy: 1)
+            hexString.removeFirst()
         }
+        let scanner = Scanner(string: hexString)
         var color: UInt64 = 0
         scanner.scanHexInt64(&color)
         let mask = 0x000000FF

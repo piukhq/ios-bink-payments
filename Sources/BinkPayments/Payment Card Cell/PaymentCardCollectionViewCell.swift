@@ -106,16 +106,9 @@ class PaymentCardCollectionViewCell: UICollectionViewCell, UIGestureRecognizerDe
             return
         }
 
-        if #available(iOS 13.0, *) {
-            providerLogoImageView.image = UIImage(named: type.logoName, in: .module, with: nil)
-        } else {
-            providerLogoImageView.image = UIImage(named: type.logoName)
-        }
-        if #available(iOS 13.0, *) {
-            providerWatermarkImageView.image = UIImage(named: type.sublogoName, in: .module, with: nil)
-        } else {
-            providerWatermarkImageView.image = UIImage(named: type.sublogoName)
-        }
+        providerLogoImageView.image = UIImage(named: type.logoName, in: .module, compatibleWith: nil)
+        providerWatermarkImageView.image = UIImage(named: type.sublogoName, in: .module, compatibleWith: nil)
+        
         processGradient(type: type)
     }
     
