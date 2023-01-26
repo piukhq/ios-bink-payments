@@ -24,6 +24,7 @@
 		CE39BDA9297E9D6F00FC5CEA /* PllStatusViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PllStatusViewModel.swift; sourceTree = "<group>"; };
 		CE689234297FF3C50051CD33 /* ContentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewModel.swift; sourceTree = "<group>"; };
 		CE881CE9298037000060D94A /* LoyaltyCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoyaltyCardView.swift; sourceTree = "<group>"; };
+		CE881CEB2982E2B80060D94A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		CE8D07D5297865E0009E023A /* PllStatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PllStatusView.swift; sourceTree = "<group>"; };
 		CEDDDFD329771068008734F4 /* Test-DK.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Test-DK.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEDDDFD629771068008734F4 /* Test_DKApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Test_DKApp.swift; sourceTree = "<group>"; };
@@ -63,6 +64,7 @@
 		CEDDDFD529771068008734F4 /* Test-DK */ = {
 			isa = PBXGroup;
 			children = (
+				CE881CEB2982E2B80060D94A /* Info.plist */,
 				CEDDDFD629771068008734F4 /* Test_DKApp.swift */,
 				CEDDDFD829771068008734F4 /* ContentView.swift */,
 				CE881CE9298037000060D94A /* LoyaltyCardView.swift */,
@@ -292,14 +294,17 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "Apple Distribution: Loyalty Angels Ltd (HC34M8YE55)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Distribution: Loyalty Angels Ltd (HC34M8YE55)";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_ASSET_PATHS = "\"Test-DK/Preview Content\"";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = HC34M8YE55;
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = HC34M8YE55;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Test-DK/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Bink-SDK";
 				INFOPLIST_KEY_NSCameraUsageDescription = "\"We would like access to your camera so you can scan your payment card\"";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -313,8 +318,8 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bink.sdk.testing;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "match Development com.bink.sdk.testing";
+				PROVISIONING_PROFILE_SPECIFIER = "match AppStore com.bink.sdk.testing";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "match AppStore com.bink.sdk.testing";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -326,14 +331,17 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "Apple Distribution: Loyalty Angels Ltd (HC34M8YE55)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Distribution: Loyalty Angels Ltd (HC34M8YE55)";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_ASSET_PATHS = "\"Test-DK/Preview Content\"";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = HC34M8YE55;
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = HC34M8YE55;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Test-DK/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Bink-SDK";
 				INFOPLIST_KEY_NSCameraUsageDescription = "\"We would like access to your camera so you can scan your payment card\"";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -347,8 +355,8 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bink.sdk.testing;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "match Development com.bink.sdk.testing";
+				PROVISIONING_PROFILE_SPECIFIER = "match AppStore com.bink.sdk.testing";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "match AppStore com.bink.sdk.testing";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
