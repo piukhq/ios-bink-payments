@@ -30,7 +30,9 @@ class PaymentCardCollectionViewCell: UICollectionViewCell, UIGestureRecognizerDe
         configureForProvider(cardType: viewModel.cardType)
         setLabelStyling()
         layer.cornerRadius = 5
-        layer.cornerCurve = .continuous
+        if #available(iOS 13.0, *) {
+            layer.cornerCurve = .continuous
+        }
     }
     
     private func cardNumberAttributedString(for incompletePan: String, type: PaymentCardType?) -> NSAttributedString? {
@@ -104,8 +106,16 @@ class PaymentCardCollectionViewCell: UICollectionViewCell, UIGestureRecognizerDe
             return
         }
 
-        providerLogoImageView.image = UIImage(named: type.logoName, in: .module, with: nil)
-        providerWatermarkImageView.image = UIImage(named: type.sublogoName, in: .module, with: nil)
+        if #available(iOS 13.0, *) {
+            providerLogoImageView.image = UIImage(named: type.logoName, in: .module, with: nil)
+        } else {
+            providerLogoImageView.image = UIImage(named: type.logoName)
+        }
+        if #available(iOS 13.0, *) {
+            providerWatermarkImageView.image = UIImage(named: type.sublogoName, in: .module, with: nil)
+        } else {
+            providerWatermarkImageView.image = UIImage(named: type.sublogoName)
+        }
         processGradient(type: type)
     }
     

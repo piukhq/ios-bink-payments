@@ -91,7 +91,7 @@ public extension UICollectionView {
 
 extension UIViewController {
     static public func topMostViewController() -> UIViewController? {
-        let window = UIApplication.shared.connectedScenes.flatMap { ($0 as? UIWindowScene)?.windows ?? [] }.first { $0.isKeyWindow }
+        let window = UIApplication.shared.getKeyWindow
         if var topController = window?.rootViewController {
             while let presentedViewController = topController.presentedViewController {
                 topController = presentedViewController
@@ -143,7 +143,7 @@ extension UIColor {
         let hexString: String = hexString.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
         let scanner = Scanner(string: hexString)
         if hexString.hasPrefix("#") {
-            scanner.currentIndex = hexString.index(hexString.startIndex, offsetBy: 1)
+            //scanner.currentIndex = hexString.index(hexString.startIndex, offsetBy: 1)
         }
         var color: UInt64 = 0
         scanner.scanHexInt64(&color)
@@ -177,4 +177,18 @@ extension UIColor {
     static let unknownPaymentCardGradients: [CGColor] = [UIColor.systemBlue.cgColor, UIColor.systemPink.cgColor]
     
     static let okGreen = UIColor(hexString: "50A7AB")
+}
+
+extension UIApplication {
+    var getKeyWindow: UIWindow? {
+        get {
+            if #available(iOS 13, *) {
+                return connectedScenes
+                    .flatMap { ($0 as? UIWindowScene)?.windows ?? [] }
+                    .first { $0.isKeyWindow }
+            } else {
+                return windows.first { $0.isKeyWindow }
+            }
+        }
+    }
 }

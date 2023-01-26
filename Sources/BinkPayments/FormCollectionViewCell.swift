@@ -41,7 +41,9 @@ class FormCollectionViewCell: UICollectionViewCell {
         let stackView = UIStackView(arrangedSubviews: [textFieldHStack])
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
-        stackView.layer.cornerCurve = .continuous
+        if #available(iOS 13.0, *) {
+            stackView.layer.cornerCurve = .continuous
+        }
         stackView.layer.cornerRadius = Constants.cornerRadius
         stackView.clipsToBounds = true
         let gestureRecognizer = UITapGestureRecognizer(target: self, action: .handleCellTap)
@@ -97,7 +99,9 @@ class FormCollectionViewCell: UICollectionViewCell {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.layer.cornerRadius = Constants.cornerRadius
-        view.layer.cornerCurve = .continuous
+        if #available(iOS 13.0, *) {
+            view.layer.cornerCurve = .continuous
+        }
         view.addSubview(underlineView)
         view.clipsToBounds = true
         return view

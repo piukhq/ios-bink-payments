@@ -150,6 +150,7 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
     
     // MARK: - Private & Internal Methods
     
+    @available(iOS 13.0, *)
     func launchScanner(delegate: BinkScannerViewControllerDelegate) {
         let binkScannerViewController = BinkScannerViewController(themeConfig: themeConfig, visionUtility: VisionUtility())
         binkScannerViewController.delegate = delegate
@@ -172,26 +173,16 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
             navigationController.navigationBar.standardAppearance.backgroundColor = themeConfig.primaryColor.withAlphaComponent(themeConfig.navigationBarBackgroundAlpha)
             navigationController.navigationBar.scrollEdgeAppearance?.backgroundEffect = themeConfig.navigationBarBackgroundEffect
             navigationController.navigationBar.scrollEdgeAppearance?.backgroundColor = themeConfig.primaryColor.withAlphaComponent(themeConfig.navigationBarBackgroundAlpha)
-        } else {
-            UINavigationBar.appearance().backIndicatorImage = themeConfig.backIndicatorImage
-            UINavigationBar.appearance().backIndicatorTransitionMaskImage = themeConfig.backIndicatorImage
-            UIBarButtonItem.appearance().setTitleTextAttributes([.font: themeConfig.navigationBackButtonTitleFont, .foregroundColor: themeConfig.navigationBarTintColor],
-                for: .normal)
             
-            navigationController.navigationBar.tintColor = themeConfig.navigationBarTintColor
-            navigationController.navigationBar.backgroundColor = themeConfig.primaryColor.withAlphaComponent(themeConfig.navigationBarBackgroundAlpha)
-            
-
+            currentViewController?.present(navigationController, animated: true)
         }
-        
-
-        currentViewController?.present(navigationController, animated: true)
     }
 }
 
 
 // MARK: - Extensions
 
+@available(iOS 13.0, *)
 extension BinkPaymentsManager: BinkScannerViewControllerDelegate {
     func binkScannerViewControllerShouldEnterManually(_ viewController: BinkScannerViewController, completion: (() -> Void)?) {
         launchAddPaymentCardScreen()
