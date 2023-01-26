@@ -92,15 +92,17 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
     }
     
     public func launchScanner(fullScreen: Bool = false) {
-        let binkScannerViewController = BinkScannerViewController(themeConfig: themeConfig, visionUtility: VisionUtility())
-        binkScannerViewController.delegate = self
-        let navigationController = UINavigationController(rootViewController: binkScannerViewController)
+        if #available(iOS 13, *) {
+            let binkScannerViewController = BinkScannerViewController(themeConfig: themeConfig, visionUtility: VisionUtility())
+            binkScannerViewController.delegate = self
+            let navigationController = UINavigationController(rootViewController: binkScannerViewController)
 
-        if fullScreen {
-            navigationController.modalPresentationStyle = .fullScreen
+            if fullScreen {
+                navigationController.modalPresentationStyle = .fullScreen
+            }
+            
+            configureScannerViewController(with: navigationController)
         }
-        
-        configureScannerViewController(with: navigationController)
     }
     
     public func launchDebugScreen(paymentCard: PaymentAccountCreateModel) {
@@ -156,19 +158,32 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
     }
     
     private func configureScannerViewController(with navigationController: UINavigationController) {
-        let appearance = UINavigationBarAppearance()
-        appearance.configureWithOpaqueBackground()
-        appearance.setBackIndicatorImage(themeConfig.backIndicatorImage, transitionMaskImage: themeConfig.backIndicatorImage)
-        appearance.buttonAppearance.normal.titleTextAttributes = [.font: themeConfig.navigationBackButtonTitleFont, .foregroundColor: themeConfig.navigationBarTintColor]
+        if #available(iOS 13, *) {
+            let appearance = UINavigationBarAppearance()
+            appearance.configureWithOpaqueBackground()
+            appearance.setBackIndicatorImage(themeConfig.backIndicatorImage, transitionMaskImage: themeConfig.backIndicatorImage)
+            appearance.buttonAppearance.normal.titleTextAttributes = [.font: themeConfig.navigationBackButtonTitleFont, .foregroundColor: themeConfig.navigationBarTintColor]
 
-        navigationController.navigationBar.tintColor = themeConfig.navigationBarTintColor
-        navigationController.navigationBar.standardAppearance = appearance
-        navigationController.navigationBar.scrollEdgeAppearance = appearance
+            navigationController.navigationBar.tintColor = themeConfig.navigationBarTintColor
+            navigationController.navigationBar.standardAppearance = appearance
+            navigationController.navigationBar.scrollEdgeAppearance = appearance
 
-        navigationController.navigationBar.standardAppearance.backgroundEffect = themeConfig.navigationBarBackgroundEffect
-        navigationController.navigationBar.standardAppearance.backgroundColor = themeConfig.primaryColor.withAlphaComponent(themeConfig.navigationBarBackgroundAlpha)
-        navigationController.navigationBar.scrollEdgeAppearance?.backgroundEffect = themeConfig.navigationBarBackgroundEffect
-        navigationController.navigationBar.scrollEdgeAppearance?.backgroundColor = themeConfig.primaryColor.withAlphaComponent(themeConfig.navigationBarBackgroundAlpha)
+            navigationController.navigationBar.standardAppearance.backgroundEffect = themeConfig.navigationBarBackgroundEffect
+            navigationController.navigationBar.standardAppearance.backgroundColor = themeConfig.primaryColor.withAlphaComponent(themeConfig.navigationBarBackgroundAlpha)
+            navigationController.navigationBar.scrollEdgeAppearance?.backgroundEffect = themeConfig.navigationBarBackgroundEffect
+            navigationController.navigationBar.scrollEdgeAppearance?.backgroundColor = themeConfig.primaryColor.withAlphaComponent(themeConfig.navigationBarBackgroundAlpha)
+        } else {
+            UINavigationBar.appearance().backIndicatorImage = themeConfig.backIndicatorImage
+            UINavigationBar.appearance().backIndicatorTransitionMaskImage = themeConfig.backIndicatorImage
+            UIBarButtonItem.appearance().setTitleTextAttributes([.font: themeConfig.navigationBackButtonTitleFont, .foregroundColor: themeConfig.navigationBarTintColor],
+                for: .normal)
+            
+            navigationController.navigationBar.tintColor = themeConfig.navigationBarTintColor
+            navigationController.navigationBar.backgroundColor = themeConfig.primaryColor.withAlphaComponent(themeConfig.navigationBarBackgroundAlpha)
+            
+
+        }
+        
 
         currentViewController?.present(navigationController, animated: true)
     }
