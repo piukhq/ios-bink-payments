@@ -17,6 +17,8 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
     var refreshToken: String!
     var environmentKey: String!
     var isDebug: Bool!
+    private var email: String!
+    private var planID: String!
     
     var config: Configuration? {
         if let data = try? Data(contentsOf: plistURL) {
@@ -45,8 +47,12 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
     
     // MARK: - Public Methods
 
-    public func configure(token: String!, refreshToken: String!, environmentKey: String!, configuration: Configuration, isDebug: Bool) {
+    public func configure(token: String!, refreshToken: String!, environmentKey: String!, configuration: Configuration, email: String!, isDebug: Bool) {
         assert(!token.isEmpty && !refreshToken.isEmpty && !environmentKey.isEmpty, "Bink Payments SDK Error - Not Initialised due to missing token/environment key")
+        
+        assert(!email.isEmpty, "Bink Payments SDK Error - Not Initialised due to missing email address")
+        
+        self.email = email
         
         if isDebug {
             self.token = token
@@ -80,7 +86,7 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
         
         wallet.fetch()
         
-        let planID = isDebug ? configuration.testLoyaltyPlanID : configuration.productionLoyaltyPlanID
+        planID = isDebug ? configuration.testLoyaltyPlanID : configuration.productionLoyaltyPlanID
         wallet.getLoyaltyPlan(for: planID) { result in
             switch result {
             case .success(let loyaltyPlan):
@@ -113,8 +119,8 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
         currentViewController?.show(addPaymentCardViewController, sender: nil)
     }
     
-    public func loyaltyCard(from id: Int) -> LoyaltyCardModel? {
-        return wallet.loyaltyCards?.first(where: { $0.apiId == id })
+    public func loyaltyCard() -> LoyaltyCardModel? {
+        return wallet.loyaltyCard
     }
     
     public func paymentAccount(from id: Int) -> PaymentAccountResponseModel? {
@@ -143,6 +149,43 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
         }
         
         return pllState
+    }
+    
+    public func set(loyaltyIdentity: String, completion: (() -> Void)? = nil) {
+        guard !loyaltyIdentity.isEmpty else { return }
+        
+        let model = LoyaltyCardAddTrustedRequestModel(loyaltyPlanID: Int(planID) ?? 0, account: Account(authoriseFields: AuthoriseFields(credentials: [Credential(credentialSlug: "email", value: email)]), merchantFields: MerchantFields(accountID: loyaltyIdentity)))
+        wallet.addLoyaltyCardTrusted(withRequestModel: model) { [weak self] result, _  in
+            guard let self = self else { return }
+            switch result {
+            case .success(let response):
+                if self.isDebug { print(response) }
+                self.wallet.fetch() {
+                    completion?()
+                }
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
+    public func replace(loyaltyIdentity: String, completion: (() -> Void)? = nil) {
+        guard !loyaltyIdentity.isEmpty else { return }
+        guard let loyaltyCardId = wallet.loyaltyCard?.apiId else { return }
+        
+        let model = LoyaltyCardUpdateTrustedRequestModel(account: Account(authoriseFields: AuthoriseFields(credentials: [Credential(credentialSlug: "email", value: email)]), merchantFields: MerchantFields(accountID: loyaltyIdentity)))
+        wallet.updateLoyaltyCardTrusted(forLoyaltyCardId: loyaltyCardId, model: model) { [weak self] result, _ in
+            guard let self = self else { return }
+            switch result {
+            case .success(let response):
+                if self.isDebug { print(response) }
+                self.wallet.fetch() {
+                    completion?()
+                }
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
     }
     
     

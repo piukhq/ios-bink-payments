@@ -9,7 +9,7 @@ import Foundation
 
 class Wallet: WalletService {
     private(set) var paymentAccounts: [PaymentAccountResponseModel]?
-    private(set) var loyaltyCards: [LoyaltyCardModel]?
+    private(set) var loyaltyCard: LoyaltyCardModel?
     
     var lastWalletUpdate: Date?
     
@@ -18,7 +18,9 @@ class Wallet: WalletService {
             switch result {
             case .success(let response):
                 self.paymentAccounts = response.paymentAccounts
-                self.loyaltyCards = response.loyaltyCards
+                if let card = response.loyaltyCards?.first {
+                    self.loyaltyCard = card
+                }
                 self.lastWalletUpdate = Date()
                 completion?()
                 print("Wallet fetch complete")
@@ -48,7 +50,7 @@ class Wallet: WalletService {
     func configurePLLState(for paymentAccount: PaymentAccountResponseModel) -> PaymentAccountPLLState {
         var pllState = PaymentAccountPLLState(linked: [], unlinked: [], timeChecked: lastWalletUpdate)
         
-        for loyaltyCard in loyaltyCards ?? [] {
+        if let loyaltyCard = loyaltyCard {
             if let paymentAccountPllLink = paymentAccount.pllLinks?.first(where: { $0.loyaltyCardID == loyaltyCard.apiId }) {
                 if paymentAccountPllLink.status?.state == "active" {
                     pllState.linked.append(loyaltyCard)
