@@ -22,7 +22,7 @@ class AddPaymentCardViewModel {
     var paymentCard: PaymentAccountCreateModel
     var fullFormIsValid = false
     
-    weak private var delegate: PaymentCardFormDelegate?
+    weak var delegate: PaymentCardFormDelegate?
     
     private let repository = PaymentWalletRepository()
     var fields: [FormField] = []
@@ -37,11 +37,6 @@ class AddPaymentCardViewModel {
         }) { _ in
             onError()
         }
-    }
-    
-    func initialSetup(formDelegate: PaymentCardFormDelegate) {
-        delegate = formDelegate
-        refreshDataSource()
     }
     
     func refreshDataSource() {

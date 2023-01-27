@@ -33,40 +33,16 @@ public class BinkThemeConfiguration {
     open var primaryColor: UIColor = .darkGray
     
     /// The view controller background color
-    open var backgroundColor: UIColor {
-        if #available(iOS 13, *) {
-            return .secondarySystemBackground
-        } else {
-            return .secondarySystemBackgroundCompatible
-        }
-    }
+    open var backgroundColor: UIColor = .themeBackgroundColor
     
     /// The textfield, switch and checkbox text color.
-    open var titleTextColor: UIColor {
-        if #available(iOS 13, *) {
-            return .label
-        } else {
-            return .black
-        }
-    }
+    open var titleTextColor: UIColor = .themeTitleTextColor
     
     /// This applies to the back button, the back button title and close button color on the navigation bar.
-    open var navigationBarTintColor: UIColor {
-        if #available(iOS 13, *) {
-            return .label
-        } else {
-            return .black
-        }
-    }
+    open var navigationBarTintColor: UIColor = .themeNavigationBarTintColor
     
     /// The text color of the view controller's title in the navigation bar.
-    open var navigationBarTitleTextColor: UIColor {
-        if #available(iOS 13, *) {
-            return .label
-        } else {
-            return .black
-        }
-    }
+    open var navigationBarTitleTextColor: UIColor = .themeNavigationBarTitleTextColor
     
     /// The blur effect applied to the navigation bar.
     open var navigationBarBackgroundEffect: UIBlurEffect? = .init(style: .light)
@@ -107,22 +83,10 @@ public class BinkThemeConfiguration {
     open var fieldCursorColor: UIColor = .systemGray
     
     /// The color of the textfield's background.
-    open var fieldBackgroundColor: UIColor {
-        if #available(iOS 13, *) {
-            return .quaternarySystemFill
-        } else {
-            return .quaternarySystemFillCompatible
-        }
-    }
+    open var fieldBackgroundColor: UIColor = .themeFieldBackgroundColor
     
     /// The color of the textfield's text.
-    open var fieldTextColor: UIColor {
-        if #available(iOS 13, *) {
-            return .label
-        } else {
-            return .black
-        }
-    }
+    open var fieldTextColor: UIColor = .themeFieldTextColor
     
     
     // Font

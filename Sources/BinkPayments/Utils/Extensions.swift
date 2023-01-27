@@ -181,6 +181,54 @@ extension UIColor {
     //MARK: - Backwards compatibility colours - below IOS13
     static let quaternarySystemFillCompatible = UIColor(hexString: "74748014")
     static let secondarySystemBackgroundCompatible = UIColor(hexString: "f2f2f7ff")
+    
+    static var themeBackgroundColor: UIColor {
+        if #available(iOS 13, *) {
+            return .secondarySystemBackground
+        } else {
+            return .secondarySystemBackgroundCompatible
+        }
+    }
+    
+    static var themeTitleTextColor: UIColor {
+        if #available(iOS 13, *) {
+            return .label
+        } else {
+            return .black
+        }
+    }
+    
+    static var themeNavigationBarTintColor: UIColor {
+        if #available(iOS 13, *) {
+            return .label
+        } else {
+            return .black
+        }
+    }
+    
+    static var themeNavigationBarTitleTextColor: UIColor {
+        if #available(iOS 13, *) {
+            return .label
+        } else {
+            return .black
+        }
+    }
+    
+    static var themeFieldBackgroundColor: UIColor {
+        if #available(iOS 13, *) {
+            return .quaternarySystemFill
+        } else {
+            return .quaternarySystemFillCompatible
+        }
+    }
+    
+    static var themeFieldTextColor: UIColor {
+        if #available(iOS 13, *) {
+            return .label
+        } else {
+            return .black
+        }
+    }
 }
 
 extension UIApplication {

@@ -104,6 +104,7 @@ class AddPaymentCardViewController: UIViewController {
         self.viewModel = viewModel
         self.themeConfig = themeConfig
         super.init(nibName: nil, bundle: nil)
+        self.viewModel.delegate = self
     }
     
     required init?(coder: NSCoder) {
@@ -116,7 +117,7 @@ class AddPaymentCardViewController: UIViewController {
         configureTheme()
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         
-        viewModel.initialSetup(formDelegate: self)
+        viewModel.refreshDataSource()
         
         let switchView = BinkSwitchView(themeConfig: themeConfig, text: "Switch me please")
         stackScrollView.add(arrangedSubview: switchView)
