@@ -50,7 +50,7 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
     public func configure(token: String!, refreshToken: String!, environmentKey: String!, configuration: Configuration, email: String!, isDebug: Bool) {
         assert(!token.isEmpty && !refreshToken.isEmpty && !environmentKey.isEmpty, "Bink Payments SDK Error - Not Initialised due to missing token/environment key")
         
-        assert(!email.isEmpty, "Email is missing")
+        assert(!email.isEmpty, "Bink Payments SDK Error - Not Initialised due to missing email address")
         
         self.email = email
         
@@ -152,7 +152,7 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
     }
     
     public func set(loyaltyIdentity: String, completion: (() -> Void)? = nil) {
-        guard !loyaltyIdentity.isEmpty else {return}
+        guard !loyaltyIdentity.isEmpty else { return }
         
         let model = LoyaltyCardAddTrustedRequestModel(loyaltyPlanID: Int(planID) ?? 0, account: Account(authoriseFields: AuthoriseFields(credentials: [Credential(credentialSlug: "email", value: email)]), merchantFields: MerchantFields(accountID: loyaltyIdentity)))
         wallet.addLoyaltyCardTrusted(withRequestModel: model) { [weak self] result, _  in
