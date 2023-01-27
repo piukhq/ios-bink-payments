@@ -66,9 +66,9 @@ class AddPaymentCardViewController: UIViewController {
             button.layer.cornerCurve = .continuous
         }
         if #available(iOS 13.0, *) {
-            button.tintColor = .white
+            button.tintColor = .label
         } else {
-            button.tintColor = .white
+            button.tintColor = .black
         }
         button.isEnabled = false
         button.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
@@ -94,7 +94,6 @@ class AddPaymentCardViewController: UIViewController {
         return layout
     }()
     
-    //private var subscriptions = Set<AnyCancellable>()
     private var hasSetupCell = false
     private var selectedCellYOrigin: CGFloat = 0.0
     private var selectedCellHeight: CGFloat = 0.0
@@ -113,7 +112,6 @@ class AddPaymentCardViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         configureLayout()
         configureTheme()
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)

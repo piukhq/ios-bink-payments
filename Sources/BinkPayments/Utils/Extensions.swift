@@ -177,6 +177,10 @@ extension UIColor {
     static let unknownPaymentCardGradients: [CGColor] = [UIColor.systemBlue.cgColor, UIColor.systemPink.cgColor]
     
     static let okGreen = UIColor(hexString: "50A7AB")
+    
+    //MARK: - Backwards compatibility colours - below IOS13
+    static let quaternarySystemFillCompatible = UIColor(hexString: "74748014")
+    static let secondarySystemBackgroundCompatible = UIColor(hexString: "f2f2f7ff")
 }
 
 extension UIApplication {

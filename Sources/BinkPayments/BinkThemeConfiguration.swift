@@ -37,7 +37,7 @@ public class BinkThemeConfiguration {
         if #available(iOS 13, *) {
             return .secondarySystemBackground
         } else {
-            return .white
+            return .secondarySystemBackgroundCompatible
         }
     }
     
@@ -46,7 +46,7 @@ public class BinkThemeConfiguration {
         if #available(iOS 13, *) {
             return .label
         } else {
-            return .white
+            return .black
         }
     }
     
@@ -55,7 +55,7 @@ public class BinkThemeConfiguration {
         if #available(iOS 13, *) {
             return .label
         } else {
-            return .white
+            return .black
         }
     }
     
@@ -64,7 +64,7 @@ public class BinkThemeConfiguration {
         if #available(iOS 13, *) {
             return .label
         } else {
-            return .white
+            return .black
         }
     }
     
@@ -100,11 +100,7 @@ public class BinkThemeConfiguration {
     
     /// The color of the textfield's border or underline.
     open var fieldBorderColor: UIColor {
-        if #available(iOS 13, *) {
-            return .systemGray
-        } else {
-            return .white
-        }
+        return .systemGray
     }
     
     /// The color of the textfield's cursor.
@@ -115,7 +111,7 @@ public class BinkThemeConfiguration {
         if #available(iOS 13, *) {
             return .quaternarySystemFill
         } else {
-            return .white
+            return .quaternarySystemFillCompatible
         }
     }
     
@@ -124,7 +120,7 @@ public class BinkThemeConfiguration {
         if #available(iOS 13, *) {
             return .label
         } else {
-            return .white
+            return .black
         }
     }
     
@@ -145,7 +141,7 @@ public class BinkThemeConfiguration {
     
     /// The font for the validation label (error message).
     open var validationLabelFont: UIFont = .systemFont(ofSize: 13, weight: .light)
-
+ 
     
     // Images
     
