@@ -111,6 +111,13 @@ private extension APIClient {
     func handleResponse<ResponseType: Decodable>(_ response: AFDataResponse<Data?>, endpoint: APIEndpoint, expecting responseType: ResponseType.Type, isUserDriven: Bool, completion: APIClientCompletionHandler<ResponseType>?) {
         var networkResponseData = NetworkResponseData(urlResponse: response.response, errorMessage: nil)
         
+        let apiResponseDict: [String: String] = [
+            "statusCode": String(response.response?.statusCode ?? 0),
+            "endpoint": endpoint.urlString ?? ""
+        ]
+        
+        NotificationCenter.default.post(name: .apiResponse, object: nil, userInfo: apiResponseDict)
+        
         if case let .failure(error) = response.result, error.isServerTrustEvaluationError, isUserDriven {
             completion?(.failure(.customError(error.localizedDescription)), networkResponseData)
             return

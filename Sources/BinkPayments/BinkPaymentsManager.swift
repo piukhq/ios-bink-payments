@@ -8,17 +8,23 @@
 import AlamofireNetworkActivityLogger
 import UIKit
 
+public protocol BinkPaymentsManagerDelegate: AnyObject {
+    func apiResponseNotification(_ notification: NSNotification)
+}
+
 public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
     public static let shared = BinkPaymentsManager()
     public var themeConfig = BinkThemeConfiguration()
     public var loyaltyPlan: LoyaltyPlanModel?
     private let wallet = Wallet()
+    private var email: String!
+    private var planID: String!
     var token: String!
     var refreshToken: String!
     var environmentKey: String!
     var isDebug: Bool!
-    private var email: String!
-    private var planID: String!
+    
+    public weak var delegate: BinkPaymentsManagerDelegate?
     
     var config: Configuration? {
         if let data = try? Data(contentsOf: plistURL) {
@@ -49,8 +55,8 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
 
     public func configure(token: String!, refreshToken: String!, environmentKey: String!, configuration: Configuration, email: String!, isDebug: Bool) {
         assert(!token.isEmpty && !refreshToken.isEmpty && !environmentKey.isEmpty, "Bink Payments SDK Error - Not Initialised due to missing token/environment key")
-        
         assert(!email.isEmpty, "Bink Payments SDK Error - Not Initialised due to missing email address")
+        NotificationCenter.default.addObserver(self, selector: #selector(apiResponseNotification(_:)), name: .apiResponse, object: nil)
         
         self.email = email
         
@@ -95,6 +101,10 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
                 print(error.localizedDescription)
             }
         }
+    }
+    
+    @objc public func apiResponseNotification(_ notification: NSNotification) {
+        delegate?.apiResponseNotification(notification)
     }
     
     public func launchScanner(fullScreen: Bool = false) {
