@@ -14,10 +14,6 @@ class PllStatusViewModel: ObservableObject {
     
     @Published var loyaltyCardPllState: LoyaltyCardPLLState?
     @Published var loyaltyCardExists = true
-    
-    init() {
-        linkedPaymentCardsForLoyaltyCard()
-    }
 
     func linkedPaymentCardsForLoyaltyCard() {
         if let loyaltyCard = paymentManager.loyaltyCard() {

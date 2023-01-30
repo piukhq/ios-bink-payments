@@ -11,9 +11,11 @@ import BinkPayments
 struct ContentView: View {
     let viewModel = ContentViewModel()
     @State private var showAlert = false
+    @State private var showSetTrustedAlert = false
     @State private var showTriggerTokenRefreshAlert = false
     @State private var showTokenRefreshSuccessAlert = false
-//    @State private var viewSelection: Int? = nil
+    @State private var textfieldText = "trusted_tested"
+    @State private var viewSelection: Int? = nil
     
     var body: some View {
         NavigationView {
@@ -28,18 +30,18 @@ struct ContentView: View {
                     }
                     
                     BinkButton(text: "Set Loyalty Card") {
-                        showAlert = true
+                        showSetTrustedAlert = true
                     }
 
                     NavigationLink {
-                        LoyaltyCardView()
+                        LoyaltyCardView(viewModel: LoyaltyCardViewModel())
                     } label: {
                         NavigationLinkView(text: "Replace Loyalty Card")
                     }
                     .padding(.bottom, -1)
 
                     NavigationLink {
-                        LoyaltyCardView()
+                        LoyaltyCardView(viewModel: LoyaltyCardViewModel())
                     } label: {
                         NavigationLinkView(text: "Show Loyalty Card")
                     }
@@ -59,6 +61,14 @@ struct ContentView: View {
                 .padding()
                 
                 .alert("Coming Soon", isPresented: $showAlert) {}
+                .alert("Set loyalty ID of new card", isPresented: $showSetTrustedAlert, actions: {
+                    TextField("ID", text: $textfieldText)
+                    Button("OK") {
+                        viewModel.setTrustedCard(id: textfieldText)
+                    }
+                    Button("Cancel", role: .cancel) {}
+                })
+                
                 .alert("Token Refresh Success", isPresented: $showTokenRefreshSuccessAlert) {}
                 .alert("Token Refresh", isPresented: $showTriggerTokenRefreshAlert) {
                     Button("OK") {
@@ -71,6 +81,11 @@ struct ContentView: View {
                     Text("Replace current token with expired token to trigger token refresh?")
                 }
             }
+            
+            NavigationLink(destination: LoyaltyCardView(viewModel: LoyaltyCardViewModel()), tag: 0, selection: $viewSelection) { EmptyView() }
+                .onReceive(viewModel.$loyaltyCardDidUpdate) { _ in
+                    viewSelection = 0
+                }
         }
         .navigationTitle("SEAN")
     }

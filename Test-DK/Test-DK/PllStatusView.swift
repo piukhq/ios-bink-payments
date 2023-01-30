@@ -57,6 +57,9 @@ struct PllStatusView: View {
             }
         }
         .padding()
+        .onAppear() {
+            viewModel.linkedPaymentCardsForLoyaltyCard()
+        }
     }
 }
 
