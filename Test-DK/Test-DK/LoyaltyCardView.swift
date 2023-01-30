@@ -29,7 +29,6 @@ class LoyaltyCardViewModel: ObservableObject {
     @Published var loyaltyCard: LoyaltyCardModel?
     
     init() {
-        let loyaltyCardId = 254957
-        loyaltyCard = BinkPaymentsManager.shared.loyaltyCard(from: loyaltyCardId)
+        loyaltyCard = BinkPaymentsManager.shared.loyaltyCard()
     }
 }

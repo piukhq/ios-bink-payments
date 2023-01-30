@@ -25,7 +25,7 @@ class MessageView: UIView, UIGestureRecognizerDelegate {
         let label = UILabel()
         label.textAlignment = .left
         label.textColor = .white
-        label.font = .systemFont(ofSize: 11)
+        label.font = .systemFont(ofSize: 16)
         label.numberOfLines = 2
         label.lineBreakMode = .byTruncatingTail
         label.translatesAutoresizingMaskIntoConstraints = false
