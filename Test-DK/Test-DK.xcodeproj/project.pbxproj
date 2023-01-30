@@ -12,6 +12,7 @@
 		CE689235297FF3C50051CD33 /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE689234297FF3C50051CD33 /* ContentViewModel.swift */; };
 		CE881CEA298037000060D94A /* LoyaltyCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE881CE9298037000060D94A /* LoyaltyCardView.swift */; };
 		CE8D07D6297865E0009E023A /* PllStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8D07D5297865E0009E023A /* PllStatusView.swift */; };
+		CEC5FEC42987BF01002DB763 /* MessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC5FEC32987BF01002DB763 /* MessageView.swift */; };
 		CEDDDFD729771068008734F4 /* Test_DKApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDDDFD629771068008734F4 /* Test_DKApp.swift */; };
 		CEDDDFD929771068008734F4 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDDDFD829771068008734F4 /* ContentView.swift */; };
 		CEDDDFDB2977106B008734F4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CEDDDFDA2977106B008734F4 /* Assets.xcassets */; };
@@ -25,6 +26,7 @@
 		CE689234297FF3C50051CD33 /* ContentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewModel.swift; sourceTree = "<group>"; };
 		CE881CE9298037000060D94A /* LoyaltyCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoyaltyCardView.swift; sourceTree = "<group>"; };
 		CE8D07D5297865E0009E023A /* PllStatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PllStatusView.swift; sourceTree = "<group>"; };
+		CEC5FEC32987BF01002DB763 /* MessageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageView.swift; sourceTree = "<group>"; };
 		CEDDDFD329771068008734F4 /* Test-DK.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Test-DK.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEDDDFD629771068008734F4 /* Test_DKApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Test_DKApp.swift; sourceTree = "<group>"; };
 		CEDDDFD829771068008734F4 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -65,11 +67,12 @@
 			children = (
 				CEDDDFD629771068008734F4 /* Test_DKApp.swift */,
 				CEDDDFD829771068008734F4 /* ContentView.swift */,
-				CE881CE9298037000060D94A /* LoyaltyCardView.swift */,
 				CE689234297FF3C50051CD33 /* ContentViewModel.swift */,
+				CE881CE9298037000060D94A /* LoyaltyCardView.swift */,
 				CE8D07D5297865E0009E023A /* PllStatusView.swift */,
 				CE39BDA9297E9D6F00FC5CEA /* PllStatusViewModel.swift */,
 				CE39BDA7297E9D4C00FC5CEA /* PaymentAccountsView.swift */,
+				CEC5FEC32987BF01002DB763 /* MessageView.swift */,
 				CEDDDFDA2977106B008734F4 /* Assets.xcassets */,
 				CEDDDFDC2977106B008734F4 /* Preview Content */,
 			);
@@ -164,6 +167,7 @@
 				CE8D07D6297865E0009E023A /* PllStatusView.swift in Sources */,
 				CE689235297FF3C50051CD33 /* ContentViewModel.swift in Sources */,
 				CEDDDFD729771068008734F4 /* Test_DKApp.swift in Sources */,
+				CEC5FEC42987BF01002DB763 /* MessageView.swift in Sources */,
 				CE39BDA8297E9D4C00FC5CEA /* PaymentAccountsView.swift in Sources */,
 				CE881CEA298037000060D94A /* LoyaltyCardView.swift in Sources */,
 				CE39BDAA297E9D6F00FC5CEA /* PllStatusViewModel.swift in Sources */,
