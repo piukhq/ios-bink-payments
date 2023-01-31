@@ -12,11 +12,15 @@ struct ContentView: View {
     let viewModel = ContentViewModel()
     @State private var showAlert = false
     @State private var showSetTrustedAlert = false
+    @State private var showReplaceTrustedAlert = false
     @State private var showTriggerTokenRefreshAlert = false
     @State private var showTokenRefreshSuccessAlert = false
-    @State private var textfieldText = "trusted_tested"
-    @State private var viewSelection: Int? = nil
-    
+    @State private var setIDTextfieldText = ""
+    @State private var replaceIDTextfieldText = ""
+    @State private var showAddTokenAlert = false
+    @State private var tokenTextfieldText = ""
+    @State private var tokenRefreshTextfieldText = ""
+
     var body: some View {
         NavigationView {
             ZStack {
@@ -33,12 +37,9 @@ struct ContentView: View {
                         showSetTrustedAlert = true
                     }
 
-                    NavigationLink {
-                        LoyaltyCardView(viewModel: LoyaltyCardViewModel())
-                    } label: {
-                        NavigationLinkView(text: "Replace Loyalty Card")
+                    BinkButton(text: "Replace Loyalty Card") {
+                        showReplaceTrustedAlert = true
                     }
-                    .padding(.bottom, -1)
 
                     NavigationLink {
                         LoyaltyCardView(viewModel: LoyaltyCardViewModel())
@@ -57,14 +58,30 @@ struct ContentView: View {
                     BinkButton(text: "Trigger Token Refresh") {
                         showTriggerTokenRefreshAlert = true
                     }
+                    
+                    Spacer()
+                        .frame(height:20)
+
+                    Button {
+                        showAddTokenAlert = true
+                    } label: {
+                        Text("Update SDK Tokens")
+                    }
                 }
                 .padding()
                 
                 .alert("Coming Soon", isPresented: $showAlert) {}
                 .alert("Set loyalty ID of new card", isPresented: $showSetTrustedAlert, actions: {
-                    TextField("ID", text: $textfieldText)
+                    TextField("ID", text: $setIDTextfieldText)
                     Button("OK") {
-                        viewModel.setTrustedCard(id: textfieldText)
+                        viewModel.setTrustedCard(id: setIDTextfieldText)
+                    }
+                    Button("Cancel", role: .cancel) {}
+                })
+                .alert("Replace loyalty ID of current card", isPresented: $showReplaceTrustedAlert, actions: {
+                    TextField("ID", text: $replaceIDTextfieldText)
+                    Button("OK") {
+                        viewModel.replaceTrustedCard(id: replaceIDTextfieldText)
                     }
                     Button("Cancel", role: .cancel) {}
                 })
@@ -80,14 +97,18 @@ struct ContentView: View {
                 } message: {
                     Text("Replace current token with expired token to trigger token refresh?")
                 }
+                .alert("Replace tokens", isPresented: $showAddTokenAlert, actions: {
+                    TextField("Token", text: $tokenTextfieldText)
+                        .frame(height: 200)
+                    TextField("Refresh Token", text: $tokenRefreshTextfieldText)
+                        .frame(height: 200)
+                    Button("OK") {
+                        viewModel.updateTokens(token: tokenTextfieldText, refreshToken: tokenRefreshTextfieldText)
+                    }
+                    Button("Cancel", role: .cancel) {}
+                })
             }
-            
-            NavigationLink(destination: LoyaltyCardView(viewModel: LoyaltyCardViewModel()), tag: 0, selection: $viewSelection) { EmptyView() }
-                .onReceive(viewModel.$loyaltyCardDidUpdate) { _ in
-                    viewSelection = 0
-                }
         }
-        .navigationTitle("SEAN")
     }
 }
 

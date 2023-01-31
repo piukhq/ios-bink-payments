@@ -19,7 +19,8 @@ struct LoyaltyCardView: View {
             }
 
         if let loyaltyCard = viewModel.loyaltyCard {
-            Text("Card Number: \(loyaltyCard.card?.cardNumber ?? loyaltyCard.card?.barcode ?? "")")
+            Text("API ID: \(String(loyaltyCard.apiId ?? 0))")
+            Text("Card Number: \(loyaltyCard.card?.cardNumber ?? loyaltyCard.card?.barcode ?? "n/a")")
             Text("Loyalty Plan: \(BinkPaymentsManager.shared.loyaltyPlan?.planDetails?.companyName ?? "")")
         }
     }
