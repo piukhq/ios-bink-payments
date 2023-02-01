@@ -91,7 +91,7 @@ public extension UICollectionView {
 
 extension UIViewController {
     static public func topMostViewController() -> UIViewController? {
-        let window = UIApplication.shared.connectedScenes.flatMap { ($0 as? UIWindowScene)?.windows ?? [] }.first { $0.isKeyWindow }
+        let window = UIApplication.shared.getKeyWindow
         if var topController = window?.rootViewController {
             while let presentedViewController = topController.presentedViewController {
                 topController = presentedViewController
@@ -140,11 +140,11 @@ public extension Collection {
 
 extension UIColor {
     convenience init(hexString: String, alpha: CGFloat = 1.0) {
-        let hexString: String = hexString.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
-        let scanner = Scanner(string: hexString)
+        var hexString: String = hexString.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
         if hexString.hasPrefix("#") {
-            scanner.currentIndex = hexString.index(hexString.startIndex, offsetBy: 1)
+            hexString.removeFirst()
         }
+        let scanner = Scanner(string: hexString)
         var color: UInt64 = 0
         scanner.scanHexInt64(&color)
         let mask = 0x000000FF
@@ -177,4 +177,70 @@ extension UIColor {
     static let unknownPaymentCardGradients: [CGColor] = [UIColor.systemBlue.cgColor, UIColor.systemPink.cgColor]
     
     static let okGreen = UIColor(hexString: "50A7AB")
+    
+    //MARK: - Backwards compatibility colours - below IOS13
+    static let quaternarySystemFillCompatible = UIColor(hexString: "74748014")
+    static let secondarySystemBackgroundCompatible = UIColor(hexString: "f2f2f7ff")
+    
+    static var themeBackgroundColor: UIColor {
+        if #available(iOS 13, *) {
+            return .secondarySystemBackground
+        } else {
+            return .secondarySystemBackgroundCompatible
+        }
+    }
+    
+    static var themeTitleTextColor: UIColor {
+        if #available(iOS 13, *) {
+            return .label
+        } else {
+            return .black
+        }
+    }
+    
+    static var themeNavigationBarTintColor: UIColor {
+        if #available(iOS 13, *) {
+            return .label
+        } else {
+            return .black
+        }
+    }
+    
+    static var themeNavigationBarTitleTextColor: UIColor {
+        if #available(iOS 13, *) {
+            return .label
+        } else {
+            return .black
+        }
+    }
+    
+    static var themeFieldBackgroundColor: UIColor {
+        if #available(iOS 13, *) {
+            return .quaternarySystemFill
+        } else {
+            return .quaternarySystemFillCompatible
+        }
+    }
+    
+    static var themeFieldTextColor: UIColor {
+        if #available(iOS 13, *) {
+            return .label
+        } else {
+            return .black
+        }
+    }
+}
+
+extension UIApplication {
+    var getKeyWindow: UIWindow? {
+        get {
+            if #available(iOS 13, *) {
+                return connectedScenes
+                    .flatMap { ($0 as? UIWindowScene)?.windows ?? [] }
+                    .first { $0.isKeyWindow }
+            } else {
+                return windows.first { $0.isKeyWindow }
+            }
+        }
+    }
 }

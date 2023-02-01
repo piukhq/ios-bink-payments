@@ -33,16 +33,16 @@ public class BinkThemeConfiguration {
     open var primaryColor: UIColor = .darkGray
     
     /// The view controller background color
-    open var backgroundColor: UIColor = .secondarySystemBackground
+    open var backgroundColor: UIColor = .themeBackgroundColor
     
     /// The textfield, switch and checkbox text color.
-    open var titleTextColor: UIColor = .label
+    open var titleTextColor: UIColor = .themeTitleTextColor
     
     /// This applies to the back button, the back button title and close button color on the navigation bar.
-    open var navigationBarTintColor: UIColor = .label
+    open var navigationBarTintColor: UIColor = .themeNavigationBarTintColor
     
     /// The text color of the view controller's title in the navigation bar.
-    open var navigationBarTitleTextColor: UIColor = .label
+    open var navigationBarTitleTextColor: UIColor = .themeNavigationBarTitleTextColor
     
     /// The blur effect applied to the navigation bar.
     open var navigationBarBackgroundEffect: UIBlurEffect? = .init(style: .light)
@@ -75,16 +75,18 @@ public class BinkThemeConfiguration {
     open var fieldBorderWidth: CGFloat = 2
     
     /// The color of the textfield's border or underline.
-    open var fieldBorderColor: UIColor = .systemGray2
+    open var fieldBorderColor: UIColor {
+        return .systemGray
+    }
     
     /// The color of the textfield's cursor.
     open var fieldCursorColor: UIColor = .systemGray
     
     /// The color of the textfield's background.
-    open var fieldBackgroundColor: UIColor = .quaternarySystemFill
+    open var fieldBackgroundColor: UIColor = .themeFieldBackgroundColor
     
     /// The color of the textfield's text.
-    open var fieldTextColor: UIColor = .label
+    open var fieldTextColor: UIColor = .themeFieldTextColor
     
     
     // Font
@@ -103,7 +105,7 @@ public class BinkThemeConfiguration {
     
     /// The font for the validation label (error message).
     open var validationLabelFont: UIFont = .systemFont(ofSize: 13, weight: .light)
-
+ 
     
     // Images
     

@@ -11,11 +11,13 @@ import UIKit
 import AVFoundation
 import Vision
 
+@available(iOS 13.0, *)
 protocol BinkScannerViewControllerDelegate: AnyObject {
     func binkScannerViewControllerShouldEnterManually(_ viewController: BinkScannerViewController, completion: (() -> Void)?)
     func binkScannerViewController(_ viewController: BinkScannerViewController, didScan paymentCard: PaymentAccountCreateModel)
 }
 
+@available(iOS 13.0, *)
 open class BinkScannerViewController: UIViewController, UINavigationControllerDelegate {
     enum Constants {
         static let rectOfInterestInset: CGFloat = 25
@@ -338,6 +340,7 @@ open class BinkScannerViewController: UIViewController, UINavigationControllerDe
 
 // MARK: - AV Delegate
 
+@available(iOS 13.0, *)
 extension BinkScannerViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
     public func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         guard let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer), let croppedImage = cropImage(imageBuffer: imageBuffer) else { return }

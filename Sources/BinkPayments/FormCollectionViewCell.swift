@@ -41,7 +41,9 @@ class FormCollectionViewCell: UICollectionViewCell {
         let stackView = UIStackView(arrangedSubviews: [textFieldHStack])
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
-        stackView.layer.cornerCurve = .continuous
+        if #available(iOS 13.0, *) {
+            stackView.layer.cornerCurve = .continuous
+        }
         stackView.layer.cornerRadius = Constants.cornerRadius
         stackView.clipsToBounds = true
         let gestureRecognizer = UITapGestureRecognizer(target: self, action: .handleCellTap)
@@ -84,7 +86,7 @@ class FormCollectionViewCell: UICollectionViewCell {
     /// Camera icon
     lazy var textFieldRightView: UIView = {
         let cameraButton = UIButton(type: .custom)
-        cameraButton.setImage(UIImage(named: "scanIcon", in: .module, with: nil), for: .normal)
+        cameraButton.setImage(UIImage(named: "scanIcon", in: .module, compatibleWith: nil), for: .normal)
         cameraButton.imageView?.contentMode = .scaleAspectFill
         cameraButton.addTarget(self, action: .handleScanButtonTap, for: .touchUpInside)
         cameraButton.translatesAutoresizingMaskIntoConstraints = false
@@ -97,7 +99,9 @@ class FormCollectionViewCell: UICollectionViewCell {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.layer.cornerRadius = Constants.cornerRadius
-        view.layer.cornerCurve = .continuous
+        if #available(iOS 13.0, *) {
+            view.layer.cornerCurve = .continuous
+        }
         view.addSubview(underlineView)
         view.clipsToBounds = true
         return view

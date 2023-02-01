@@ -53,7 +53,7 @@ public class DebugViewController: UIViewController {
     private lazy var cancelButton: UIButton = {
         let button = UIButton(type: .custom)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setImage(UIImage(named: "close", in: .module, with: nil), for: .normal)
+        button.setImage(UIImage(named: "close", in: .module, compatibleWith: nil), for: .normal)
         button.addTarget(self, action: #selector(close), for: .touchUpInside)
         button.tintColor = .systemPink
         view.addSubview(button)

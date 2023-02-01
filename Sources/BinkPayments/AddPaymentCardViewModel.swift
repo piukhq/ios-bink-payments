@@ -8,22 +8,27 @@
 import Combine
 import UIKit
 
+protocol PaymentCardFormDelegate: AnyObject {
+    func updateOnCardChanges(paymentCard: PaymentAccountCreateModel)
+    func updatedOnFormValidation(valid: Bool)
+    func refreshForm()
+}
+
 class AddPaymentCardViewModel {
     private enum Constants {
         static let expiryYearsInTheFuture = 50
     }
-     
-    @Published var paymentCard: PaymentAccountCreateModel
-    @Published var fullFormIsValid = false
-    @Published var refreshForm = false
+    
+    var paymentCard: PaymentAccountCreateModel
+    var fullFormIsValid = false
+    
+    weak var delegate: PaymentCardFormDelegate?
     
     private let repository = PaymentWalletRepository()
     var fields: [FormField] = []
 
     init(paymentCard: PaymentAccountCreateModel? = nil) {
         self.paymentCard = paymentCard ?? PaymentAccountCreateModel(fullPan: nil, nameOnCard: nil, month: nil, year: nil, cardNickname: nil)
-        setupfields(paymentCard: self.paymentCard)
-        checkFormValidity()
     }
     
     func addPaymentCard(onSuccess: @escaping () -> Void, onError: @escaping (() -> Void)) {
@@ -35,13 +40,15 @@ class AddPaymentCardViewModel {
     }
     
     func refreshDataSource() {
+        delegate?.updateOnCardChanges(paymentCard: paymentCard)
         setupfields(paymentCard: paymentCard)
-        refreshForm = true
+        delegate?.refreshForm()
         checkFormValidity()
     }
     
     private func checkFormValidity() {
         fullFormIsValid = fields.allSatisfy { $0.isValid() }
+        delegate?.updatedOnFormValidation(valid: fullFormIsValid)
     }
 
     private func setupfields(paymentCard: PaymentAccountCreateModel) {
@@ -142,7 +149,8 @@ class AddPaymentCardViewModel {
         }
         
         if field.fieldType == .text { paymentCard.nameOnCard = value }
-        paymentCard = paymentCard
+        
+        delegate?.updateOnCardChanges(paymentCard: paymentCard)
     }
     
     private func textFieldShouldChange(_ textField: UITextField, shouldChangeTo newValue: String?, in range: NSRange, for field: FormField) -> Bool {

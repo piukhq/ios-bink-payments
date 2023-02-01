@@ -97,7 +97,7 @@ class BinkScannerWidgetView: UIView {
     private func setState(_ state: WidgetState) {
         titleLabel.text = state.title
         explainerLabel.text = state.explainerText
-        imageView.image = UIImage(named: state.imageName, in: .module, with: nil)
+        imageView.image = UIImage(named: state.imageName, in: .module, compatibleWith: nil)
         self.state = state
     }
 }
