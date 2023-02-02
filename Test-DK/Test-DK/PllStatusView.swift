@@ -50,10 +50,16 @@ struct PllStatusView: View {
                     PaymentAccountsView(status: .unlinked, pllState: pllState)
                 } else {
                     Text("Error retrieving PLL data")
+                    if !viewModel.loyaltyCardExists {
+                        Text("No loyalty card found in wallet")
+                    }
                 }
             }
         }
         .padding()
+        .onAppear() {
+            viewModel.linkedPaymentCardsForLoyaltyCard()
+        }
     }
 }
 
