@@ -54,12 +54,8 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
     // MARK: - Public Methods
 
     public func configure(token: String!, refreshToken: String!, environmentKey: String!, configuration: Configuration, email: String!, isDebug: Bool) {
-        assert(!token.isEmpty && !refreshToken.isEmpty && !environmentKey.isEmpty, "Bink Payments SDK Error - Not Initialised due to missing token/environment key")
-        assert(!email.isEmpty, "Bink Payments SDK Error - Not Initialised due to missing email address")
         NotificationCenter.default.addObserver(self, selector: #selector(apiResponseNotification(_:)), name: .apiResponse, object: nil)
-        
-        self.email = email
-        
+                
         if isDebug {
             self.token = token
             self.refreshToken = refreshToken
@@ -68,9 +64,11 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
             self.refreshToken = TokenKeychainManager.getToken(service: .refreshTokenService) ?? refreshToken
         }
 
+        self.email = email
         self.environmentKey = environmentKey
         self.isDebug = isDebug
-        
+        initializationAssertion()
+
         let configDictionary: [String: String] = [
             "testPlanID" : configuration.testLoyaltyPlanID,
             "productionPlanID": configuration.productionLoyaltyPlanID,
@@ -108,6 +106,7 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
     }
     
     public func launchScanner(fullScreen: Bool = false) {
+        initializationAssertion()
         if #available(iOS 13, *) {
             let binkScannerViewController = BinkScannerViewController(themeConfig: themeConfig, visionUtility: VisionUtility())
             binkScannerViewController.delegate = self
@@ -122,24 +121,29 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
     }
     
     public func launchDebugScreen(paymentCard: PaymentAccountCreateModel) {
+        initializationAssertion()
         let debugScreen = DebugViewController(paymentCard: paymentCard)
         currentViewController?.present(debugScreen, animated: true)
     }
     
     public func launchAddPaymentCardScreen(_ paymentCard: PaymentAccountCreateModel? = nil) {
+        initializationAssertion()
         let addPaymentCardViewController = AddPaymentCardViewController(viewModel: AddPaymentCardViewModel(paymentCard: paymentCard), themeConfig: themeConfig)
         currentViewController?.show(addPaymentCardViewController, sender: nil)
     }
     
     public func loyaltyCard() -> LoyaltyCardModel? {
+        initializationAssertion()
         return wallet.loyaltyCard
     }
     
     public func paymentAccount(from id: Int) -> PaymentAccountResponseModel? {
+        initializationAssertion()
         return wallet.paymentAccounts?.first(where: { $0.apiId == id })
     }
     
     public func pllStatus(for loyaltyCard: LoyaltyCardModel, refreshedLinkedState: @escaping (LoyaltyCardPLLState) -> Void ) -> LoyaltyCardPLLState {
+        initializationAssertion()
         let pllState = wallet.configurePLLState(for: loyaltyCard)
         
         wallet.fetch { [weak self] in
@@ -152,6 +156,7 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
     }
     
     public func pllStatus(for paymentAccount: PaymentAccountResponseModel, refreshedLinkedState: @escaping (PaymentAccountPLLState) -> Void ) -> PaymentAccountPLLState {
+        initializationAssertion()
         let pllState = wallet.configurePLLState(for: paymentAccount)
         
         wallet.fetch { [weak self] in
@@ -164,6 +169,7 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
     }
     
     public func set(loyaltyIdentity: String, completion: (() -> Void)? = nil) {
+        initializationAssertion()
         guard !loyaltyIdentity.isEmpty else { return }
         
         let model = LoyaltyCardAddTrustedRequestModel(loyaltyPlanID: Int(planID) ?? 0, account: Account(authoriseFields: AuthoriseFields(credentials: [Credential(credentialSlug: "email", value: email)]), merchantFields: MerchantFields(accountID: loyaltyIdentity)))
@@ -182,8 +188,8 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
     }
     
     public func replace(loyaltyIdentity: String, completion: (() -> Void)? = nil) {
-        guard !loyaltyIdentity.isEmpty else { return }
-        guard let loyaltyCardId = wallet.loyaltyCard?.apiId else { return }
+        initializationAssertion()
+        guard !loyaltyIdentity.isEmpty, let loyaltyCardId = wallet.loyaltyCard?.apiId else { return }
         
         let model = LoyaltyCardUpdateTrustedRequestModel(account: Account(authoriseFields: AuthoriseFields(credentials: [Credential(credentialSlug: "email", value: email)]), merchantFields: MerchantFields(accountID: loyaltyIdentity)))
         wallet.updateLoyaltyCardTrusted(forLoyaltyCardId: loyaltyCardId, model: model) { [weak self] result, _ in
@@ -229,6 +235,10 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
             
             currentViewController?.present(navigationController, animated: true)
         }
+    }
+    
+    private func initializationAssertion() {
+        assert((token != nil) && !refreshToken.isEmpty && !environmentKey.isEmpty && !email.isEmpty, "Bink Payments SDK Error - incomplete initialization due to missing environment variables")
     }
 }
 
