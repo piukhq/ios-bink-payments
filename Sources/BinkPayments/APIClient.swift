@@ -39,7 +39,7 @@ class APIClient {
                 return
             }
             session.request(validatedRequest.requestUrl, method: request.method, headers: validatedRequest.headers, interceptor: self).validate().cacheResponse(using: ResponseCacher.doNotCache).response { [weak self] response in
-                self?.handleResponse(response, endpoint: request.endpoint, expecting: responseType, isUserDriven: request.isUserDriven, completion: completion)
+                self?.handleResponse(response, endpoint: request.endpoint, expecting: responseType, completion: completion)
             }
         }
     }
@@ -55,13 +55,13 @@ class APIClient {
                 return
             }
             session.request(validatedRequest.requestUrl, method: request.method, parameters: body, encoder: JSONParameterEncoder.default, headers: validatedRequest.headers, interceptor: self).validate().cacheResponse(using: ResponseCacher.doNotCache).response { [weak self] response in
-                self?.handleResponse(response, endpoint: request.endpoint, expecting: responseType, isUserDriven: request.isUserDriven, completion: completion)
+                self?.handleResponse(response, endpoint: request.endpoint, expecting: responseType, completion: completion)
             }
         }
     }
     
     private func validateRequest(_ request: BinkNetworkRequest, completion: (ValidatedNetworkRequest?, NetworkingError?) -> Void) {
-        if !networkIsReachable && request.isUserDriven {
+        if !networkIsReachable {
             completion(nil, .noInternetConnection)
         }
    
@@ -91,7 +91,6 @@ struct BinkNetworkRequest {
     var endpoint: APIEndpoint
     var method: HTTPMethod
     var headers: [BinkHTTPHeader]?
-    var isUserDriven: Bool
 }
 
 struct ValidatedNetworkRequest {
@@ -108,7 +107,7 @@ struct ResponseErrors: Decodable {
 }
 
 private extension APIClient {
-    func handleResponse<ResponseType: Decodable>(_ response: AFDataResponse<Data?>, endpoint: APIEndpoint, expecting responseType: ResponseType.Type, isUserDriven: Bool, completion: APIClientCompletionHandler<ResponseType>?) {
+    func handleResponse<ResponseType: Decodable>(_ response: AFDataResponse<Data?>, endpoint: APIEndpoint, expecting responseType: ResponseType.Type, completion: APIClientCompletionHandler<ResponseType>?) {
         var networkResponseData = NetworkResponseData(urlResponse: response.response, errorMessage: nil)
         
         let apiResponseDict: [String: String] = [
@@ -118,7 +117,7 @@ private extension APIClient {
         
         NotificationCenter.default.post(name: .apiResponse, object: nil, userInfo: apiResponseDict)
         
-        if case let .failure(error) = response.result, error.isServerTrustEvaluationError, isUserDriven {
+        if case let .failure(error) = response.result {
             completion?(.failure(.customError(error.localizedDescription)), networkResponseData)
             return
         }
@@ -185,7 +184,7 @@ private extension APIClient {
     }
 }
 
-extension APIClient: RequestInterceptor {
+extension APIClient: RequestInterceptor, AuthenticationService {
     func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Result<URLRequest, Error>) -> Void) {
         var urlRequest = urlRequest
 
@@ -210,10 +209,31 @@ extension APIClient: RequestInterceptor {
             /// was not 401 so bail out
             return completion(.doNotRetryWithError(error))
         }
+        
+        requestToken(refresh: true) { result in
+            switch result {
+            case .success(let response):
+                guard let safeResponse = response.value else {
+                    completion(.doNotRetry)
+                    return
+                }
+                BinkPaymentsManager.shared.token = safeResponse.accessToken
+                try? TokenKeychainManager.saveToken(service: .accessTokenService, token: BinkPaymentsManager.shared.token)
+                
+                BinkPaymentsManager.shared.refreshToken = safeResponse.refreshToken
+                try? TokenKeychainManager.saveToken(service: .refreshTokenService, token: BinkPaymentsManager.shared.refreshToken)
+                
+                completion(.retry)
+            case .failure(let error):
+                completion(.doNotRetryWithError(error))
+            }
+        }
+        
+        
 
         let model = RenewTokenRequestModel(grantType: "refresh_token", scope: ["user"])
-        let binkRequest = BinkNetworkRequest(endpoint: .renew, method: .post, headers: [.defaultContentType], isUserDriven: false)
-        self.performRequestWithBody(binkRequest, body: model, expecting: Safe<RenewTokenResponse>.self) { (result, rawResponse) in
+        let binkRequest = BinkNetworkRequest(endpoint: .token, method: .post, headers: [.defaultContentType])
+        self.performRequestWithBody(binkRequest, body: model, expecting: Safe<RenewTokenResponse>.self) { (result, _) in
             switch result {
             case .success(let response):
                 guard let safeResponse = response.value else {

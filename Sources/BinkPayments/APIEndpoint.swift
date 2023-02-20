@@ -8,10 +8,10 @@ import Alamofire
 import Foundation
 
 enum APIEndpoint {
+    case token
     case createPaymentAccount
     case spreedly
     case wallet
-    case renew
     case plan(Id: String)
     case loyaltyCardAddTrusted
     case loyaltyCardUpdateTrusted(id: String)
@@ -81,14 +81,14 @@ enum APIEndpoint {
     
     var path: String {
         switch self {
+        case .token:
+            return "/v2/token"
         case .createPaymentAccount:
             return "/v2/payment_accounts"
         case .spreedly:
             return "https://core.spreedly.com/v1/payment_methods?environment_key=\(BinkPaymentsManager.shared.environmentKey ?? "")"
         case .wallet:
             return "/v2/wallet"
-        case .renew:
-            return "/v2/token"
         case .plan(let Id):
             return "/v2/loyalty_plans/\(Id)"
         case .loyaltyCardAddTrusted:

@@ -17,27 +17,17 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
     public var themeConfig = BinkThemeConfiguration()
     public var loyaltyPlan: LoyaltyPlanModel?
     private let wallet = Wallet()
+    
+    /// Required variables on initialization
     private var email: String!
     private var planID: String!
     var token: String!
     var refreshToken: String!
     var environmentKey: String!
     var isDebug: Bool!
-    
+    var config: Configuration!
+
     public weak var delegate: BinkPaymentsManagerDelegate?
-    
-    var config: Configuration? {
-        if let data = try? Data(contentsOf: plistURL) {
-            if let plist = try? PropertyListSerialization.propertyList(from: data, format: nil) as? [String: String] {
-                return Configuration(
-                    testLoyaltyPlanID: plist["testPlanID"] ?? "",
-                    productionLoyaltyPlanID: plist["productionPlanID"] ?? "",
-                    trustedCredentialType: Configuration.TrustedCredentialType(rawValue: plist["trustedCredentialType"] ?? "") ?? .add)
-            }
-            
-        }
-        return nil
-    }
     
     private var plistURL: URL {
         let documentDirectoryURL = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
@@ -53,30 +43,15 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
     
     // MARK: - Public Methods
 
-    public func configure(token: String!, refreshToken: String!, environmentKey: String!, configuration: Configuration, email: String!, isDebug: Bool) {
+    public func configure(environmentKey: String!, configuration: Configuration, email: String!, isDebug: Bool) {
+        assert(!environmentKey.isEmpty, "Bink SDK Error - environment key missing")
         NotificationCenter.default.addObserver(self, selector: #selector(apiResponseNotification(_:)), name: .apiResponse, object: nil)
-                
-        if isDebug {
-            self.token = token
-            self.refreshToken = refreshToken
-        } else {
-            self.token = TokenKeychainManager.getToken(service: .accessTokenService) ?? token
-            self.refreshToken = TokenKeychainManager.getToken(service: .refreshTokenService) ?? refreshToken
-        }
 
         self.email = email
         self.environmentKey = environmentKey
         self.isDebug = isDebug
-        initializationAssertion()
-
-        let configDictionary: [String: String] = [
-            "testPlanID" : configuration.testLoyaltyPlanID,
-            "productionPlanID": configuration.productionLoyaltyPlanID,
-            "trustedCredentialType": configuration.trustedCredentialType.rawValue
-        ]
-        
-        let plistData = try? PropertyListSerialization.data(fromPropertyList: configDictionary, format: .xml, options: 0)
-        try? plistData?.write(to: plistURL)
+        self.planID = isDebug ? configuration.testLoyaltyPlanID : configuration.productionLoyaltyPlanID
+        self.config = configuration
         
         print("Bink Payments SDK Initialised")
         
@@ -87,10 +62,14 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
             print("Warning: You are running a DEBUG session but not in Test Mode!")
         }
         #endif
+    }
+    
+    public func setToken(token: String, refreshToken: String) {
+        self.token = token
+        self.refreshToken = refreshToken
         
         wallet.fetch()
         
-        planID = isDebug ? configuration.testLoyaltyPlanID : configuration.productionLoyaltyPlanID
         wallet.getLoyaltyPlan(for: planID) { result in
             switch result {
             case .success(let loyaltyPlan):
@@ -238,7 +217,7 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
     }
     
     private func initializationAssertion() {
-        assert((token != nil) && !refreshToken.isEmpty && !environmentKey.isEmpty && !email.isEmpty, "Bink Payments SDK Error - incomplete initialization due to missing environment variables")
+        assert(token != nil && refreshToken != nil && environmentKey != nil && email != nil && planID != nil, "Bink Payments SDK Error - Please ensure the SDK has been configured correctly")
     }
 }
 
