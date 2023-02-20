@@ -19,8 +19,8 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
     private let wallet = Wallet()
     
     /// Required variables on initialization
-    private var email: String!
     private var planID: String!
+    var email: String!
     var token: String!
     var refreshToken: String!
     var environmentKey: String!
@@ -147,11 +147,14 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
         return pllState
     }
     
-    public func set(loyaltyIdentity: String, completion: (() -> Void)? = nil) {
+    public func set(loyaltyId: LoyaltyIdType, accountId: String, completion: (() -> Void)? = nil) {
         initializationAssertion()
-        guard !loyaltyIdentity.isEmpty else { return }
+        guard !accountId.isEmpty else { return }
         
-        let model = LoyaltyCardAddTrustedRequestModel(loyaltyPlanID: Int(planID) ?? 0, account: Account(authoriseFields: AuthoriseFields(credentials: [Credential(credentialSlug: "email", value: email)]), merchantFields: MerchantFields(accountID: loyaltyIdentity)))
+        let authoriseFields = AuthoriseFields(credentials: [Credential(credentialSlug: loyaltyId.slug, value: loyaltyId.value)])
+        let merchantFields = MerchantFields(accountID: accountId)
+        let model = LoyaltyCardAddTrustedRequestModel(loyaltyPlanID: Int(planID) ?? 0, account: Account(authoriseFields: authoriseFields, merchantFields: merchantFields))
+        
         wallet.addLoyaltyCardTrusted(withRequestModel: model) { [weak self] result, _  in
             guard let self = self else { return }
             switch result {
@@ -166,11 +169,13 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
         }
     }
     
-    public func replace(loyaltyIdentity: String, completion: (() -> Void)? = nil) {
+    public func replace(loyaltyId: LoyaltyIdType, accountId: String, completion: (() -> Void)? = nil) {
         initializationAssertion()
-        guard !loyaltyIdentity.isEmpty, let loyaltyCardId = wallet.loyaltyCard?.apiId else { return }
+        guard !accountId.isEmpty, let loyaltyCardId = wallet.loyaltyCard?.apiId else { return }
         
-        let model = LoyaltyCardUpdateTrustedRequestModel(account: Account(authoriseFields: AuthoriseFields(credentials: [Credential(credentialSlug: "email", value: email)]), merchantFields: MerchantFields(accountID: loyaltyIdentity)))
+        let authoriseFields = AuthoriseFields(credentials: [Credential(credentialSlug: loyaltyId.slug, value: loyaltyId.value)])
+        let merchantFields = MerchantFields(accountID: accountId)
+        let model = LoyaltyCardUpdateTrustedRequestModel(account: Account(authoriseFields: authoriseFields, merchantFields: merchantFields))
         wallet.updateLoyaltyCardTrusted(forLoyaltyCardId: loyaltyCardId, model: model) { [weak self] result, _ in
             guard let self = self else { return }
             switch result {

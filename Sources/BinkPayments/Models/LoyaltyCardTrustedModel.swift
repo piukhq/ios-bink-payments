@@ -55,3 +55,26 @@ struct MerchantFields: Codable {
 struct LoyaltyCardTrustedResponseModel: Codable {
     let id: Int
 }
+
+public enum LoyaltyIdType {
+    case email
+    case cardNumber(String)
+    
+    var slug: String {
+        switch self {
+        case .email:
+            return "email"
+        case .cardNumber:
+            return "card_number"
+        }
+    }
+    
+    var value: String {
+        switch self {
+        case .email:
+            return BinkPaymentsManager.shared.email
+        case .cardNumber( let cardNumber):
+            return cardNumber
+        }
+    }
+}
