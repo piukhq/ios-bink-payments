@@ -118,17 +118,3 @@ class WalletService {
         }
     }
 }
-
-protocol AuthenticationService {
-    func requestToken(refresh: Bool, completion: @escaping (Result<Safe<RenewTokenResponse>, NetworkingError>) -> Void)
-}
-
-extension AuthenticationService {
-    func requestToken(refresh: Bool = false, completion: @escaping (Result<Safe<RenewTokenResponse>, NetworkingError>) -> Void) {
-        let model = RenewTokenRequestModel(grantType: refresh ? "refresh_token" : "b2b", scope: ["user"])
-        let binkRequest = BinkNetworkRequest(endpoint: .token, method: .post, headers: [.defaultContentType])
-        APIClient().performRequestWithBody(binkRequest, body: model, expecting: Safe<RenewTokenResponse>.self) { (result, rawResponse) in
-            completion(result)
-        }
-    }
-}

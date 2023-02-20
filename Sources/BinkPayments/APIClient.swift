@@ -184,7 +184,7 @@ private extension APIClient {
     }
 }
 
-extension APIClient: RequestInterceptor, AuthenticationService {
+extension APIClient: RequestInterceptor {
     func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Result<URLRequest, Error>) -> Void) {
         var urlRequest = urlRequest
 
@@ -209,27 +209,6 @@ extension APIClient: RequestInterceptor, AuthenticationService {
             /// was not 401 so bail out
             return completion(.doNotRetryWithError(error))
         }
-        
-        requestToken(refresh: true) { result in
-            switch result {
-            case .success(let response):
-                guard let safeResponse = response.value else {
-                    completion(.doNotRetry)
-                    return
-                }
-                BinkPaymentsManager.shared.token = safeResponse.accessToken
-                try? TokenKeychainManager.saveToken(service: .accessTokenService, token: BinkPaymentsManager.shared.token)
-                
-                BinkPaymentsManager.shared.refreshToken = safeResponse.refreshToken
-                try? TokenKeychainManager.saveToken(service: .refreshTokenService, token: BinkPaymentsManager.shared.refreshToken)
-                
-                completion(.retry)
-            case .failure(let error):
-                completion(.doNotRetryWithError(error))
-            }
-        }
-        
-        
 
         let model = RenewTokenRequestModel(grantType: "refresh_token", scope: ["user"])
         let binkRequest = BinkNetworkRequest(endpoint: .token, method: .post, headers: [.defaultContentType])
@@ -241,10 +220,10 @@ extension APIClient: RequestInterceptor, AuthenticationService {
                     return
                 }
                 BinkPaymentsManager.shared.token = safeResponse.accessToken
-                try? TokenKeychainManager.saveToken(service: .accessTokenService, token: BinkPaymentsManager.shared.token)
+//                try? TokenKeychainManager.saveToken(service: .accessTokenService, token: BinkPaymentsManager.shared.token)
                 
                 BinkPaymentsManager.shared.refreshToken = safeResponse.refreshToken
-                try? TokenKeychainManager.saveToken(service: .refreshTokenService, token: BinkPaymentsManager.shared.refreshToken)
+//                try? TokenKeychainManager.saveToken(service: .refreshTokenService, token: BinkPaymentsManager.shared.refreshToken)
                 
                 completion(.retry)
             case .failure(let error):
