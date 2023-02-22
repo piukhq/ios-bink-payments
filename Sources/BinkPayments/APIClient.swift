@@ -60,6 +60,23 @@ class APIClient {
         }
     }
     
+    func performRequestWithNoResponse(_ request: BinkNetworkRequest, body: [String: Any]?, completion: ((Bool, NetworkingError?, NetworkResponseData?) -> Void)?) {
+        validateRequest(request) { [weak self] (validatedRequest, error) in
+            if let error = error {
+                completion?(false, error, nil)
+                return
+            }
+            guard let validatedRequest = validatedRequest else {
+                completion?(false, .invalidRequest, nil)
+                return
+            }
+            session.request(validatedRequest.requestUrl, method: request.method, parameters: body, encoding: JSONEncoding.default, headers: validatedRequest.headers).cacheResponse(using: ResponseCacher.doNotCache).response { [weak self] response in
+                self?.noResponseHandler(response: response, endpoint: request.endpoint, completion: completion)
+            }
+        }
+    }
+
+    
     private func validateRequest(_ request: BinkNetworkRequest, completion: (ValidatedNetworkRequest?, NetworkingError?) -> Void) {
         if !networkIsReachable {
             completion(nil, .noInternetConnection)
@@ -110,12 +127,7 @@ private extension APIClient {
     func handleResponse<ResponseType: Decodable>(_ response: AFDataResponse<Data?>, endpoint: APIEndpoint, expecting responseType: ResponseType.Type, completion: APIClientCompletionHandler<ResponseType>?) {
         var networkResponseData = NetworkResponseData(urlResponse: response.response, errorMessage: nil)
         
-        let apiResponseDict: [String: String] = [
-            "statusCode": String(response.response?.statusCode ?? 0),
-            "endpoint": endpoint.urlString ?? ""
-        ]
-        
-        NotificationCenter.default.post(name: .apiResponse, object: nil, userInfo: apiResponseDict)
+        postApiResponseNotification(response: response, endpoint: endpoint)
         
         if case let .failure(error) = response.result {
             completion?(.failure(.customError(error.localizedDescription)), networkResponseData)
@@ -181,6 +193,53 @@ private extension APIClient {
         } catch {
             completion?(.failure(.decodingError), networkResponseData)
         }
+    }
+    
+    func noResponseHandler(response: AFDataResponse<Data?>, endpoint: APIEndpoint, completion: ((Bool, NetworkingError?, NetworkResponseData?) -> Void)?) {
+        var networkResponseData = NetworkResponseData(urlResponse: response.response, errorMessage: nil)
+
+        postApiResponseNotification(response: response, endpoint: endpoint)
+        
+        if case let .failure(error) = response.result {
+            networkResponseData.errorMessage = error.localizedDescription
+            completion?(false, .customError(error.localizedDescription), networkResponseData)
+            return
+        }
+        if let error = response.error {
+            networkResponseData.errorMessage = error.localizedDescription
+            completion?(false, .customError(error.localizedDescription), networkResponseData)
+            return
+        }
+
+        guard let statusCode = response.response?.statusCode else {
+            completion?(false, .invalidResponse, networkResponseData)
+            return
+        }
+
+        if statusCode == unauthorizedStatus {
+            // Unauthorized response
+            return
+        } else if successStatusRange.contains(statusCode) {
+            // Successful response
+            completion?(true, nil, networkResponseData)
+            return
+        } else if serverErrorStatusRange.contains(statusCode) {
+            // Failed response, server error
+            completion?(false, .serverError(statusCode), networkResponseData)
+            return
+        } else {
+            completion?(false, .checkStatusCode(statusCode), networkResponseData)
+            return
+        }
+    }
+    
+    private func postApiResponseNotification(response: AFDataResponse<Data?>, endpoint: APIEndpoint) {
+        let apiResponseDict: [String: String] = [
+            "statusCode": String(response.response?.statusCode ?? 0),
+            "endpoint": endpoint.urlString ?? ""
+        ]
+        
+        NotificationCenter.default.post(name: .apiResponse, object: nil, userInfo: apiResponseDict)
     }
 }
 

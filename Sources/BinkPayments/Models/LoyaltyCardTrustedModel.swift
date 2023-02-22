@@ -22,16 +22,22 @@ struct LoyaltyCardUpdateTrustedRequestModel: Codable {
 }
 
 struct Account: Codable {
-    let authoriseFields: AuthoriseFields
+    let addFields: AddFields?
+    let authoriseFields: AuthoriseFields?
     let merchantFields: MerchantFields
 
     enum CodingKeys: String, CodingKey {
+        case addFields = "add_fields"
         case authoriseFields = "authorise_fields"
         case merchantFields = "merchant_fields"
     }
 }
 
 struct AuthoriseFields: Codable {
+    let credentials: [Credential]
+}
+
+struct AddFields: Codable {
     let credentials: [Credential]
 }
 

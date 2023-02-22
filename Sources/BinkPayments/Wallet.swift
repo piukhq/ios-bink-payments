@@ -7,9 +7,9 @@
 
 import Foundation
 
-class Wallet: WalletService {
+class Wallet: WalletServiceProtocol {
     private(set) var paymentAccounts: [PaymentAccountResponseModel]?
-    private(set) var loyaltyCard: LoyaltyCardModel?
+    private(set) var loyaltyCards: [LoyaltyCardModel]?
     
     var lastWalletUpdate: Date?
     
@@ -18,9 +18,7 @@ class Wallet: WalletService {
             switch result {
             case .success(let response):
                 self.paymentAccounts = response.paymentAccounts
-                if let card = response.loyaltyCards?.first {
-                    self.loyaltyCard = card
-                }
+                self.loyaltyCards = response.loyaltyCards
                 self.lastWalletUpdate = Date()
                 completion?()
                 print("Wallet fetch complete")
@@ -47,20 +45,20 @@ class Wallet: WalletService {
         return pllState
     }
     
-    func configurePLLState(for paymentAccount: PaymentAccountResponseModel) -> PaymentAccountPLLState {
-        var pllState = PaymentAccountPLLState(linked: [], unlinked: [], timeChecked: lastWalletUpdate)
-        
-        if let loyaltyCard = loyaltyCard {
-            if let paymentAccountPllLink = paymentAccount.pllLinks?.first(where: { $0.loyaltyCardID == loyaltyCard.apiId }) {
-                if paymentAccountPllLink.status?.state == "active" {
-                    pllState.linked.append(loyaltyCard)
-                } else {
-                    pllState.unlinked.append(loyaltyCard)
-                }
-            } else {
-                pllState.unlinked.append(loyaltyCard)
-            }
-        }        
-        return pllState
-    }
+//    func configurePLLState(for paymentAccount: PaymentAccountResponseModel) -> PaymentAccountPLLState {
+//        var pllState = PaymentAccountPLLState(linked: [], unlinked: [], timeChecked: lastWalletUpdate)
+//        
+//        if let loyaltyCard = loyaltyCard {
+//            if let paymentAccountPllLink = paymentAccount.pllLinks?.first(where: { $0.loyaltyCardID == loyaltyCard.apiId }) {
+//                if paymentAccountPllLink.status?.state == "active" {
+//                    pllState.linked.append(loyaltyCard)
+//                } else {
+//                    pllState.unlinked.append(loyaltyCard)
+//                }
+//            } else {
+//                pllState.unlinked.append(loyaltyCard)
+//            }
+//        }        
+//        return pllState
+//    }
 }

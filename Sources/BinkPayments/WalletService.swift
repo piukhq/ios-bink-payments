@@ -20,13 +20,12 @@ typealias ServiceCompletionResultHandler<ObjectType: Any, ErrorType: BinkError> 
 /// Used when we need to pass an object or set of objects through the completion handler rather than just a success bool, and the completion handler requires context of the raw http response.
 typealias ServiceCompletionResultRawResponseHandler<ObjectType: Any, ErrorType: BinkError> = (Result<ObjectType, ErrorType>, NetworkResponseData?) -> Void
 
+class WalletServiceProtocol {}
 
-class WalletService {
-    private let apiClient = APIClient()
-
-    func getLoyaltyPlan(for Id: String, completion: @escaping ServiceCompletionResultHandler<LoyaltyPlanModel?, WalletServiceError>) {
-        let request = BinkNetworkRequest(endpoint: .plan(Id: Id), method: .get, headers: nil)
-        apiClient.performRequest(request, expecting: Safe<LoyaltyPlanModel>.self) { (result, rawResponse) in
+extension WalletServiceProtocol {
+    func getLoyaltyPlan(for id: String, completion: @escaping ServiceCompletionResultHandler<LoyaltyPlanModel?, WalletServiceError>) {
+        let request = BinkNetworkRequest(endpoint: .plan(id: id), method: .get, headers: nil)
+        BinkPaymentsManager.shared.apiClient.performRequest(request, expecting: Safe<LoyaltyPlanModel>.self) { (result, rawResponse) in
             switch result {
             case .success(let response):
                 completion(.success(response.value))
@@ -38,7 +37,7 @@ class WalletService {
     
     func getSpreedlyToken(withRequest model: SpreedlyRequest, completion: @escaping ServiceCompletionResultHandler<SpreedlyResponse, WalletServiceError>) {
         let request = BinkNetworkRequest(endpoint: .spreedly, method: .post, headers: nil)
-        apiClient.performRequestWithBody(request, body: model, expecting: Safe<SpreedlyResponse>.self) { (result, rawResponse) in
+        BinkPaymentsManager.shared.apiClient.performRequestWithBody(request, body: model, expecting: Safe<SpreedlyResponse>.self) { (result, rawResponse) in
             switch result {
             case .success(let response):
                 guard let safeResponse = response.value else {
@@ -54,7 +53,7 @@ class WalletService {
     
     func addPaymentCard(withRequestModel model: PaymentCardCreateRequest, completion: @escaping ServiceCompletionResultRawResponseHandler<PaymentAccountResponseModel, WalletServiceError>) {
         let binkNetworkRequest = BinkNetworkRequest(endpoint: .createPaymentAccount, method: .post, headers: nil)
-        apiClient.performRequestWithBody(binkNetworkRequest, body: model, expecting: Safe<PaymentAccountResponseModel>.self) { (result, rawResponse) in
+        BinkPaymentsManager.shared.apiClient.performRequestWithBody(binkNetworkRequest, body: model, expecting: Safe<PaymentAccountResponseModel>.self) { (result, rawResponse) in
             switch result {
             case .success(let response):
                 guard let safeResponse = response.value else {
@@ -71,7 +70,7 @@ class WalletService {
     
     func addLoyaltyCardTrusted(withRequestModel model: LoyaltyCardAddTrustedRequestModel, completion: @escaping ServiceCompletionResultRawResponseHandler<LoyaltyCardTrustedResponseModel, WalletServiceError>) {
         let binkNetworkRequest = BinkNetworkRequest(endpoint: .loyaltyCardAddTrusted, method: .post, headers: nil)
-        apiClient.performRequestWithBody(binkNetworkRequest, body: model, expecting: Safe<LoyaltyCardTrustedResponseModel>.self) { (result, rawResponse) in
+        BinkPaymentsManager.shared.apiClient.performRequestWithBody(binkNetworkRequest, body: model, expecting: Safe<LoyaltyCardTrustedResponseModel>.self) { (result, rawResponse) in
             switch result {
             case .success(let response):
                 guard let safeResponse = response.value else {
@@ -79,7 +78,7 @@ class WalletService {
                     return
                 }
                 completion(.success(safeResponse), rawResponse)
-            case .failure:
+            case .failure(let error):
                 completion(.failure(.failedToAddLoyaltyTrusted), rawResponse)
             }
         }
@@ -87,7 +86,7 @@ class WalletService {
     
     func updateLoyaltyCardTrusted(forLoyaltyCardId id: Int, model: LoyaltyCardUpdateTrustedRequestModel, completion: @escaping ServiceCompletionResultRawResponseHandler<LoyaltyCardTrustedResponseModel, WalletServiceError>) {
         let binkNetworkRequest = BinkNetworkRequest(endpoint: .loyaltyCardUpdateTrusted(id: String(id)), method: .put, headers: nil)
-        apiClient.performRequestWithBody(binkNetworkRequest, body: model, expecting: Safe<LoyaltyCardTrustedResponseModel>.self) { (result, rawResponse) in
+        BinkPaymentsManager.shared.apiClient.performRequestWithBody(binkNetworkRequest, body: model, expecting: Safe<LoyaltyCardTrustedResponseModel>.self) { (result, rawResponse) in
             switch result {
             case .success(let response):
                 guard let safeResponse = response.value else {
@@ -103,7 +102,7 @@ class WalletService {
     
     func getWalletFromAPI(completion: @escaping ServiceCompletionResultHandler<WalletModel, WalletServiceError>) {
         let request = BinkNetworkRequest(endpoint: .wallet, method: .get)
-        apiClient.performRequest(request, expecting: Safe<WalletModel>.self) { result, rawResponse in
+        BinkPaymentsManager.shared.apiClient.performRequest(request, expecting: Safe<WalletModel>.self) { result, rawResponse in
             switch result {
             case .success(let response):
                 guard let safeResponse = response.value else {
@@ -115,6 +114,18 @@ class WalletService {
                 print(error.localizedDescription)
                 completion(.failure(.failedToGetWallet))
             }
+        }
+    }
+    
+    func deleteLoyaltyCard(id: String, completion: ServiceCompletionSuccessHandler<NetworkingError>? = nil) {
+        let request = BinkNetworkRequest(endpoint: .loyaltyCards(id: id), method: .delete)
+        BinkPaymentsManager.shared.apiClient.performRequestWithNoResponse(request, body: nil) { success, _, _ in
+            guard success else {
+                completion?(false, nil)
+                return
+            }
+            
+            completion?(true, nil)
         }
     }
 }

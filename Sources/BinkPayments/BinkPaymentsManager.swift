@@ -17,6 +17,7 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
     public var themeConfig = BinkThemeConfiguration()
     public var loyaltyPlan: LoyaltyPlanModel?
     private let wallet = Wallet()
+    let apiClient = APIClient()
     
     /// Required variables on initialization
     private var planID: String!
@@ -29,16 +30,16 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
 
     public weak var delegate: BinkPaymentsManagerDelegate?
     
-    private var plistURL: URL {
-        let documentDirectoryURL = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-        return documentDirectoryURL.appendingPathComponent("config.plist")
-    }
-    
     private var currentViewController: UIViewController? {
         return UIViewController.topMostViewController()
     }
 
     private override init() {}
+    
+    public var loyaltyCard: LoyaltyCardModel? {
+        initializationAssertion()
+        return wallet.loyaltyCards?.first
+    }
     
     
     // MARK: - Public Methods
@@ -111,11 +112,6 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
         currentViewController?.show(addPaymentCardViewController, sender: nil)
     }
     
-    public func loyaltyCard() -> LoyaltyCardModel? {
-        initializationAssertion()
-        return wallet.loyaltyCard
-    }
-    
     public func paymentAccount(from id: Int) -> PaymentAccountResponseModel? {
         initializationAssertion()
         return wallet.paymentAccounts?.first(where: { $0.apiId == id })
@@ -134,62 +130,86 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
         return pllState
     }
     
-    public func pllStatus(for paymentAccount: PaymentAccountResponseModel, refreshedLinkedState: @escaping (PaymentAccountPLLState) -> Void ) -> PaymentAccountPLLState {
-        initializationAssertion()
-        let pllState = wallet.configurePLLState(for: paymentAccount)
-        
-        wallet.fetch { [weak self] in
-            if let refreshedState = self?.wallet.configurePLLState(for: paymentAccount) {
-                refreshedLinkedState(refreshedState)
-            }
-        }
-        
-        return pllState
-    }
+//    public func pllStatus(for paymentAccount: PaymentAccountResponseModel, refreshedLinkedState: @escaping (PaymentAccountPLLState) -> Void ) -> PaymentAccountPLLState {
+//        initializationAssertion()
+//        let pllState = wallet.configurePLLState(for: paymentAccount)
+//
+//        wallet.fetch { [weak self] in
+//            if let refreshedState = self?.wallet.configurePLLState(for: paymentAccount) {
+//                refreshedLinkedState(refreshedState)
+//            }
+//        }
+//
+//        return pllState
+//    }
     
     public func set(loyaltyId: LoyaltyIdType, accountId: String, completion: (() -> Void)? = nil) {
         initializationAssertion()
         guard !accountId.isEmpty else { return }
         
-        let authoriseFields = AuthoriseFields(credentials: [Credential(credentialSlug: loyaltyId.slug, value: loyaltyId.value)])
-        let merchantFields = MerchantFields(accountID: accountId)
-        let model = LoyaltyCardAddTrustedRequestModel(loyaltyPlanID: Int(planID) ?? 0, account: Account(authoriseFields: authoriseFields, merchantFields: merchantFields))
+        let credentials = Credential(credentialSlug: loyaltyId.slug, value: loyaltyId.value)
+        var addFields: AddFields?
+        var authoriseFields: AuthoriseFields?
         
-        wallet.addLoyaltyCardTrusted(withRequestModel: model) { [weak self] result, _  in
-            guard let self = self else { return }
-            switch result {
-            case .success(let response):
-                if self.isDebug { print(response) }
-                self.wallet.fetch() {
-                    completion?()
+        if config.trustedCredentialType == .add {
+            addFields = AddFields(credentials: [credentials])
+        } else {
+            authoriseFields = AuthoriseFields(credentials: [credentials])
+        }
+        
+        let merchantFields = MerchantFields(accountID: accountId)
+        let account = Account(addFields: addFields, authoriseFields: authoriseFields, merchantFields: merchantFields)
+        let model = LoyaltyCardAddTrustedRequestModel(loyaltyPlanID: Int(planID) ?? 0, account: account)
+        
+        wallet.fetch { [weak self] in
+            guard let self = self, let loyaltyCards = self.wallet.loyaltyCards else { return }
+            
+            self.wallet.addLoyaltyCardTrusted(withRequestModel: model) { result, _  in
+                switch result {
+                case .success(let response):
+                    if self.isDebug { print(response) }
+                    
+                    loyaltyCards.forEach { loyaltyCard in
+                        if loyaltyCard.apiId == response.id {
+                            print("Loyalty identity already exists in wallet")
+                        } else {
+                            /// Delete all other cards in wallet
+                            self.wallet.deleteLoyaltyCard(id: String(loyaltyCard.apiId ?? 0))
+                        }
+                    }
+                    
+                    self.wallet.fetch() {
+                        completion?()
+                    }
+                case .failure(let error):
+                    print(error.localizedDescription)
                 }
-            case .failure(let error):
-                print(error.localizedDescription)
             }
         }
     }
     
-    public func replace(loyaltyId: LoyaltyIdType, accountId: String, completion: (() -> Void)? = nil) {
-        initializationAssertion()
-        guard !accountId.isEmpty, let loyaltyCardId = wallet.loyaltyCard?.apiId else { return }
-        
-        let authoriseFields = AuthoriseFields(credentials: [Credential(credentialSlug: loyaltyId.slug, value: loyaltyId.value)])
-        let merchantFields = MerchantFields(accountID: accountId)
-        let model = LoyaltyCardUpdateTrustedRequestModel(account: Account(authoriseFields: authoriseFields, merchantFields: merchantFields))
-        wallet.updateLoyaltyCardTrusted(forLoyaltyCardId: loyaltyCardId, model: model) { [weak self] result, _ in
-            guard let self = self else { return }
-            switch result {
-            case .success(let response):
-                if self.isDebug { print(response) }
-                self.wallet.fetch() {
-                    completion?()
-                }
-            case .failure(let error):
-                print(error.localizedDescription)
-            }
-        }
-    }
-    
+//    public func replace(loyaltyId: LoyaltyIdType, accountId: String, completion: (() -> Void)? = nil) {
+//        initializationAssertion()
+//        guard !accountId.isEmpty, let loyaltyCardId = loyaltyCard?.apiId else { return }
+//        
+//        let authoriseFields = AuthoriseFields(credentials: [Credential(credentialSlug: loyaltyId.slug, value: loyaltyId.value)])
+//        let merchantFields = MerchantFields(accountID: accountId)
+//        let model = LoyaltyCardUpdateTrustedRequestModel(account: Account(authoriseFields: authoriseFields, merchantFields: merchantFields))
+//         
+//        wallet.updateLoyaltyCardTrusted(forLoyaltyCardId: loyaltyCardId, model: model) { [weak self] result, _ in
+//            guard let self = self else { return }
+//            switch result {
+//            case .success(let response):
+//                if self.isDebug { print(response) }
+//                self.wallet.fetch() {
+//                    completion?()
+//                }
+//            case .failure(let error):
+//                print(error.localizedDescription)
+//            }
+//        }
+//    }
+//    
     
     // MARK: - Private & Internal Methods
     
