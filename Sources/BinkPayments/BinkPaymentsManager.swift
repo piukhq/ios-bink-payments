@@ -26,7 +26,7 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
     var refreshToken: String!
     var environmentKey: String!
     var isDebug: Bool!
-    var config: Configuration!
+    var config: LoyaltyPlanConfiguration!
 
     public weak var delegate: BinkPaymentsManagerDelegate?
     
@@ -44,7 +44,7 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
     
     // MARK: - Public Methods
 
-    public func configure(environmentKey: String!, configuration: Configuration, email: String!, isDebug: Bool) {
+    public func configure(environmentKey: String!, configuration: LoyaltyPlanConfiguration, email: String!, isDebug: Bool) {
         assert(!environmentKey.isEmpty, "Bink SDK Error - environment key missing")
         NotificationCenter.default.addObserver(self, selector: #selector(apiResponseNotification(_:)), name: .apiResponse, object: nil)
 
@@ -129,19 +129,6 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
         
         return pllState
     }
-    
-//    public func pllStatus(for paymentAccount: PaymentAccountResponseModel, refreshedLinkedState: @escaping (PaymentAccountPLLState) -> Void ) -> PaymentAccountPLLState {
-//        initializationAssertion()
-//        let pllState = wallet.configurePLLState(for: paymentAccount)
-//
-//        wallet.fetch { [weak self] in
-//            if let refreshedState = self?.wallet.configurePLLState(for: paymentAccount) {
-//                refreshedLinkedState(refreshedState)
-//            }
-//        }
-//
-//        return pllState
-//    }
     
     public func set(loyaltyId: LoyaltyIdType, accountId: String, completion: (() -> Void)? = nil) {
         initializationAssertion()

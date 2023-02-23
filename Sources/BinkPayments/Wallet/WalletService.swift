@@ -78,7 +78,7 @@ extension WalletServiceProtocol {
                     return
                 }
                 completion(.success(safeResponse), rawResponse)
-            case .failure(let error):
+            case .failure:
                 completion(.failure(.failedToAddLoyaltyTrusted), rawResponse)
             }
         }

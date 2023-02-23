@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct Configuration {
+public struct LoyaltyPlanConfiguration {
     public enum TrustedCredentialType: String {
         case add
         case authorise

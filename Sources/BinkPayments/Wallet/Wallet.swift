@@ -44,21 +44,4 @@ class Wallet: WalletServiceProtocol {
         }
         return pllState
     }
-    
-//    func configurePLLState(for paymentAccount: PaymentAccountResponseModel) -> PaymentAccountPLLState {
-//        var pllState = PaymentAccountPLLState(linked: [], unlinked: [], timeChecked: lastWalletUpdate)
-//        
-//        if let loyaltyCard = loyaltyCard {
-//            if let paymentAccountPllLink = paymentAccount.pllLinks?.first(where: { $0.loyaltyCardID == loyaltyCard.apiId }) {
-//                if paymentAccountPllLink.status?.state == "active" {
-//                    pllState.linked.append(loyaltyCard)
-//                } else {
-//                    pllState.unlinked.append(loyaltyCard)
-//                }
-//            } else {
-//                pllState.unlinked.append(loyaltyCard)
-//            }
-//        }        
-//        return pllState
-//    }
 }
