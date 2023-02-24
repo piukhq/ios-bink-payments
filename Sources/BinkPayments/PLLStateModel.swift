@@ -7,10 +7,15 @@
 
 import Foundation
 
-
+/// Contains the links that a Loyalty Card has to Payment Accounts
 public struct LoyaltyCardPLLState {
+    /// Linked Payment Accounts
     public var linked: [PaymentAccountResponseModel]
+    
+    /// Unlinked Payment Accounts
     public var unlinked: [PaymentAccountResponseModel]
+    
+    /// Last time the links were checked
     public var timeChecked: Date?
 }
 

@@ -18,7 +18,7 @@ protocol BinkScannerViewControllerDelegate: AnyObject {
 }
 
 @available(iOS 13.0, *)
-open class BinkScannerViewController: UIViewController, UINavigationControllerDelegate {
+class BinkScannerViewController: UIViewController, UINavigationControllerDelegate {
     enum Constants {
         static let rectOfInterestInset: CGFloat = 25
         static let viewFrameRatio: CGFloat = 12 / 18

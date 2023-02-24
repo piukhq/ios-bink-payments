@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-open class CustomView: UIView {
+class CustomView: UIView {
     public var view: UIView!
     
     var reuseableId: String {

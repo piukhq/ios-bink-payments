@@ -27,7 +27,7 @@ public class BinkThemeConfiguration {
     public init() {}
     
     
-    // Colors
+    //Colors
     
     /// The background color of navigation bars, checkboxes and switches.
     open var primaryColor: UIColor = .darkGray
