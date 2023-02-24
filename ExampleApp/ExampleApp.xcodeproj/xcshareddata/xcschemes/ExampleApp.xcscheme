@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "CEDDDFD229771068008734F4"
-               BuildableName = "Test-DK.app"
-               BlueprintName = "Test-DK"
-               ReferencedContainer = "container:Test-DK.xcodeproj">
+               BuildableName = "ExampleApp.app"
+               BlueprintName = "ExampleApp"
+               ReferencedContainer = "container:ExampleApp.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -45,9 +45,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "CEDDDFD229771068008734F4"
-            BuildableName = "Test-DK.app"
-            BlueprintName = "Test-DK"
-            ReferencedContainer = "container:Test-DK.xcodeproj">
+            BuildableName = "ExampleApp.app"
+            BlueprintName = "ExampleApp"
+            ReferencedContainer = "container:ExampleApp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -62,9 +62,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "CEDDDFD229771068008734F4"
-            BuildableName = "Test-DK.app"
-            BlueprintName = "Test-DK"
-            ReferencedContainer = "container:Test-DK.xcodeproj">
+            BuildableName = "ExampleApp.app"
+            BlueprintName = "ExampleApp"
+            ReferencedContainer = "container:ExampleApp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

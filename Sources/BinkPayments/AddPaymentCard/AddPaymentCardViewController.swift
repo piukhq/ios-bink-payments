@@ -122,7 +122,7 @@ class AddPaymentCardViewController: UIViewController {
         let switchView = BinkSwitchView(themeConfig: themeConfig, text: "Switch me please")
         stackScrollView.add(arrangedSubview: switchView)
         
-        let checkbox = CheckboxView(checked: true, themeConfig: themeConfig, title: "Check this")
+        let checkbox = BinkCheckboxView(checked: true, themeConfig: themeConfig, title: "Check this")
         stackScrollView.add(arrangedSubview: checkbox)
     }
     

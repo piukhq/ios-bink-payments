@@ -39,7 +39,7 @@ class APIClient {
                 return
             }
             session.request(validatedRequest.requestUrl, method: request.method, headers: validatedRequest.headers, interceptor: self).validate().cacheResponse(using: ResponseCacher.doNotCache).response { [weak self] response in
-                self?.handleResponse(response, endpoint: request.endpoint, expecting: responseType, isUserDriven: request.isUserDriven, completion: completion)
+                self?.handleResponse(response, endpoint: request.endpoint, expecting: responseType, completion: completion)
             }
         }
     }
@@ -55,13 +55,30 @@ class APIClient {
                 return
             }
             session.request(validatedRequest.requestUrl, method: request.method, parameters: body, encoder: JSONParameterEncoder.default, headers: validatedRequest.headers, interceptor: self).validate().cacheResponse(using: ResponseCacher.doNotCache).response { [weak self] response in
-                self?.handleResponse(response, endpoint: request.endpoint, expecting: responseType, isUserDriven: request.isUserDriven, completion: completion)
+                self?.handleResponse(response, endpoint: request.endpoint, expecting: responseType, completion: completion)
             }
         }
     }
     
+    func performRequestWithNoResponse(_ request: BinkNetworkRequest, body: [String: Any]?, completion: ((Bool, NetworkingError?, NetworkResponseData?) -> Void)?) {
+        validateRequest(request) { [weak self] (validatedRequest, error) in
+            if let error = error {
+                completion?(false, error, nil)
+                return
+            }
+            guard let validatedRequest = validatedRequest else {
+                completion?(false, .invalidRequest, nil)
+                return
+            }
+            session.request(validatedRequest.requestUrl, method: request.method, parameters: body, encoding: JSONEncoding.default, headers: validatedRequest.headers).cacheResponse(using: ResponseCacher.doNotCache).response { [weak self] response in
+                self?.noResponseHandler(response: response, endpoint: request.endpoint, completion: completion)
+            }
+        }
+    }
+
+    
     private func validateRequest(_ request: BinkNetworkRequest, completion: (ValidatedNetworkRequest?, NetworkingError?) -> Void) {
-        if !networkIsReachable && request.isUserDriven {
+        if !networkIsReachable {
             completion(nil, .noInternetConnection)
         }
    
@@ -91,7 +108,6 @@ struct BinkNetworkRequest {
     var endpoint: APIEndpoint
     var method: HTTPMethod
     var headers: [BinkHTTPHeader]?
-    var isUserDriven: Bool
 }
 
 struct ValidatedNetworkRequest {
@@ -108,17 +124,12 @@ struct ResponseErrors: Decodable {
 }
 
 private extension APIClient {
-    func handleResponse<ResponseType: Decodable>(_ response: AFDataResponse<Data?>, endpoint: APIEndpoint, expecting responseType: ResponseType.Type, isUserDriven: Bool, completion: APIClientCompletionHandler<ResponseType>?) {
+    func handleResponse<ResponseType: Decodable>(_ response: AFDataResponse<Data?>, endpoint: APIEndpoint, expecting responseType: ResponseType.Type, completion: APIClientCompletionHandler<ResponseType>?) {
         var networkResponseData = NetworkResponseData(urlResponse: response.response, errorMessage: nil)
         
-        let apiResponseDict: [String: String] = [
-            "statusCode": String(response.response?.statusCode ?? 0),
-            "endpoint": endpoint.urlString ?? ""
-        ]
+        postApiResponseNotification(response: response, endpoint: endpoint)
         
-        NotificationCenter.default.post(name: .apiResponse, object: nil, userInfo: apiResponseDict)
-        
-        if case let .failure(error) = response.result, error.isServerTrustEvaluationError, isUserDriven {
+        if case let .failure(error) = response.result {
             completion?(.failure(.customError(error.localizedDescription)), networkResponseData)
             return
         }
@@ -183,6 +194,53 @@ private extension APIClient {
             completion?(.failure(.decodingError), networkResponseData)
         }
     }
+    
+    func noResponseHandler(response: AFDataResponse<Data?>, endpoint: APIEndpoint, completion: ((Bool, NetworkingError?, NetworkResponseData?) -> Void)?) {
+        var networkResponseData = NetworkResponseData(urlResponse: response.response, errorMessage: nil)
+
+        postApiResponseNotification(response: response, endpoint: endpoint)
+        
+        if case let .failure(error) = response.result {
+            networkResponseData.errorMessage = error.localizedDescription
+            completion?(false, .customError(error.localizedDescription), networkResponseData)
+            return
+        }
+        if let error = response.error {
+            networkResponseData.errorMessage = error.localizedDescription
+            completion?(false, .customError(error.localizedDescription), networkResponseData)
+            return
+        }
+
+        guard let statusCode = response.response?.statusCode else {
+            completion?(false, .invalidResponse, networkResponseData)
+            return
+        }
+
+        if statusCode == unauthorizedStatus {
+            // Unauthorized response
+            return
+        } else if successStatusRange.contains(statusCode) {
+            // Successful response
+            completion?(true, nil, networkResponseData)
+            return
+        } else if serverErrorStatusRange.contains(statusCode) {
+            // Failed response, server error
+            completion?(false, .serverError(statusCode), networkResponseData)
+            return
+        } else {
+            completion?(false, .checkStatusCode(statusCode), networkResponseData)
+            return
+        }
+    }
+    
+    private func postApiResponseNotification(response: AFDataResponse<Data?>, endpoint: APIEndpoint) {
+        let apiResponseDict: [String: String] = [
+            "statusCode": String(response.response?.statusCode ?? 0),
+            "endpoint": endpoint.urlString ?? ""
+        ]
+        
+        NotificationCenter.default.post(name: .apiResponse, object: nil, userInfo: apiResponseDict)
+    }
 }
 
 extension APIClient: RequestInterceptor {
@@ -212,8 +270,8 @@ extension APIClient: RequestInterceptor {
         }
 
         let model = RenewTokenRequestModel(grantType: "refresh_token", scope: ["user"])
-        let binkRequest = BinkNetworkRequest(endpoint: .renew, method: .post, headers: [.defaultContentType], isUserDriven: false)
-        self.performRequestWithBody(binkRequest, body: model, expecting: Safe<RenewTokenResponse>.self) { (result, rawResponse) in
+        let binkRequest = BinkNetworkRequest(endpoint: .token, method: .post, headers: [.defaultContentType])
+        self.performRequestWithBody(binkRequest, body: model, expecting: Safe<RenewTokenResponse>.self) { (result, _) in
             switch result {
             case .success(let response):
                 guard let safeResponse = response.value else {
@@ -221,10 +279,10 @@ extension APIClient: RequestInterceptor {
                     return
                 }
                 BinkPaymentsManager.shared.token = safeResponse.accessToken
-                try? TokenKeychainManager.saveToken(service: .accessTokenService, token: BinkPaymentsManager.shared.token)
+//                try? TokenKeychainManager.saveToken(service: .accessTokenService, token: BinkPaymentsManager.shared.token)
                 
                 BinkPaymentsManager.shared.refreshToken = safeResponse.refreshToken
-                try? TokenKeychainManager.saveToken(service: .refreshTokenService, token: BinkPaymentsManager.shared.refreshToken)
+//                try? TokenKeychainManager.saveToken(service: .refreshTokenService, token: BinkPaymentsManager.shared.refreshToken)
                 
                 completion(.retry)
             case .failure(let error):

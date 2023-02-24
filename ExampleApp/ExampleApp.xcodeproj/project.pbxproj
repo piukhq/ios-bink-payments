@@ -7,31 +7,31 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		CE39BDA8297E9D4C00FC5CEA /* PaymentAccountsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE39BDA7297E9D4C00FC5CEA /* PaymentAccountsView.swift */; };
-		CE39BDAA297E9D6F00FC5CEA /* PllStatusViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE39BDA9297E9D6F00FC5CEA /* PllStatusViewModel.swift */; };
-		CE689235297FF3C50051CD33 /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE689234297FF3C50051CD33 /* ContentViewModel.swift */; };
-		CE881CEA298037000060D94A /* LoyaltyCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE881CE9298037000060D94A /* LoyaltyCardView.swift */; };
-		CE8D07D6297865E0009E023A /* PllStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8D07D5297865E0009E023A /* PllStatusView.swift */; };
-		CEC5FEC42987BF01002DB763 /* MessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC5FEC32987BF01002DB763 /* MessageView.swift */; };
-		CEDDDFD729771068008734F4 /* Test_DKApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDDDFD629771068008734F4 /* Test_DKApp.swift */; };
-		CEDDDFD929771068008734F4 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDDDFD829771068008734F4 /* ContentView.swift */; };
-		CEDDDFDB2977106B008734F4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CEDDDFDA2977106B008734F4 /* Assets.xcassets */; };
-		CEDDDFDE2977106B008734F4 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CEDDDFDD2977106B008734F4 /* Preview Assets.xcassets */; };
+		CE68214829A7D0B800954958 /* ExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE68213C29A7D0B700954958 /* ExampleApp.swift */; };
+		CE68214929A7D0B800954958 /* PllStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE68213D29A7D0B700954958 /* PllStatusView.swift */; };
+		CE68214A29A7D0B800954958 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CE68213E29A7D0B700954958 /* Assets.xcassets */; };
+		CE68214B29A7D0B800954958 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CE68214029A7D0B700954958 /* Preview Assets.xcassets */; };
+		CE68214C29A7D0B800954958 /* PllStatusViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE68214129A7D0B700954958 /* PllStatusViewModel.swift */; };
+		CE68214D29A7D0B800954958 /* LoyaltyCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE68214229A7D0B700954958 /* LoyaltyCardView.swift */; };
+		CE68214E29A7D0B800954958 /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE68214329A7D0B700954958 /* ContentViewModel.swift */; };
+		CE68214F29A7D0B800954958 /* PaymentAccountsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE68214429A7D0B700954958 /* PaymentAccountsView.swift */; };
+		CE68215029A7D0B800954958 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE68214529A7D0B700954958 /* ContentView.swift */; };
+		CE68215229A7D0B800954958 /* MessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE68214729A7D0B700954958 /* MessageView.swift */; };
 		CEE8EE3829797B2200E0F9D7 /* BinkPayments in Frameworks */ = {isa = PBXBuildFile; productRef = CEE8EE3729797B2200E0F9D7 /* BinkPayments */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		CE39BDA7297E9D4C00FC5CEA /* PaymentAccountsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentAccountsView.swift; sourceTree = "<group>"; };
-		CE39BDA9297E9D6F00FC5CEA /* PllStatusViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PllStatusViewModel.swift; sourceTree = "<group>"; };
-		CE689234297FF3C50051CD33 /* ContentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewModel.swift; sourceTree = "<group>"; };
-		CE881CE9298037000060D94A /* LoyaltyCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoyaltyCardView.swift; sourceTree = "<group>"; };
-		CE8D07D5297865E0009E023A /* PllStatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PllStatusView.swift; sourceTree = "<group>"; };
-		CEC5FEC32987BF01002DB763 /* MessageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageView.swift; sourceTree = "<group>"; };
-		CEDDDFD329771068008734F4 /* Test-DK.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Test-DK.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		CEDDDFD629771068008734F4 /* Test_DKApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Test_DKApp.swift; sourceTree = "<group>"; };
-		CEDDDFD829771068008734F4 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		CEDDDFDA2977106B008734F4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		CEDDDFDD2977106B008734F4 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		CE68213C29A7D0B700954958 /* ExampleApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExampleApp.swift; sourceTree = "<group>"; };
+		CE68213D29A7D0B700954958 /* PllStatusView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PllStatusView.swift; sourceTree = "<group>"; };
+		CE68213E29A7D0B700954958 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		CE68214029A7D0B700954958 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		CE68214129A7D0B700954958 /* PllStatusViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PllStatusViewModel.swift; sourceTree = "<group>"; };
+		CE68214229A7D0B700954958 /* LoyaltyCardView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoyaltyCardView.swift; sourceTree = "<group>"; };
+		CE68214329A7D0B700954958 /* ContentViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentViewModel.swift; sourceTree = "<group>"; };
+		CE68214429A7D0B700954958 /* PaymentAccountsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PaymentAccountsView.swift; sourceTree = "<group>"; };
+		CE68214529A7D0B700954958 /* ContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		CE68214729A7D0B700954958 /* MessageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageView.swift; sourceTree = "<group>"; };
+		CEDDDFD329771068008734F4 /* ExampleApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ExampleApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -46,10 +46,35 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		CE68213B29A7D0B700954958 /* ExampleApp */ = {
+			isa = PBXGroup;
+			children = (
+				CE68213C29A7D0B700954958 /* ExampleApp.swift */,
+				CE68213D29A7D0B700954958 /* PllStatusView.swift */,
+				CE68213E29A7D0B700954958 /* Assets.xcassets */,
+				CE68213F29A7D0B700954958 /* Preview Content */,
+				CE68214129A7D0B700954958 /* PllStatusViewModel.swift */,
+				CE68214229A7D0B700954958 /* LoyaltyCardView.swift */,
+				CE68214329A7D0B700954958 /* ContentViewModel.swift */,
+				CE68214429A7D0B700954958 /* PaymentAccountsView.swift */,
+				CE68214529A7D0B700954958 /* ContentView.swift */,
+				CE68214729A7D0B700954958 /* MessageView.swift */,
+			);
+			path = ExampleApp;
+			sourceTree = "<group>";
+		};
+		CE68213F29A7D0B700954958 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				CE68214029A7D0B700954958 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
 		CEDDDFCA29771068008734F4 = {
 			isa = PBXGroup;
 			children = (
-				CEDDDFD529771068008734F4 /* Test-DK */,
+				CE68213B29A7D0B700954958 /* ExampleApp */,
 				CEDDDFD429771068008734F4 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -57,42 +82,17 @@
 		CEDDDFD429771068008734F4 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				CEDDDFD329771068008734F4 /* Test-DK.app */,
+				CEDDDFD329771068008734F4 /* ExampleApp.app */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		CEDDDFD529771068008734F4 /* Test-DK */ = {
-			isa = PBXGroup;
-			children = (
-				CEDDDFD629771068008734F4 /* Test_DKApp.swift */,
-				CEDDDFD829771068008734F4 /* ContentView.swift */,
-				CE689234297FF3C50051CD33 /* ContentViewModel.swift */,
-				CE881CE9298037000060D94A /* LoyaltyCardView.swift */,
-				CE8D07D5297865E0009E023A /* PllStatusView.swift */,
-				CE39BDA9297E9D6F00FC5CEA /* PllStatusViewModel.swift */,
-				CE39BDA7297E9D4C00FC5CEA /* PaymentAccountsView.swift */,
-				CEC5FEC32987BF01002DB763 /* MessageView.swift */,
-				CEDDDFDA2977106B008734F4 /* Assets.xcassets */,
-				CEDDDFDC2977106B008734F4 /* Preview Content */,
-			);
-			path = "Test-DK";
-			sourceTree = "<group>";
-		};
-		CEDDDFDC2977106B008734F4 /* Preview Content */ = {
-			isa = PBXGroup;
-			children = (
-				CEDDDFDD2977106B008734F4 /* Preview Assets.xcassets */,
-			);
-			path = "Preview Content";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		CEDDDFD229771068008734F4 /* Test-DK */ = {
+		CEDDDFD229771068008734F4 /* ExampleApp */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = CEDDDFE12977106B008734F4 /* Build configuration list for PBXNativeTarget "Test-DK" */;
+			buildConfigurationList = CEDDDFE12977106B008734F4 /* Build configuration list for PBXNativeTarget "ExampleApp" */;
 			buildPhases = (
 				CEDDDFCF29771068008734F4 /* Sources */,
 				CEDDDFD029771068008734F4 /* Frameworks */,
@@ -102,12 +102,12 @@
 			);
 			dependencies = (
 			);
-			name = "Test-DK";
+			name = ExampleApp;
 			packageProductDependencies = (
 				CEE8EE3729797B2200E0F9D7 /* BinkPayments */,
 			);
 			productName = "Test-DK";
-			productReference = CEDDDFD329771068008734F4 /* Test-DK.app */;
+			productReference = CEDDDFD329771068008734F4 /* ExampleApp.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -125,7 +125,7 @@
 					};
 				};
 			};
-			buildConfigurationList = CEDDDFCE29771068008734F4 /* Build configuration list for PBXProject "Test-DK" */;
+			buildConfigurationList = CEDDDFCE29771068008734F4 /* Build configuration list for PBXProject "ExampleApp" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -141,7 +141,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				CEDDDFD229771068008734F4 /* Test-DK */,
+				CEDDDFD229771068008734F4 /* ExampleApp */,
 			);
 		};
 /* End PBXProject section */
@@ -151,8 +151,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CEDDDFDE2977106B008734F4 /* Preview Assets.xcassets in Resources */,
-				CEDDDFDB2977106B008734F4 /* Assets.xcassets in Resources */,
+				CE68214B29A7D0B800954958 /* Preview Assets.xcassets in Resources */,
+				CE68214A29A7D0B800954958 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -163,14 +163,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CEDDDFD929771068008734F4 /* ContentView.swift in Sources */,
-				CE8D07D6297865E0009E023A /* PllStatusView.swift in Sources */,
-				CE689235297FF3C50051CD33 /* ContentViewModel.swift in Sources */,
-				CEDDDFD729771068008734F4 /* Test_DKApp.swift in Sources */,
-				CEC5FEC42987BF01002DB763 /* MessageView.swift in Sources */,
-				CE39BDA8297E9D4C00FC5CEA /* PaymentAccountsView.swift in Sources */,
-				CE881CEA298037000060D94A /* LoyaltyCardView.swift in Sources */,
-				CE39BDAA297E9D6F00FC5CEA /* PllStatusViewModel.swift in Sources */,
+				CE68214E29A7D0B800954958 /* ContentViewModel.swift in Sources */,
+				CE68214929A7D0B800954958 /* PllStatusView.swift in Sources */,
+				CE68214829A7D0B800954958 /* ExampleApp.swift in Sources */,
+				CE68214C29A7D0B800954958 /* PllStatusViewModel.swift in Sources */,
+				CE68215029A7D0B800954958 /* ContentView.swift in Sources */,
+				CE68215229A7D0B800954958 /* MessageView.swift in Sources */,
+				CE68214D29A7D0B800954958 /* LoyaltyCardView.swift in Sources */,
+				CE68214F29A7D0B800954958 /* PaymentAccountsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -299,11 +299,11 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 6;
-				DEVELOPMENT_ASSET_PATHS = "\"Test-DK/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"ExampleApp/Preview Content\"";
 				DEVELOPMENT_TEAM = HC34M8YE55;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "Test-DK/Info.plist";
+				INFOPLIST_FILE = ExampleApp/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Bink-SDK";
 				INFOPLIST_KEY_NSCameraUsageDescription = "\"We would like access to your camera so you can scan your payment card\"";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -334,12 +334,12 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Distribution: Loyalty Angels Ltd (HC34M8YE55)";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 6;
-				DEVELOPMENT_ASSET_PATHS = "\"Test-DK/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"ExampleApp/Preview Content\"";
 				DEVELOPMENT_TEAM = HC34M8YE55;
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = HC34M8YE55;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "Test-DK/Info.plist";
+				INFOPLIST_FILE = ExampleApp/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Bink-SDK";
 				INFOPLIST_KEY_NSCameraUsageDescription = "\"We would like access to your camera so you can scan your payment card\"";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -365,7 +365,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		CEDDDFCE29771068008734F4 /* Build configuration list for PBXProject "Test-DK" */ = {
+		CEDDDFCE29771068008734F4 /* Build configuration list for PBXProject "ExampleApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CEDDDFDF2977106B008734F4 /* Debug */,
@@ -374,7 +374,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		CEDDDFE12977106B008734F4 /* Build configuration list for PBXNativeTarget "Test-DK" */ = {
+		CEDDDFE12977106B008734F4 /* Build configuration list for PBXNativeTarget "ExampleApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CEDDDFE22977106B008734F4 /* Debug */,

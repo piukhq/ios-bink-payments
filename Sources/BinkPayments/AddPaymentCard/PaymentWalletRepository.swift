@@ -7,7 +7,7 @@
 
 import Foundation
 
-class PaymentWalletRepository: WalletService {    
+class PaymentWalletRepository: WalletServiceProtocol {    
     func addPaymentCard(_ paymentCard: PaymentAccountCreateModel, onSuccess: @escaping (PaymentAccountResponseModel) -> Void, onError: @escaping(BinkError?) -> Void) {
         if BinkPaymentsManager.shared.isDebug {
             createPaymentAccount(paymentCard, onSuccess: { createdPaymentCard in

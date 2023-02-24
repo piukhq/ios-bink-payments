@@ -22,16 +22,22 @@ struct LoyaltyCardUpdateTrustedRequestModel: Codable {
 }
 
 struct Account: Codable {
-    let authoriseFields: AuthoriseFields
+    let addFields: AddFields?
+    let authoriseFields: AuthoriseFields?
     let merchantFields: MerchantFields
 
     enum CodingKeys: String, CodingKey {
+        case addFields = "add_fields"
         case authoriseFields = "authorise_fields"
         case merchantFields = "merchant_fields"
     }
 }
 
 struct AuthoriseFields: Codable {
+    let credentials: [Credential]
+}
+
+struct AddFields: Codable {
     let credentials: [Credential]
 }
 
@@ -54,4 +60,27 @@ struct MerchantFields: Codable {
 
 struct LoyaltyCardTrustedResponseModel: Codable {
     let id: Int
+}
+
+public enum LoyaltyIdType {
+    case email
+    case cardNumber(String)
+    
+    var slug: String {
+        switch self {
+        case .email:
+            return "email"
+        case .cardNumber:
+            return "card_number"
+        }
+    }
+    
+    var value: String {
+        switch self {
+        case .email:
+            return BinkPaymentsManager.shared.email
+        case .cardNumber( let cardNumber):
+            return cardNumber
+        }
+    }
 }

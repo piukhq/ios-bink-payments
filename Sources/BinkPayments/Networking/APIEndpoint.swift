@@ -8,13 +8,14 @@ import Alamofire
 import Foundation
 
 enum APIEndpoint {
+    case token
     case createPaymentAccount
     case spreedly
     case wallet
-    case renew
-    case plan(Id: String)
+    case plan(id: String)
     case loyaltyCardAddTrusted
     case loyaltyCardUpdateTrusted(id: String)
+    case loyaltyCards(id: String)
     
     var headers: [BinkHTTPHeader] {
         var headers: [BinkHTTPHeader] = [.defaultUserAgent, .defaultContentType]
@@ -48,7 +49,7 @@ enum APIEndpoint {
     }
     
     var allowedMethods: [HTTPMethod] {
-        return [.get, .post, .put]
+        return [.get, .post, .put, .delete]
     }
     
     private var authRequired: Bool {
@@ -81,20 +82,22 @@ enum APIEndpoint {
     
     var path: String {
         switch self {
+        case .token:
+            return "/v2/token"
         case .createPaymentAccount:
             return "/v2/payment_accounts"
         case .spreedly:
             return "https://core.spreedly.com/v1/payment_methods?environment_key=\(BinkPaymentsManager.shared.environmentKey ?? "")"
         case .wallet:
             return "/v2/wallet"
-        case .renew:
-            return "/v2/token"
-        case .plan(let Id):
-            return "/v2/loyalty_plans/\(Id)"
+        case .plan(let id):
+            return "/v2/loyalty_plans/\(id)"
         case .loyaltyCardAddTrusted:
             return "/v2/loyalty_cards/add_trusted"
         case .loyaltyCardUpdateTrusted(let id):
             return "/v2/loyalty_cards/\(id)/add_trusted"
+        case .loyaltyCards(let id):
+            return "/v2/loyalty_cards/\(id)"
         }
     }
 }

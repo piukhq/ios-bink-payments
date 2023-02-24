@@ -20,7 +20,7 @@ platform :ios do
   desc "Push a new beta build to TestFlight"
   lane :mr do |options|
     increment_build_number(build_number: options[:build_number])
-    build_app(scheme: "Test-DK")
+    build_app(scheme: "ExampleApp")
     upload_to_testflight
   end
 
