@@ -36,6 +36,6 @@ class LoyaltyCardViewModel: ObservableObject {
     @Published var loyaltyCard: LoyaltyCardModel?
 
     func getLoyaltyCard() {
-        loyaltyCard = BinkPaymentsManager.shared.loyaltyCard()
+        loyaltyCard = BinkPaymentsManager.shared.loyaltyCard
     }
 }

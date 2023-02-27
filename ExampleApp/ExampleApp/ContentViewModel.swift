@@ -12,7 +12,7 @@ class ContentViewModel: ObservableObject {
     private let successStatusRange = 200...299
     let paymentsManager = BinkPaymentsManager.shared
     var token = "eyJhbGciOiJIUzUxMiIsImtpZCI6ImFjY2Vzcy1zZWNyZXQtMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEyNDc1MywiY2hhbm5lbCI6ImNvbS50cnVzdGVkLmJpbmsud2FsbGV0IiwiaXNfdGVzdGVyIjpmYWxzZSwiaXNfdHJ1c3RlZF9jaGFubmVsIjp0cnVlLCJpYXQiOjE2NzUxNTg1NzgsImV4cCI6MTY3NTE2MDM3OH0.V_y3OrtX-Z4wKTNdmDUxxP0e4fsZFa1T9vBaJJuUTFIGoXqWsIzbSyJFbgW9GEl1YWTAR0nt_uhImXmpDSwM7w"
-    var refreshToken = "eyJhbGciOiJIUzUxMiIsImtpZCI6InJlZnJlc2gtYWNjZXNzLXNlY3JldC0yIiwidHlwIjoiSldUIn0.eyJzdWIiOjEyNDc1MywiY2hhbm5lbCI6ImNvbS50cnVzdGVkLmJpbmsud2FsbGV0IiwiY2xpZW50X2lkIjoiRmtuUGMxWjY0MlNMM3VVdWVpTFU2OE5WTUNGOWlOdXpkSnVjclF4elh3eU5YSUFsN2wiLCJncmFudF90eXBlIjoiYjJiIiwiZXh0ZXJuYWxfaWQiOiJpYW11bmlxdWUyNW16bnhiYyIsImlhdCI6MTY3NTE1ODU3OCwiZXhwIjoxNjc1MTYyMTc4fQ.rUr1dr7524O1U5k5tC7kLtelJh5fAWX-l3XI7q-PWrC9Bbesx7-pipPpHUIU9qK5GXvEEJ9OdnY8XDyUynXtiQ"
+    var refreshToken = "eyJhbGciOiJIUzUxMiIsImtpZCI6InJlZnJlc2gtYWNjZXNzLXNlY3JldC0yIiwidHlwIjoiSldUIn0.eyJzdWIiOjEyNDc1MywiY2hhbm5lbCI6ImNvbS50cnVzdGVkLmJpbmsud2FsbGV0IiwiY2xpZW50X2lkIjoiRmtuUGMxWjY0MlNMM3VVdWVpTFU2OE5WTUNGOWlOdXpkSnVjclF4elh3eU5YSUFsN2wiLCJncmFudF90eXBlIjoiYjJiIiwiZXh0ZXJuYWxfaWQiOiJpYW11bmlxdWUyNW16bnhiYyIsImlhdCI6MTY3NzI1ODM2MCwiZXhwIjoxNjc3MjYxOTYwfQ.uSwGvbgWD9tVHMUGUyF51fOxMmCVhGroFSAi82EDeEVvPDGuf1AHgHx8KLKfJxTlpofRXBqsmdT2xDgVJgBu6w"
     
 
     init() {
@@ -22,16 +22,14 @@ class ContentViewModel: ObservableObject {
     
     func triggerTokenRefresh(showSuccess: @escaping () -> Void) {
         BinkPaymentsManager.shared.configure(
-            token: "ExpiredToken",
-            refreshToken: refreshToken,
             environmentKey: "1Lf7DiKgkcx5Anw7QxWdDxaKtTa",
-            configuration: Configuration(testLoyaltyPlanID: "286",
+            configuration: LoyaltyPlanConfiguration(testLoyaltyPlanID: "286",
                                          productionLoyaltyPlanID: "286",
                                          trustedCredentialType: .authorise),
             email: "risilva10223@gmail.com",
             isDebug: true)
         
-        if let loyaltyCard = BinkPaymentsManager.shared.loyaltyCard() {
+        if let loyaltyCard = BinkPaymentsManager.shared.loyaltyCard {
             let _ = BinkPaymentsManager.shared.pllStatus(for: loyaltyCard, refreshedLinkedState: { _ in
                 showSuccess()
             })
@@ -39,11 +37,11 @@ class ContentViewModel: ObservableObject {
     }
     
     func setTrustedCard(id: String) {
-        paymentsManager.set(loyaltyIdentity: id)
+        paymentsManager.set(loyaltyId: .email, accountId: id)
     }
     
     func replaceTrustedCard(id: String) {
-        paymentsManager.replace(loyaltyIdentity: id)
+        paymentsManager.replace(loyaltyId: .email, accountId: id)
     }
     
     func updateTokens(token: String, refreshToken: String) {
@@ -53,14 +51,14 @@ class ContentViewModel: ObservableObject {
     }
     
     private func configureSDK() {
-        let config = Configuration(testLoyaltyPlanID: "286", productionLoyaltyPlanID: "286", trustedCredentialType: .authorise)
+        let config = LoyaltyPlanConfiguration(testLoyaltyPlanID: "286", productionLoyaltyPlanID: "286", trustedCredentialType: .authorise)
         paymentsManager.configure(
-            token: token,
-            refreshToken: refreshToken,
             environmentKey: "1Lf7DiKgkcx5Anw7QxWdDxaKtTa",
             configuration: config,
             email: "risilva10223@gmail.com",
             isDebug: true)
+        
+        paymentsManager.setToken(token: token, refreshToken: refreshToken)
     }
 }
 
