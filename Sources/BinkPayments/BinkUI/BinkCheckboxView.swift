@@ -6,7 +6,7 @@
 
 import UIKit
 
-class CheckboxView: CustomView {
+class BinkCheckboxView: CustomView {
     @IBOutlet private weak var checkboxButtonExtendedTappableAreaView: UIView!
     @IBOutlet private weak var checkboxButton: UIButton!
     @IBOutlet private weak var textView: UITextView!
@@ -81,7 +81,7 @@ class CheckboxView: CustomView {
     }
 }
 
-extension CheckboxView {
+extension BinkCheckboxView {
     var isValid: Bool {
         if hideCheckbox {
             return true
@@ -91,5 +91,5 @@ extension CheckboxView {
 }
 
 fileprivate extension Selector {
-    static let handleCheckboxTap = #selector(CheckboxView.handleCheckboxTap)
+    static let handleCheckboxTap = #selector(BinkCheckboxView.handleCheckboxTap)
 }
