@@ -10,7 +10,7 @@ import Foundation
 
 // MARK: - Join
 
-/// loyalty card associated with a loyalty plan and respective status
+/// Loyalty Card associated with a loyalty plan and respective status
 public struct JoinModel: Codable {
     public let loyaltyCardID, loyaltyPlanID: Int?
     public let status: StatusModel?

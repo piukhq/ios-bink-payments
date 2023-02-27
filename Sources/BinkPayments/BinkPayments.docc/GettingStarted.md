@@ -4,7 +4,7 @@ Step by step guide on how to get started.
 
 ## Initialisation
 
-The Bink Payments SDK provides the functionality to scan and/or manually add payment cards as well as adding loyalty cards. The SDK provides a manager ``BinkPaymentsManager`` where you can configute the SDK and pass the necessary parameters for proper inialisation.
+The Bink Payments SDK provides the functionality to scan and/or manually add payment cards as well as adding loyalty cards. The SDK provides a manager ``BinkPaymentsManager`` where you can configure the SDK and pass the necessary parameters for proper inialisation.
 
 The first step would be to call the method ``BinkPaymentsManager/configure(environmentKey:configuration:email:isDebug:)`` on your app initialization:
 ```swift
@@ -17,7 +17,7 @@ email: "someemail@mail.com",
 isDebug: true)
 ```
 
-After requesting the access and refresh tokens from your API, those values need to be passed to the ``BinkPaymentsManager`` using the method ``BinkPaymentsManager/set(loyaltyId:accountId:completion:)``
+After requesting the access and refresh tokens from your API, those values need to be passed to the ``BinkPaymentsManager`` using the method ``BinkPaymentsManager/setToken(token:refreshToken:)``
 
 ```swift
 BinkPaymentsManager.shared.setToken(
@@ -46,4 +46,4 @@ A Loyalty Card can be added to the wallet by calling the ``BinkPaymentsManager/s
 ``` swift
 BinkPaymentsManager.shared.set(loyaltyId: .email, accountId: id)
 ```
-Loyalty identity cand eiter be email or card number. The account id is the retailer identifier which is any random string that the retailer has to reconciling a customer beyond the card number / email.
+Loyalty identity cand eiter be email or card number and is of type ``LoyaltyIdType``. The account id is the retailer identifier which is any random string that the retailer has to reconciling a customer beyond the card number / email.

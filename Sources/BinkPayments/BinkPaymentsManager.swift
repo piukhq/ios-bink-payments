@@ -8,19 +8,20 @@
 import AlamofireNetworkActivityLogger
 import UIKit
 
+/// Protocol for displaying API responses
 public protocol BinkPaymentsManagerDelegate: AnyObject {
     func apiResponseNotification(_ notification: NSNotification)
 }
 
-/// This is the class that exposes all the necessary functionality for payments
+/// This is the class that exposes all the necessary functionality. It is the starting point for SDK configuration, to add Payment Cards by scanning or manually add them, adding Loyalty Cards to a trusted channel, retrieve current loyalty plan and to retrive the PLL status of a Loyalty Card.
 public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
     /// shared variable
     public static let shared = BinkPaymentsManager()
 
-    /// default theme configuration. Can be overriden with a custom BinkThemeConfiguration
+    /// Default theme configuration. Can be overriden with a custom BinkThemeConfiguration
     public var themeConfig = BinkThemeConfiguration()
 
-    /// struct with the loyalty plan info
+    /// Struct with the Loyalty Plan info
     public var loyaltyPlan: LoyaltyPlanModel?
 
     private let wallet = Wallet()
@@ -35,6 +36,7 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
     var isDebug: Bool!
     var config: LoyaltyPlanConfiguration!
 
+    /// delegate of type ``BinkPaymentsManagerDelegate``
     public weak var delegate: BinkPaymentsManagerDelegate?
     
     private var currentViewController: UIViewController? {
@@ -53,12 +55,13 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
     
     // MARK: - Public Methods
 
-    /// configure is the starting point of the SDK
+    /// configure is the first method that sould be called. It is responsible for the initial configuration of the SDK.
+    /// If no valid environment key is provided the SDK will assert with an error message.
     ///
     /// Pass the unique parameters so that the SDK will initialize properly.
     ///
     /// ```swift
-    /// let config = Configuration(testLoyaltyPlanID: "1", productionLoyaltyPlanID: "1", trustedCredentialType: .authorise)
+    /// let config = LoyaltyPlanConfiguration(testLoyaltyPlanID: "1", productionLoyaltyPlanID: "1", trustedCredentialType: .authorise)
     /// paymentsManager.configure(
     /// environmentKey: "envKey",
     /// configuration: config,
@@ -67,8 +70,6 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
     /// ```
     ///
     /// - Parameters:
-    ///   - token: Required - token given via the retailer's API.
-    ///   - refreshToken: Required - refresh token given via the retailer's API.
     ///   - environmentKey: Required - unique key
     ///   - configuration: Required - instanciate an object of type ``LoyaltyPlanConfiguration``.
     ///   - email: Required - the user's email
@@ -94,7 +95,7 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
         #endif
     }
     
-    /// Method to be caled as soon as your API returns te token and refresh tokens
+    /// Method to be caled as soon as your API returns the token and refresh tokens
     /// - Parameters:
     ///   - token: auth token returned by the API
     ///   - refreshToken: refresh token returned by the API

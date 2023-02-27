@@ -2,7 +2,7 @@
 
 ## Overview
 
-Bink SDK that provides the essential functionality to scan and add a payment card into your project
+The Bink Payments SDK provides functionality to add payment cards as well as adding Loyalty Cards to your application.
 
 ![Bink logo](bink_bg)
 
