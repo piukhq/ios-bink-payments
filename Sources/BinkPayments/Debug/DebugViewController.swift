@@ -7,6 +7,7 @@
 
 import UIKit
 
+/// Debug screen tat displays info about a payment card
 public class DebugViewController: UIViewController {
     private lazy var panLabel: UILabel = {
         let label = UILabel()

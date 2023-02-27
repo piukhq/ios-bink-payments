@@ -33,14 +33,14 @@ public struct VoucherModel: Codable {
     /// Unique identifier for the voucher as supplied by the merchant.
     public let voucherCode: String?
     
-    /// 0 = Code128 (B or C)
-    /// 1 = QR Code
-    /// 2 = AztecCode
-    /// 3 = Pdf417
-    /// 4 = EAN(13)
-    /// 5 =Datamatrix
-    /// 6 = ITF(Interleaved 2 of 5)
-    /// 7 = Code39
+    /// 0 = Code128 (B or C),
+    /// 1 = QR Code,
+    /// 2 = AztecCode,
+    /// 3 = Pdf417,
+    /// 4 = EAN(13),
+    /// 5 =Datamatrix,
+    /// 6 = ITF(Interleaved 2 of 5),
+    /// 7 = Code39,
     /// 9 = Barcode Not Supported
     public let barcodeType: Int?
     
@@ -79,7 +79,7 @@ public struct VoucherModel: Codable {
     }
 }
 
-
+/// Valid states a Voucher can be in
 public enum VoucherState: String, Codable {
     case redeemed
     case issued

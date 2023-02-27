@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// Valid statuses for a membership card
 public enum MembershipCardStatus: String, Codable {
     case authorised
     case unauthorised

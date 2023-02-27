@@ -11,7 +11,7 @@ import UIKit
 import Vision
 
 @available(iOS 13.0, *)
-public class VisionUtility {
+class VisionUtility {
 
     // MARK: - Payment Card
     var pan: String?

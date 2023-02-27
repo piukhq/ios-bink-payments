@@ -8,6 +8,7 @@
 import CoreData
 import Foundation
 
+/// Struct that defines an image associated with a ``LoyaltyPlanModel``
 public struct ImageModel: Codable {
     public let apiId: Int?
     public let type: Int?
