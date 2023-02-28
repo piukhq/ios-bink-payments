@@ -4,7 +4,7 @@ Step by step guide on how to get started.
 
 ## Initialisation
 
-The Bink Payments SDK provides the functionality to scan and/or manually add payment cards as well as adding loyalty cards. The SDK provides a manager ``BinkPaymentsManager`` where you can configure the SDK and pass the necessary parameters for proper inialisation.
+The Bink Payments SDK provides the functionality to scan and/or manually add payment cards as well as adding loyalty cards. The SDK provides a manager ``BinkPaymentsManager`` where you can configure the SDK and pass the necessary parameters for proper initialisation.
 
 The first step would be to call the method ``BinkPaymentsManager/configure(environmentKey:configuration:email:isDebug:)`` on your app initialization:
 ```swift
@@ -25,7 +25,7 @@ token: "token returned from the API",
 refreshToken: "refresh token returned from the API")
 ```
 
-_**Note: These two methods need to be called before any other method. The SDK will assert if the the inialisation steps are not taken.**_
+_**Note: These two methods need to be called before any other method. The SDK will assert if the inialisation steps are not taken.**_
 
 ## Adding payment cards
 
@@ -40,7 +40,7 @@ BinkPaymentsManager.shared.launchAddPaymentCardScreen(_ paymentCard: PaymentAcco
 ```
 This methods takes an optional parameter of type ``PaymentAccountCreateModel``
 
-## Adding a Loyaly Card
+## Adding a Loyalty Card
 
 A Loyalty Card can be added to the wallet by calling the ``BinkPaymentsManager/set(loyaltyId:accountId:completion:)`` method.
 ``` swift
