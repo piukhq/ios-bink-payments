@@ -12,6 +12,7 @@ public protocol StackScrollViewDelegate: AnyObject {
     func contentSizeWillUpdate(to size: CGSize)
 }
 
+/// Helper class for organizing items in a scrollable view
 open class StackScrollView: UIScrollView {
     // MARK: - Helpers
     

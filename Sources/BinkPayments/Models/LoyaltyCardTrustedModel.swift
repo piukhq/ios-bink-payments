@@ -62,6 +62,7 @@ struct LoyaltyCardTrustedResponseModel: Codable {
     let id: Int
 }
 
+/// The valid types for Loyalty Identity: email or card number
 public enum LoyaltyIdType {
     case email
     case cardNumber(String)

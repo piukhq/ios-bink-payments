@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// Struct that holds info for a particular Loyalty Plan
 public struct LoyaltyPlanConfiguration {
     public enum TrustedCredentialType: String {
         case add
