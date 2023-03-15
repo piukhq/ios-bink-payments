@@ -7,7 +7,7 @@
 
 import Foundation
 
-///Struct containing the Loyalty Plan properties
+/// Struct containing the Loyalty Plan properties
 public struct LoyaltyPlanFeaturesModel: Codable {
     /// Identifies that the Loyalty Plan supports showing a balance.
     public let hasPoints: Bool?
@@ -26,7 +26,7 @@ public struct LoyaltyPlanFeaturesModel: Codable {
     /// 2 = AztecCode,
     /// 3 = Pdf417,
     /// 4 = EAN(13),
-    /// 5 =Datamatrix,
+    /// 5 = Datamatrix,
     /// 6 = ITF(Interleaved 2 of 5),
     /// 7 = Code39,
     /// 9 = Barcode Not Supported

@@ -9,7 +9,7 @@ import Foundation
 
 /// Struct that contains information for a Loyalty Card
 public struct LoyaltyCardModel: Codable {
-    /// resource Id
+    /// Resource Id
     public let apiId: Int?
     
     /// The unique resource identifier for the Loyalty Plan to which the Loyalty Card belongs.

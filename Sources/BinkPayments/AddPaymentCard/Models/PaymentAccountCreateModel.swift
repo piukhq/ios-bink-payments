@@ -7,7 +7,7 @@
 
 import Foundation
 
-/// Model with the basic info related to a payment card
+/// Model with the basic information related to a payment card
 public class PaymentAccountCreateModel: Codable {
     public var fullPan: String?
     var nameOnCard: String?

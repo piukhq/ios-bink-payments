@@ -7,7 +7,7 @@
 
 import Foundation
 
-/// The fields that need to be presented to the user in order to register a card, become a new member of a loyalty plan
+/// The fields that need to be presented to the user in order to register a card to become a new member of a loyalty plan.
 public struct FieldsModel: Codable {
     /// Personal information required to complete the selected journey.
     public let credentials: [CredentialsModel]?

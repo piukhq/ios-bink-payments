@@ -20,10 +20,10 @@ public struct ConsentsModel: Codable {
     /// Describes how to use the Consent.
     public let entDescription: String?
     
-    /// Name to the consent.
+    /// Consent name.
     public let name: String?
     
-    /// Url to the consent.
+    /// Consent URL
     public let url: String?
 
     enum CodingKeys: String, CodingKey {

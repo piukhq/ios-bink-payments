@@ -13,7 +13,7 @@ public protocol BinkPaymentsManagerDelegate: AnyObject {
     func apiResponseNotification(_ notification: NSNotification)
 }
 
-/// This is the class that exposes all the necessary functionality. It is the starting point for SDK configuration, to add Payment Cards by scanning or manually add them, adding Loyalty Cards to a trusted channel, retrieve current loyalty plan and to retrive the PLL status of a Loyalty Card.
+/// This is the class that exposes all the necessary functionality. It is the starting point for SDK configuration, to add Payment Cards manually or by scanning, adding Loyalty Cards to a trusted channel, retrieve current loyalty plan and to retrieve the PLL status of a Loyalty Card.
 public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
     /// shared variable
     public static let shared = BinkPaymentsManager()
@@ -55,7 +55,7 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
     
     // MARK: - Public Methods
 
-    /// configure is the first method that sould be called. It is responsible for the initial configuration of the SDK.
+    /// Configure is the first method that sould be called. It is responsible for the initial configuration of the SDK.
     /// If no valid environment key is provided the SDK will assert with an error message.
     ///
     /// Pass the unique parameters so that the SDK will initialize properly.
@@ -95,7 +95,7 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
         #endif
     }
     
-    /// Method to be caled as soon as your API returns the token and refresh tokens
+    /// Method to be called as soon as your API returns the token and refresh tokens
     /// - Parameters:
     ///   - token: auth token returned by the API
     ///   - refreshToken: refresh token returned by the API
@@ -136,7 +136,7 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
         }
     }
     
-    /// Launches a debug screen where the payment card information can be dispayed
+    /// Launches a debug screen where the payment card information can be displayed
     /// - Parameter paymentCard: payment card details
     public func launchDebugScreen(paymentCard: PaymentAccountCreateModel) {
         initializationAssertion()
@@ -147,7 +147,7 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
     /// This method creates a screen to register a payment card. If the card has been scanned a struct of type
     /// `PaymentAccountCreateModel` with the payment card details will be passed in and the fields will be auto filled.
     /// If no parameter is passed the user can manually type the card details
-    /// - Parameter paymentCard: Optional - model with inofrmation related to a payment card
+    /// - Parameter paymentCard: Optional - model with information related to a payment card
     public func launchAddPaymentCardScreen(_ paymentCard: PaymentAccountCreateModel? = nil) {
         initializationAssertion()
         let addPaymentCardViewController = AddPaymentCardViewController(viewModel: AddPaymentCardViewModel(paymentCard: paymentCard), themeConfig: themeConfig)
@@ -164,7 +164,7 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
     
     /// Method that returns the linked state of a loyalty card
     /// - Parameters:
-    ///   - paymentAccount: payment card which we want to check the current state
+    ///   - paymentAccount: payment card of which we want to check the current state
     ///   - refreshedLinkedState: escaping closure returning a ``LoyaltyCardModel`` object
     /// - Returns: PaymentAccountPLLState model
     public func pllStatus(for loyaltyCard: LoyaltyCardModel, refreshedLinkedState: @escaping (LoyaltyCardPLLState) -> Void ) -> LoyaltyCardPLLState {
@@ -218,7 +218,7 @@ public class BinkPaymentsManager: NSObject, UINavigationControllerDelegate {
         }
     }
     
-    /// Method that updates the loyalty identity of a of a card in the trusted channel
+    /// Method that updates the loyalty identity of a card in the trusted channel
     /// - Parameters:
     ///   - loyaltyId: of type ``LoyaltyIdType`` email or card number
     ///   - accountId: merchant unique id

@@ -15,7 +15,7 @@ public struct LoyaltyCardTransactionModel: Codable {
     /// Time and date of the transaction as supplied by the merchant.
     public let timestamp: Double?
     
-    /// Human readable description of the transaction as supplied by the the merchant.
+    /// Human readable description of the transaction as supplied by the merchant.
     public let transactionDescription: String?
     
     /// Value of transaction awarded as supplied by the merchant

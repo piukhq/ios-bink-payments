@@ -21,7 +21,7 @@ public struct JourneyModel: Codable {
 
 /// User information required to support Loyalty journeys.
 public struct JourneyFieldsModel: Codable {
-    /// Reource Id
+    /// Resource Id
     public let loyaltyPlanID: Int?
     
     /// The fields that need to be presented to the user in order to Register a Ghostcard.

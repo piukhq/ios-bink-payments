@@ -23,7 +23,7 @@ public struct PaymentAccountResponseModel: Codable {
     /// Expiry month for this card.
     public let expiryMonth: String?
     
-    ///Expiry year for this card.
+    /// Expiry year for this card.
     public let expiryYear: String?
     
     /// Card holder name as printed on card.

@@ -1,4 +1,4 @@
-# GettingStarted
+# Getting Started
 
 Step by step guide on how to get started.
 
@@ -6,7 +6,7 @@ Step by step guide on how to get started.
 
 The Bink Payments SDK provides the functionality to scan and/or manually add payment cards as well as adding loyalty cards. The SDK provides a manager ``BinkPaymentsManager`` where you can configure the SDK and pass the necessary parameters for proper initialisation.
 
-The first step would be to call the method ``BinkPaymentsManager/configure(environmentKey:configuration:email:isDebug:)`` on your app initialization:
+The first step would be to call the method ``BinkPaymentsManager/configure(environmentKey:configuration:email:isDebug:)`` on your app initialisation:
 ```swift
 BinkPaymentsManager.shared.configure(
 environmentKey: "unique env key",
@@ -25,7 +25,7 @@ token: "token returned from the API",
 refreshToken: "refresh token returned from the API")
 ```
 
-_**Note: These two methods need to be called before any other method. The SDK will assert if the inialisation steps are not taken.**_
+_**Note: These two methods need to be called before any other method. The SDK will assert if the initialisation steps are not taken.**_
 
 ## Adding payment cards
 
@@ -38,7 +38,7 @@ To manually add a card you would call ``BinkPaymentsManager/launchAddPaymentCard
 ```swift
 BinkPaymentsManager.shared.launchAddPaymentCardScreen(_ paymentCard: PaymentAccountCreateModel? = nil)
 ```
-This methods takes an optional parameter of type ``PaymentAccountCreateModel``
+This method takes an optional parameter of type ``PaymentAccountCreateModel``
 
 ## Adding a Loyalty Card
 
@@ -46,4 +46,4 @@ A Loyalty Card can be added to the wallet by calling the ``BinkPaymentsManager/s
 ``` swift
 BinkPaymentsManager.shared.set(loyaltyId: .email, accountId: id)
 ```
-Loyalty identity cand eiter be email or card number and is of type ``LoyaltyIdType``. The account id is the retailer identifier which is any random string that the retailer has to reconciling a customer beyond the card number / email.
+Loyalty identity cand either be email or card number and is of type ``LoyaltyIdType``. The account id is the retailer identifier which is any random string that the retailer has for reconciling a customer beyond the card number / email.

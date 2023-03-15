@@ -9,7 +9,7 @@ import Foundation
 
 /// Details of the Payment Accounts associated with the Loyalty Card.
 public struct LoyaltyCardPllLinkModel: Codable {
-    /// resource id
+    /// Resource id
     public var apiId: Int?
     
     /// Unique identifier for the Payment Account.
